@@ -186,8 +186,7 @@ extension MainViewController {
         newEmail.to = "a.mihailovski@gmail.com"
         newEmail.subject = "Bizi test"
         newEmail.text = "Bu"
-        if FileManager.default.fileExists(atPath: soundFileURL.absoluteString),
-            let attData = try? NSData(contentsOf: soundFileURL) as Data {
+        if let attData = try? NSData(contentsOf: soundFileURL) as Data {
             let attachment = SendGridEmailAttachment()
             attachment.attachmentData = attData
             attachment.fileName = soundFileURL.lastPathComponent
@@ -196,6 +195,7 @@ extension MainViewController {
             newEmail.attachFile(attachment)
         }
 
-        sendgrid?.send(withWeb: newEmail)
+//        sendgrid?.send(withWeb: newEmail)
+        sendgrid?.sendAttachment(withWeb: newEmail)
     }
 }
