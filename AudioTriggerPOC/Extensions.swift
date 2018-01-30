@@ -8,6 +8,13 @@
 
 import UIKit
 
+extension UserDefaults {
+    var emailDestination: String? {
+        get { return string(forKey: #function) }
+        set { set(newValue, forKey: #function) }
+    }
+}
+
 extension UIColor {
     convenience init(rgb: Int, alpha: CGFloat = 1.0) {
         self.init(

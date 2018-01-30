@@ -46,10 +46,3 @@ extension SettingsViewController: UITextFieldDelegate {
         }
     }
 }
-
-extension UserDefaults {
-    var emailDestination: String? {
-        get { return string(forKey: #function) }
-        set { set(newValue, forKey: #function) }
-    }
-}
