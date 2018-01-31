@@ -19,22 +19,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WWy-fc-E0e">
-                                <rect key="frame" x="170" y="304" width="34" height="30"/>
-                                <state key="normal" title="Start"/>
-                                <connections>
-                                    <action selector="start:" destination="9pv-A4-QxB" eventType="touchUpInside" id="CGv-g8-Ysu"/>
-                                </connections>
-                            </button>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="3q9-uY-qdI">
+                                <rect key="frame" x="16" y="36" width="343" height="566"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="WWy-fc-E0e" firstAttribute="centerX" secondItem="PQr-Ze-W5v" secondAttribute="centerX" id="hTw-MX-ZQZ"/>
-                            <constraint firstItem="WWy-fc-E0e" firstAttribute="centerY" secondItem="PQr-Ze-W5v" secondAttribute="centerY" id="l4g-MM-0QP"/>
+                            <constraint firstItem="3q9-uY-qdI" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" constant="16" id="3hf-dL-fie"/>
+                            <constraint firstItem="PQr-Ze-W5v" firstAttribute="bottom" secondItem="3q9-uY-qdI" secondAttribute="bottom" constant="16" id="9N2-XB-by0"/>
+                            <constraint firstItem="PQr-Ze-W5v" firstAttribute="trailing" secondItem="3q9-uY-qdI" secondAttribute="trailing" constant="16" id="m1b-Qg-pXL"/>
+                            <constraint firstItem="3q9-uY-qdI" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" constant="16" id="pSo-qg-HKl"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Main" image="first" id="acW-dT-cKf" userLabel="Main"/>
+                    <connections>
+                        <outlet property="outputTextView" destination="3q9-uY-qdI" id="5SB-iE-JnH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>

@@ -11,6 +11,8 @@ import RunACRSDK
 import AVFoundation
 
 class MainViewController: UIViewController {
+    @IBOutlet weak var outputTextView: UITextView!
+
     let runAcr = RunACR.sharedInstance()!
     let audioMatchDataPath = Bundle.main.path(forResource: "combined", ofType: "runacr")
     var recorder: AVAudioRecorder!
@@ -19,36 +21,41 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         self.runAcr.initialize(withAPIKey: "23541eb601555bd15ee658741aa070b2")
-        // Do any additional setup after loading the view, typically from a nib.
         self.runAcr.delegate = self
         self.runAcr.updateDatabasePath(self.audioMatchDataPath)
+
+        self.outputTextView.text = "ALL PROCESS OUTPUT:"
+
+        DispatchQueue.main.async {
+            self.runAcr.startRecognize()
+            self.logToOutput("startRecognize")
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    @IBAction func start(_ sender: UIButton) {
-        self.runAcr.startRecognize()
-    }
 
 }
 
 extension MainViewController: RunACRDelegate {
     func didRecognize(_ trackId: Int32, absoluteTimeOffset: Float, relativeTimeOffset: Float) {
+        self.logToOutput("did Recognize")
         self.record()
     }
 
     func didNotRecognize() {
+        self.logToOutput("did Not Recognize")
         self.runAcr.startRecognize()
     }
 }
 
 extension MainViewController {
     fileprivate func recordWithPermission(_ setup: Bool) {
-        print("\(#function)")
+        self.logToOutput("\(#function)")
         let session = self.audioSession
 
         session.requestRecordPermission {
@@ -56,54 +63,58 @@ extension MainViewController {
             if granted {
 
                 DispatchQueue.main.async {
-                    print("Permission to record granted")
-                    self.setSessionPlayAndRecord()
+                    self.logToOutput("Permission to record granted")
+                    self.setSessionRecord()
                     if setup {
                         self.setupRecorder()
                     }
+                    self.logToOutput("recording for 10 sesc")
                     self.recorder.record(forDuration: TimeInterval(10))
                 }
             } else {
-                print("Permission to record not granted")
+                self.logToOutput("Permission to record not granted")
             }
         }
 
         if session.recordPermission() == .denied {
-            print("permission denied")
+            self.logToOutput("permission denied")
         }
     }
 
-    fileprivate func setSessionPlayAndRecord() {
-        print("\(#function)")
+    fileprivate func setSessionRecord() {
+//    fileprivate func setSessionPlayAndRecord() {
+        self.logToOutput("\(#function)")
 
         let session = self.audioSession
         do {
-            try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .defaultToSpeaker)
+            try session.setCategory(AVAudioSessionCategoryRecord)
+//            try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .defaultToSpeaker)
         } catch {
-            print("could not set session category")
+            self.logToOutput("could not set session category")
             print(error.localizedDescription)
         }
 
         do {
             try session.setActive(true)
         } catch {
-            print("could not make session active")
+            self.logToOutput("could not make session active")
             print(error.localizedDescription)
         }
     }
 
     fileprivate func setupRecorder() {
-        print("\(#function)")
+        self.logToOutput("\(#function)")
 
         let format = DateFormatter()
         format.dateFormat="yyyy-MM-dd-HH-mm-ss"
 //        let currentFileName = "recording-\(format.string(from: Date())).m4a"
-        let currentFileName = "recording-same.m4a"
+        let currentFileName = "recording.m4a"
         print(currentFileName)
 
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         self.soundFileURL = documentsDirectory.appendingPathComponent(currentFileName)
         print("writing to soundfile url: '\(soundFileURL!)'")
+        self.logToOutput("writing to soundfile url: '\(currentFileName)'")
 
         if FileManager.default.fileExists(atPath: soundFileURL.absoluteString) {
             // probably won't happen. want to do something about it?
@@ -124,8 +135,10 @@ extension MainViewController {
             recorder.delegate = self
             recorder.isMeteringEnabled = true
             recorder.prepareToRecord() // creates/overwrites the file at soundFileURL
+            self.logToOutput("Prepare to record")
         } catch {
             recorder = nil
+            self.logToOutput("Unable to record")
             print(error.localizedDescription)
         }
 
@@ -138,17 +151,9 @@ extension MainViewController {
         if recorder == nil {
             print("recording. recorder nil")
             recordWithPermission(true)
-            return
-        }
-
-        if recorder != nil && recorder.isRecording {
-            print("already recording")
-//            print("pausing")
-//            recorder.pause()
-
         } else {
-            print("recording")
-//            recorder.record()
+            self.logToOutput("recording")
+            self.recorder.record(forDuration: TimeInterval(10))
             recordWithPermission(false)
         }
     }
@@ -160,7 +165,7 @@ extension MainViewController: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder,
                                          successfully flag: Bool) {
 
-        print("\(#function)")
+        self.logToOutput("\(#function)")
         self.recorder = nil
         self.runAcr.startRecognize()
         self.sendEmail()
@@ -168,7 +173,7 @@ extension MainViewController: AVAudioRecorderDelegate {
 
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder,
                                           error: Error?) {
-        print("\(#function)")
+        self.logToOutput("\(#function)")
 
         if let e = error {
             print("\(e.localizedDescription)")
@@ -179,23 +184,49 @@ extension MainViewController: AVAudioRecorderDelegate {
 
 extension MainViewController {
     fileprivate func sendEmail() {
+        guard let email = UserDefaults.standard.emailDestination else {
+            self.logToOutput("Please set your email first!")
+            return
+        }
         let sendgrid = SendGrid(apiUser: "bi1zi1",
                                 apiKey: "Test1234")
         let newEmail = SendGridEmail()
-        newEmail.from = "a.mihailovski@gmail.com"
-        newEmail.to = "a.mihailovski@gmail.com"
-        newEmail.subject = "Bizi test"
-        newEmail.text = "Bu"
+        newEmail.from = email
+        newEmail.to = email
+        newEmail.subject = "Audio recording"
+        newEmail.text = "see attachment"
         if let attData = try? NSData(contentsOf: soundFileURL) as Data {
             let attachment = SendGridEmailAttachment()
             attachment.attachmentData = attData
-            attachment.fileName = soundFileURL.lastPathComponent
+            attachment.fileName = soundFileURL.lastPathComponent.split(separator: Character(".")).first?.lowercased()
             attachment.mimeType = "audio/x-m4a"
             attachment.extension = "m4a"
             newEmail.attachFile(attachment)
         }
 
 //        sendgrid?.send(withWeb: newEmail)
-        sendgrid?.sendAttachment(withWeb: newEmail)
+//        sendgrid?.sendAttachment(withWeb: newEmail)
+        sendgrid?.sendAttachment(withWeb: newEmail, successBlock: { (success) in
+            self.logToOutput("Email sent")
+        }, failureBlock: { (error) in
+            self.logToOutput("Email not sent")
+            print(error?.localizedDescription ?? "no error description")
+        })
+    }
+}
+
+extension MainViewController {
+    fileprivate func logToOutput(_ text: String) {
+        //Add newline
+        self.outputTextView.text.append("\n")
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let datePrefix = dateFormatter.string(from: Date())
+
+        //Add "DATE: text"
+        self.outputTextView.text.append(datePrefix)
+        self.outputTextView.text.append(": ")
+        self.outputTextView.text.append(text)
     }
 }
