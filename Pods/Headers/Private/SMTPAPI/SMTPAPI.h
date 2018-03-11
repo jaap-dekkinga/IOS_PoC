@@ -1,1 +1,0 @@
-../../../SMTPAPI/SMTPAPI/SMTPAPI.h

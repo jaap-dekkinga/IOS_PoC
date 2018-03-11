@@ -1,6 +1,6 @@
-platform :ios, '9.0'
-#use_frameworks!
+platform :ios, '10.0'
+use_frameworks!
 
 target :AudioTriggerPOC do
-    pod 'SendGrid'
+    pod 'Alamofire'
 end

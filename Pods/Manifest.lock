@@ -1,38 +1,12 @@
 PODS:
-  - AFNetworking (2.6.3):
-    - AFNetworking/NSURLConnection (= 2.6.3)
-    - AFNetworking/NSURLSession (= 2.6.3)
-    - AFNetworking/Reachability (= 2.6.3)
-    - AFNetworking/Security (= 2.6.3)
-    - AFNetworking/Serialization (= 2.6.3)
-    - AFNetworking/UIKit (= 2.6.3)
-  - AFNetworking/NSURLConnection (2.6.3):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.6.3):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.6.3)
-  - AFNetworking/Security (2.6.3)
-  - AFNetworking/Serialization (2.6.3)
-  - AFNetworking/UIKit (2.6.3):
-    - AFNetworking/NSURLConnection
-    - AFNetworking/NSURLSession
-  - SendGrid (0.3.0):
-    - AFNetworking (~> 2.0)
-    - SMTPAPI
-  - SMTPAPI (0.2.0)
+  - Alamofire (4.7.0)
 
 DEPENDENCIES:
-  - SendGrid
+  - Alamofire
 
 SPEC CHECKSUMS:
-  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  SendGrid: f9a0c053773198c67fb0e52d0fa9cdef70c8a115
-  SMTPAPI: 84bcd13fb0c572a7a16c2045ebb4f32c97892c90
+  Alamofire: 907e0a98eb68cdb7f9d1f541a563d6ac5dc77b25
 
-PODFILE CHECKSUM: b37f90fc1a1272a16e4c2fd796c70a9458bab00e
+PODFILE CHECKSUM: 6dab122f75177097f6d6db93adfe6755f18c8bb2
 
 COCOAPODS: 1.4.0

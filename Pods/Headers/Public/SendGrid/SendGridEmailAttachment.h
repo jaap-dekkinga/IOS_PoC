@@ -1,1 +1,0 @@
-../../../SendGrid/Classes/SendGridEmailAttachment.h

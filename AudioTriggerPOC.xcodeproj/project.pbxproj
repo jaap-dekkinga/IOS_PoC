@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EB7205EB2B500F96F7A /* Notify.swift */; };
+		600A6EBA205EB41A00F96F7A /* SamplesClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EB9205EB41A00F96F7A /* SamplesClient.swift */; };
+		600A6EBC205EBDE000F96F7A /* AudioSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EBB205EBDE000F96F7A /* AudioSampler.swift */; };
 		6052363E201FE51900B65A72 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6052363D201FE51900B65A72 /* AppDelegate.swift */; };
 		60523640201FE51900B65A72 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6052363F201FE51900B65A72 /* MainViewController.swift */; };
 		60523642201FE51900B65A72 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60523641201FE51900B65A72 /* SettingsViewController.swift */; };
@@ -20,7 +23,7 @@
 		6052366A202009DA00B65A72 /* RunACRSDK.framework in Resources */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; };
 		6052366C202009FD00B65A72 /* RunACRSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6052366F20200BEE00B65A72 /* combined.runacr in Resources */ = {isa = PBXBuildFile; fileRef = 6052366E20200BEE00B65A72 /* combined.runacr */; };
-		7C1DED85D8E04A52B60F352F /* libPods-AudioTriggerPOC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F16C2F2EAD9203402F59794 /* libPods-AudioTriggerPOC.a */; };
+		DCC3A21648720C0E8D25B72B /* Pods_AudioTriggerPOC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B422BDFF2F9DB84C9FB29E /* Pods_AudioTriggerPOC.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +51,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		600A6EB7205EB2B500F96F7A /* Notify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notify.swift; sourceTree = "<group>"; };
+		600A6EB9205EB41A00F96F7A /* SamplesClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesClient.swift; sourceTree = "<group>"; };
+		600A6EBB205EBDE000F96F7A /* AudioSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSampler.swift; sourceTree = "<group>"; };
 		6052363A201FE51900B65A72 /* AudioTriggerPOC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioTriggerPOC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6052363D201FE51900B65A72 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6052363F201FE51900B65A72 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -64,9 +70,9 @@
 		60523664201FFE9A00B65A72 /* AudioTriggerPOC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AudioTriggerPOC-Bridging-Header.h"; sourceTree = "<group>"; };
 		60523668202001A300B65A72 /* RunACRSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RunACRSDK.framework; path = SDK/RunACRSDK.framework; sourceTree = "<group>"; };
 		6052366E20200BEE00B65A72 /* combined.runacr */ = {isa = PBXFileReference; lastKnownFileType = file; name = combined.runacr; path = SDK/combined.runacr; sourceTree = SOURCE_ROOT; };
-		6F16C2F2EAD9203402F59794 /* libPods-AudioTriggerPOC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AudioTriggerPOC.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBCE85622A4AC53FBFA986B1 /* Pods-AudioTriggerPOC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AudioTriggerPOC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC.debug.xcconfig"; sourceTree = "<group>"; };
 		BDE2CA3B2B257A37E40EE614 /* Pods-AudioTriggerPOC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AudioTriggerPOC.release.xcconfig"; path = "Pods/Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC.release.xcconfig"; sourceTree = "<group>"; };
+		D2B422BDFF2F9DB84C9FB29E /* Pods_AudioTriggerPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AudioTriggerPOC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,7 +81,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				60523669202001A300B65A72 /* RunACRSDK.framework in Frameworks */,
-				7C1DED85D8E04A52B60F352F /* libPods-AudioTriggerPOC.a in Frameworks */,
+				DCC3A21648720C0E8D25B72B /* Pods_AudioTriggerPOC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +129,9 @@
 				6052365F201FE98C00B65A72 /* EmailTextFieldValidator.swift */,
 				60523661201FEC7C00B65A72 /* Extensions.swift */,
 				60523664201FFE9A00B65A72 /* AudioTriggerPOC-Bridging-Header.h */,
+				600A6EB7205EB2B500F96F7A /* Notify.swift */,
+				600A6EB9205EB41A00F96F7A /* SamplesClient.swift */,
+				600A6EBB205EBDE000F96F7A /* AudioSampler.swift */,
 			);
 			path = AudioTriggerPOC;
 			sourceTree = "<group>";
@@ -140,7 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				60523668202001A300B65A72 /* RunACRSDK.framework */,
-				6F16C2F2EAD9203402F59794 /* libPods-AudioTriggerPOC.a */,
+				D2B422BDFF2F9DB84C9FB29E /* Pods_AudioTriggerPOC.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -272,15 +281,11 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
-				"${BUILT_PRODUCTS_DIR}/SMTPAPI/SMTPAPI.framework",
-				"${BUILT_PRODUCTS_DIR}/SendGrid/SendGrid.framework",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SMTPAPI.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SendGrid.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -327,8 +332,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				600A6EBA205EB41A00F96F7A /* SamplesClient.swift in Sources */,
 				60523662201FEC7C00B65A72 /* Extensions.swift in Sources */,
 				60523642201FE51900B65A72 /* SettingsViewController.swift in Sources */,
+				600A6EBC205EBDE000F96F7A /* AudioSampler.swift in Sources */,
+				600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */,
 				6052363E201FE51900B65A72 /* AppDelegate.swift in Sources */,
 				60523640201FE51900B65A72 /* MainViewController.swift in Sources */,
 				60523660201FE98C00B65A72 /* EmailTextFieldValidator.swift in Sources */,
@@ -493,7 +501,7 @@
 					"$(PROJECT_DIR)/SDK",
 				);
 				INFOPLIST_FILE = AudioTriggerPOC/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.demo.AudioTriggerPOC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -517,7 +525,7 @@
 					"$(PROJECT_DIR)/SDK",
 				);
 				INFOPLIST_FILE = AudioTriggerPOC/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.demo.AudioTriggerPOC;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -168,7 +168,7 @@ extension MainViewController: AVAudioRecorderDelegate {
         self.logToOutput("\(#function)")
         self.recorder = nil
         self.runAcr.startRecognize()
-        self.sendEmail()
+        //TODO: Send to server
     }
 
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder,
@@ -180,39 +180,6 @@ extension MainViewController: AVAudioRecorderDelegate {
         }
     }
 
-}
-
-extension MainViewController {
-    fileprivate func sendEmail() {
-        guard let email = UserDefaults.standard.emailDestination else {
-            self.logToOutput("Please set your email first!")
-            return
-        }
-        let sendgrid = SendGrid(apiUser: "bi1zi1",
-                                apiKey: "Test1234")
-        let newEmail = SendGridEmail()
-        newEmail.from = email
-        newEmail.to = email
-        newEmail.subject = "Audio recording"
-        newEmail.text = "see attachment"
-        if let attData = try? NSData(contentsOf: soundFileURL) as Data {
-            let attachment = SendGridEmailAttachment()
-            attachment.attachmentData = attData
-            attachment.fileName = soundFileURL.lastPathComponent.split(separator: Character(".")).first?.lowercased()
-            attachment.mimeType = "audio/x-m4a"
-            attachment.extension = "m4a"
-            newEmail.attachFile(attachment)
-        }
-
-//        sendgrid?.send(withWeb: newEmail)
-//        sendgrid?.sendAttachment(withWeb: newEmail)
-        sendgrid?.sendAttachment(withWeb: newEmail, successBlock: { (success) in
-            self.logToOutput("Email sent")
-        }, failureBlock: { (error) in
-            self.logToOutput("Email not sent")
-            print(error?.localizedDescription ?? "no error description")
-        })
-    }
 }
 
 extension MainViewController {
