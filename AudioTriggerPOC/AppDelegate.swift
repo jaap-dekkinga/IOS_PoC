@@ -7,16 +7,31 @@
 //
 
 import UIKit
+import RunACRSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
-    var bgTask = UIBackgroundTaskInvalid
+    enum RunAcrConfig {
+        fileprivate static let `default` = RunACR.sharedInstance()!
+        fileprivate static let apiKey = "23541eb601555bd15ee658741aa070b2"
+        fileprivate static let matchDataPath = Bundle.main.path(forResource: "combined",
+                                                                ofType: "runacr")!
+        fileprivate static let matcher = AudioMatcher(runAcr: RunAcrConfig.default,
+                                                      apiKey: RunAcrConfig.apiKey,
+                                                      sampleDataPath: RunAcrConfig.matchDataPath)
+        fileprivate static let sampler = AudioSampler()
+        fileprivate static let notify = Notify()
+    }
 
+
+    var window: UIWindow?
+    fileprivate var bgTask = UIBackgroundTaskInvalid
+    fileprivate let samplesClient = SamplesClient()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        firstStart(application)
         return true
     }
 
@@ -28,31 +43,67 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        bgTask = application.beginBackgroundTask {
-            print("bg task ended")
-            self.stopBackgroundTask(application)
-        }
+        enterBackground(application)
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-        self.stopBackgroundTask(application)
+        enterForeground(application)
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        becomeActive(application)
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+}
 
-    func stopBackgroundTask(_ application: UIApplication) {
+extension AppDelegate {
+    fileprivate func stopBackgroundTask(_ application: UIApplication) {
         if bgTask != UIBackgroundTaskInvalid {
             application.endBackgroundTask(bgTask)
             bgTask = UIBackgroundTaskInvalid
         }
     }
 
+    fileprivate func firstStart(_ application: UIApplication) {
+        RunAcrConfig.matcher.delegate = RunAcrConfig.sampler
+        DispatchQueue.main.async {
+            self.enterForeground(application)
+        }
+    }
+
+    fileprivate func enterBackground(_ application: UIApplication) {
+        bgTask = application.beginBackgroundTask {
+            print("bg task ended")
+            self.stopBackgroundTask(application)
+        }
+
+        if let upFile = Bundle.main.url(forResource: "up", withExtension: "mp3") {
+            samplesClient.send(sampleUrl: upFile, name: "upFile")
+        }
+    }
+
+    fileprivate func enterForeground(_ application: UIApplication) {
+        stopBackgroundTask(application)
+    }
+
+    fileprivate func becomeActive(_ application: UIApplication) {
+        RunAcrConfig.notify.requestAccess()
+        RunAcrConfig.sampler.requestAccess()
+        RunAcrConfig.sampler.delegate = RunAcrConfig.notify
+        RunAcrConfig.matcher.start()
+        RunAcrConfig.notify.delegate = self
+    }
+}
+
+extension AppDelegate: NotifyDelegate {
+    func notificationSelected(sampleUrl: URL, notificationId: String) {
+        samplesClient.send(sampleUrl: sampleUrl, name: notificationId)
+        try? FileManager.default.removeItem(at: sampleUrl)
+    }
 }
 

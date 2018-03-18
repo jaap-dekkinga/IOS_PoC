@@ -8,9 +8,14 @@
 
 import UserNotifications
 
+protocol NotifyDelegate {
+    func notificationSelected(sampleUrl: URL, notificationId: String)
+}
+
 class Notify: NSObject {
 
     fileprivate enum Config {
+        static let sampleUrlKey = "sampleUrl"
         static let saveCategory = "saveCategory"
         static let saveCategoryActions: [UNNotificationAction] = []
     }
@@ -22,6 +27,8 @@ class Notify: NSObject {
                                                           actions: [],
                                                           intentIdentifiers: [],
                                                           options: .customDismissAction)
+
+    var delegate: NotifyDelegate?
 
     override init() {
         super.init()
@@ -43,13 +50,14 @@ class Notify: NSObject {
         }
     }
 
-    func notifySave() {
+    fileprivate func notifySave(_ sampleUrl: URL) {
         guard self.isEnabled else {
             print("Cannot send notification")
             return
         }
 
         let content = UNMutableNotificationContent()
+        content.userInfo = [Config.sampleUrlKey: sampleUrl]
         content.title = NSString.localizedUserNotificationString(forKey: "Save TuneURL?",
                                                                  arguments: nil)
         content.body = NSString.localizedUserNotificationString(forKey: "If yes, tap",
@@ -64,7 +72,7 @@ class Notify: NSObject {
         }
     }
 
-    func cancelAll() {
+    fileprivate func cancelAll() {
         self.userCenter.removeAllDeliveredNotifications()
     }
 }
@@ -74,7 +82,16 @@ extension Notify: UNUserNotificationCenterDelegate {
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
 
-        print(response)
+        let content = response.notification.request.content
+        let notificationId = response.notification.request.identifier
+        guard content.categoryIdentifier == Config.saveCategory,
+            let sampleUrl = content.userInfo[Config.sampleUrlKey] as? URL else {
+
+                return
+        }
+
+        self.delegate?.notificationSelected(sampleUrl: sampleUrl,
+                                            notificationId: notificationId)
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -82,7 +99,13 @@ extension Notify: UNUserNotificationCenterDelegate {
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
 
         print(notification)
+        //TODO: Send to server
     }
+}
 
+extension Notify: AudioSamplerDelegate {
+    func sampleReady(_ sampleUrl: URL) {
+        notifySave(sampleUrl)
+    }
 }
 
