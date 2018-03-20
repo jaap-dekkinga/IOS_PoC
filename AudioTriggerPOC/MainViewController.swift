@@ -9,33 +9,52 @@
 import UIKit
 
 class MainViewController: UIViewController {
-    @IBOutlet weak var outputTextView: UITextView!
+    @IBOutlet weak var tableView: UITableView!
+
+    fileprivate let sampleDataManager = SampleDataManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.outputTextView.text = "ALL PROCESS OUTPUT:"
+        SampleDataManager.delegate = self
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
 }
 
-extension MainViewController {
-    fileprivate func logToOutput(_ text: String) {
-        //Add newline
-        self.outputTextView.text.append("\n")
+extension MainViewController: SampleDataManagerDelegate {
+    func didChange() {
+        self.tableView.reloadData()
+    }
+}
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let datePrefix = dateFormatter.string(from: Date())
+extension MainViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "SampleDataManager")
+        let sample = sampleDataManager.samples[indexPath.row]
+        cell.textLabel?.text = sample.title
+        cell.detailTextLabel?.text = sample.desc
+        cell.accessoryType = .disclosureIndicator
+        return cell
+    }
 
-        //Add "DATE: text"
-        self.outputTextView.text.append(datePrefix)
-        self.outputTextView.text.append(": ")
-        self.outputTextView.text.append(text)
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sampleDataManager.samples.count
+    }
+}
+
+extension MainViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let sample = sampleDataManager.samples[indexPath.row]
+        let showDetailsVC = SampleDetailsViewController.create(for: sample)
+        navigationController?.pushViewController(showDetailsVC, animated: true)
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
+
+    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+//            let sample = sampleDataManager.samples[indexPath.row]
+//            sampleDataManager.remove(sample)
+
+            sampleDataManager.remove(ix: indexPath.row)
+        }
     }
 }

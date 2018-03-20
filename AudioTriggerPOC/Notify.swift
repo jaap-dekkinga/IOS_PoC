@@ -7,6 +7,8 @@
 //
 
 import UserNotifications
+//TODO: Remove this
+import UIKit
 
 protocol NotifyDelegate {
     func notificationSelected(sampleUrl: URL, notificationId: String)
@@ -56,24 +58,41 @@ class Notify: NSObject {
             return
         }
 
-        let content = UNMutableNotificationContent()
-        content.userInfo = [Config.sampleUrlKey: sampleUrl]
-        content.title = NSString.localizedUserNotificationString(forKey: "Save TuneURL?",
-                                                                 arguments: nil)
-        content.body = NSString.localizedUserNotificationString(forKey: "If yes, tap",
-                                                                arguments: nil)
-        content.categoryIdentifier = Config.saveCategory
-        let request = UNNotificationRequest(identifier: UUID.init().uuidString,
-                                            content: content,
-                                            trigger: nil)
+        cancelAll {
+            let content = UNMutableNotificationContent()
+            content.userInfo = [Config.sampleUrlKey: sampleUrl.absoluteString]
+            content.title = NSString.localizedUserNotificationString(forKey: "Save TuneURL?",
+                                                                     arguments: nil)
+            content.body = NSString.localizedUserNotificationString(forKey: "If yes, tap",
+                                                                    arguments: nil)
+            content.categoryIdentifier = Config.saveCategory
+            let request = UNNotificationRequest(identifier: UUID.init().uuidString,
+                                                content: content,
+                                                trigger: nil)
 
-        self.userCenter.add(request) { (error) in
-            print(error?.localizedDescription ?? "no error")
+            self.userCenter.add(request) { (error) in
+                print(error?.localizedDescription ?? "no error")
+            }
         }
     }
 
-    fileprivate func cancelAll() {
-        self.userCenter.removeAllDeliveredNotifications()
+    fileprivate func cancelAll(completion: @escaping ()->()) {
+        self.userCenter.getDeliveredNotifications { (notifications) in
+            notifications.forEach({ (notification) in
+                let content = notification.request.content
+                guard content.categoryIdentifier == Config.saveCategory,
+                    let sampleUrlString = content.userInfo[Config.sampleUrlKey] as? String,
+                    let sampleUrl = URL(string: sampleUrlString) else {
+
+                        return
+                }
+
+                try? FileManager.default.removeItem(at: sampleUrl)
+            })
+
+            self.userCenter.removeAllDeliveredNotifications()
+            completion()
+        }
     }
 }
 
@@ -85,21 +104,46 @@ extension Notify: UNUserNotificationCenterDelegate {
         let content = response.notification.request.content
         let notificationId = response.notification.request.identifier
         guard content.categoryIdentifier == Config.saveCategory,
-            let sampleUrl = content.userInfo[Config.sampleUrlKey] as? URL else {
+            let sampleUrlString = content.userInfo[Config.sampleUrlKey] as? String,
+            let sampleUrl = URL(string: sampleUrlString) else {
 
                 return
         }
 
         self.delegate?.notificationSelected(sampleUrl: sampleUrl,
                                             notificationId: notificationId)
+        completionHandler()
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
 
-        print(notification)
-        //TODO: Send to server
+//        let content = notification.request.content
+//        let notificationId = notification.request.identifier
+//        guard content.categoryIdentifier == Config.saveCategory,
+//            let sampleUrlString = content.userInfo[Config.sampleUrlKey] as? String,
+//            let sampleUrl = URL(string: sampleUrlString) else {
+//
+//                return
+//        }
+//
+//        let alert = UIAlertController(title: "Save TuneURL?",
+//                                      message: "",
+//                                      preferredStyle: .alert)
+//        let actionYes = UIAlertAction(title: "Yes", style: .default) { _ in
+//            self.delegate?.notificationSelected(sampleUrl: sampleUrl,
+//                                                notificationId: notificationId)
+//        }
+//        let actionNo = UIAlertAction(title: "No", style: .default, handler: nil)
+//        alert.addAction(actionYes)
+//        alert.addAction(actionNo)
+//
+//        UIApplication.shared.keyWindow?.rootViewController?.present(alert,
+//                                                                    animated: true,
+//                                                                    completion: nil)
+
+        completionHandler(.alert)
     }
 }
 
