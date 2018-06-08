@@ -111,10 +111,6 @@ extension AppDelegate: NotifyDelegate {
                 try? FileManager.default.removeItem(at: sampleUrl)
             }
 
-            guard let response = response else {
-                return
-            }
-
             self.sampleDataManager.add(response)
         })
     }

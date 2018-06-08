@@ -8,7 +8,59 @@
 
 import Alamofire
 
-typealias completionHandler = (SampleData?) -> Void
+enum SampleResult {
+    case success(SampleData)
+    case failure(SampleDataError)
+}
+
+extension SampleResult: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case success
+        case failure
+    }
+
+    enum SampleResultCodingError: Error {
+        case decoding(String)
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        if let value = try? values.decode(SampleData.self, forKey: CodingKeys.success) {
+            self = .success(value)
+            return
+        }
+        if let value = try? values.decode(SampleDataError.self, forKey: CodingKeys.failure) {
+            self = .failure(value)
+            return
+        }
+        throw SampleResultCodingError.decoding("Whoops! \(dump(values))")
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .success(let sampleData):
+            try container.encode(sampleData, forKey: CodingKeys.success)
+        case .failure(let error):
+            try container.encode(error, forKey: CodingKeys.failure)
+        }
+    }
+}
+
+extension SampleResult: Equatable {
+    public static func == (lhs: SampleResult, rhs: SampleResult) -> Bool {
+        switch (lhs, rhs) {
+        case (.success(let lhsValue), .success(let rhsValue)):
+            return lhsValue == rhsValue
+        case (.failure(let lhsError), .failure(let rhsError)):
+            return lhsError == rhsError
+        default:
+            return false
+        }
+    }
+}
+
+typealias completionHandler = (SampleResult) -> Void
 
 class SamplesClient: NSObject {
 
@@ -27,27 +79,26 @@ class SamplesClient: NSObject {
             case .success(let upload, _, _):
                 upload.responseJSON { response in
 
-                    // Put the result in sampleData
-                    var sampleData: SampleData? = nil
-                    defer {
-                        completion?(sampleData)
-                    }
-
                     if let error = response.error {
                         print("Error in response: \(error.localizedDescription)")
+                        completion?(.failure(SampleDataError(error: error)))
                         return
                     }
 
                     guard let jsonRoot = response.result.value as? [String: Any],
-                        let mainDict = jsonRoot["data"] as? [String: Any] else {
+                        let mainDict = jsonRoot["data"] as? [String: Any],
+                        let sampleData = SampleData(jsonDict: mainDict) else {
+                            let error = NSError(domain: "App", code: -1, userInfo: nil)
+
+                            completion?(.failure(SampleDataError(error: error)))
                             return
                     }
 
-                    sampleData = SampleData(jsonDict: mainDict)
+                    completion?(.success(sampleData))
                 }
             case .failure(let error):
                 print("Error in upload: \(error.localizedDescription)")
-                completion?(nil)
+                completion?(.failure(SampleDataError(error: error)))
             }
         }
     }

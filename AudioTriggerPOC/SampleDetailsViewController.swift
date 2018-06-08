@@ -11,7 +11,7 @@ import UIKit
 class SampleDetailsViewController: UIViewController {
     @IBOutlet weak var label: UILabel!
 
-    fileprivate var sampleData: SampleData?
+    fileprivate var sampleData: SampleableData?
 
 
     override func viewDidLoad() {
@@ -20,7 +20,7 @@ class SampleDetailsViewController: UIViewController {
         label.text = sampleData?.prettyDescription()
     }
 
-    class func create(for sampleData: SampleData) -> SampleDetailsViewController {
+    class func create(for sampleData: SampleableData) -> SampleDetailsViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "SampleDetailsViewController-SI")
             as! SampleDetailsViewController

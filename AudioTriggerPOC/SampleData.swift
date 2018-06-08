@@ -8,7 +8,23 @@
 
 import Foundation
 
-class SampleData: NSObject, NSCoding {
+class SampleDataError: NSObject, Codable {
+    let desc: String
+    let code: Int
+
+    init(desc: String, code: Int) {
+        self.desc = desc
+        self.code = code
+        super.init()
+    }
+
+    convenience init(error: Error) {
+        let nsError = error as NSError
+        self.init(desc: "Sample Data Error", code: nsError.code)
+    }
+}
+
+class SampleData: NSObject, NSCoding, Codable {
     let status: String
     let confidence: Int
     let desc: String
@@ -106,35 +122,42 @@ protocol SampleDataManagerDelegate {
 class SampleDataManager: NSObject {
     static var delegate: SampleDataManagerDelegate?
     private let userDefaults = UserDefaults.standard
-    private(set) var samples: [SampleData] {
+    private(set) var sampleResults: [SampleResult] {
         get {
             guard let archData = userDefaults.object(forKey: #function) as? Data else {
                 return []
             }
-            return NSKeyedUnarchiver.unarchiveObject(with: archData) as? [SampleData] ?? []
-//            return userDefaults.array(forKey: "samples") as? [SampleData] ?? []
+            let decoder = JSONDecoder()
+            let result = (try? decoder.decode([SampleResult].self, from: archData)) ?? []
+            return result
         }
         set {
-            let archData = NSKeyedArchiver.archivedData(withRootObject: newValue)
-            userDefaults.set(archData, forKey: #function)
-            SampleDataManager.delegate?.didChange()
+            let encoder = JSONEncoder()
+            if let archData = try? encoder.encode(newValue) {
+                userDefaults.set(archData, forKey: #function)
+                SampleDataManager.delegate?.didChange()
+            }
         }
     }
 
-    func add(_ sample: SampleData) {
-        samples.append(sample)
+    func add(_ sampleResult: SampleResult) {
+        sampleResults.append(sampleResult)
     }
 
-    func remove(_ sample: SampleData) {
-        guard let ix = samples.index(of: sample) else {
+    func remove(_ sampleResult: SampleResult) {
+        let ix = sampleResults.index { (result) -> Bool in
+            return sampleResult == result
+        }
+        guard let ixValue = ix else {
             return
         }
 
-        samples.remove(at: ix)
+
+        sampleResults.remove(at: ixValue)
     }
 
     func remove(ix: Int) {
-        samples.remove(at: ix)
+        sampleResults.remove(at: ix)
     }
 }
 

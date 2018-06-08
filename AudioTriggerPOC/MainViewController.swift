@@ -8,6 +8,12 @@
 
 import UIKit
 
+protocol SampleableData {
+    var title: String { get }
+    var desc: String { get }
+    func prettyDescription() -> String
+}
+
 class MainViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
 
@@ -29,7 +35,7 @@ extension MainViewController: SampleDataManagerDelegate {
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "SampleDataManager")
-        let sample = sampleDataManager.samples[indexPath.row]
+        let sample = sampleDataManager.sampleResults[indexPath.row] as SampleableData
         cell.textLabel?.text = sample.title
         cell.detailTextLabel?.text = sample.desc
         cell.accessoryType = .disclosureIndicator
@@ -37,13 +43,13 @@ extension MainViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sampleDataManager.samples.count
+        return sampleDataManager.sampleResults.count
     }
 }
 
 extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let sample = sampleDataManager.samples[indexPath.row]
+        let sample = sampleDataManager.sampleResults[indexPath.row] as SampleableData
         let showDetailsVC = SampleDetailsViewController.create(for: sample)
         navigationController?.pushViewController(showDetailsVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: false)
@@ -55,6 +61,35 @@ extension MainViewController: UITableViewDelegate {
 //            sampleDataManager.remove(sample)
 
             sampleDataManager.remove(ix: indexPath.row)
+        }
+    }
+}
+
+extension SampleResult: SampleableData {
+    var title: String {
+        switch self {
+        case .success(let value):
+            return value.title
+        case .failure(_):
+            return "unknown"
+        }
+    }
+
+    var desc: String {
+        switch self {
+        case .success(let value):
+            return value.desc
+        case .failure(let error):
+            return error.desc
+        }
+    }
+
+    func prettyDescription() -> String {
+        switch self {
+        case .success(let value):
+            return value.prettyDescription()
+        case .failure(let error):
+            return "error: " + error.desc + " " + String(error.code)
         }
     }
 }
