@@ -13,13 +13,14 @@ class SampleDetailsViewController: UIViewController {
 
     fileprivate var sampleData: SampleableData?
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         label.text = sampleData?.prettyDescription()
     }
+}
 
+extension SampleDetailsViewController {
     class func create(for sampleData: SampleableData) -> SampleDetailsViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "SampleDetailsViewController-SI")

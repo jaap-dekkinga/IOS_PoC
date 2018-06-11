@@ -53,7 +53,9 @@ class PollClient: NSObject {
         let url = URL(string: self.url)!
         Alamofire.request(url, method: .post,
                           parameters: pollData.parameters,
-                          encoding: JSONEncoding.default)
+                          encoding: JSONEncoding.default).response { (response) in
+                            print(response)
+        }
     }
 
 }

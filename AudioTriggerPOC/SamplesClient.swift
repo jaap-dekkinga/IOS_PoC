@@ -70,7 +70,7 @@ class SamplesClient: NSObject {
         return "http://" + host + path
     }
 
-    func send(sampleUrl: URL, name: String, completion: completionHandler?) {
+    func send(sampleUrl: URL, name: String? = nil, completion: completionHandler?) {
         Alamofire.upload(multipartFormData: { (multipartFormData) in
             multipartFormData.append(sampleUrl, withName: "file")
         }, to: url) { (result) in

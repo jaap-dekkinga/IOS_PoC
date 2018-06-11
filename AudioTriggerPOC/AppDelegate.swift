@@ -27,8 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     fileprivate var bgTask = UIBackgroundTaskInvalid
-    fileprivate let samplesClient = SamplesClient()
-    fileprivate let sampleDataManager = SampleDataManager()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -105,13 +103,10 @@ extension AppDelegate {
 }
 
 extension AppDelegate: NotifyDelegate {
-    func notificationSelected(sampleUrl: URL, notificationId: String) { 
-        samplesClient.send(sampleUrl: sampleUrl, name: notificationId, completion: { (response) in
-            defer {
-                try? FileManager.default.removeItem(at: sampleUrl)
-            }
-
-            self.sampleDataManager.add(response)
-        })
+    func notificationSelected(sampleUrl: URL, notificationId: String) {
+        let swipeActionViewController = SwipeActionViewController.create(with: sampleUrl)
+        self.window?.rootViewController?.present(swipeActionViewController,
+                                                 animated: true,
+                                                 completion: nil)
     }
 }

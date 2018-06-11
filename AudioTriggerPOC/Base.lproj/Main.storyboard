@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -114,8 +114,50 @@
             </objects>
             <point key="canvasLocation" x="-639" y="-83"/>
         </scene>
+        <!--Swipe Action View Controller-->
+        <scene sceneID="0t2-WR-yu3">
+            <objects>
+                <viewController storyboardIdentifier="SwipeActionViewController-SI" id="eDi-4V-7Jd" customClass="SwipeActionViewController" customModule="AudioTriggerPOC" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="V0R-mD-5vh">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="swipeScreen" translatesAutoresizingMaskIntoConstraints="NO" id="DLh-Ii-rNH">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <gestureRecognizers/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="DLh-Ii-rNH" firstAttribute="width" secondItem="anX-Bt-Jx3" secondAttribute="width" id="4Zm-0m-3d7"/>
+                            <constraint firstItem="DLh-Ii-rNH" firstAttribute="leading" secondItem="anX-Bt-Jx3" secondAttribute="leading" id="foo-cF-Cfg"/>
+                            <constraint firstItem="anX-Bt-Jx3" firstAttribute="top" secondItem="DLh-Ii-rNH" secondAttribute="top" id="q1u-Y6-8N6"/>
+                            <constraint firstItem="DLh-Ii-rNH" firstAttribute="height" secondItem="anX-Bt-Jx3" secondAttribute="height" id="sRB-Ow-eDk"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="anX-Bt-Jx3"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="ywv-O5-5iK" appends="YES" id="kPL-gs-Kvg"/>
+                            <outletCollection property="gestureRecognizers" destination="FfX-0W-Uk0" appends="YES" id="rSE-8k-z6k"/>
+                        </connections>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FR8-bO-lbJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="right" id="ywv-O5-5iK" userLabel="swipeRight">
+                    <connections>
+                        <action selector="didSwipeWithGestureRecognizer:" destination="eDi-4V-7Jd" id="XiO-Xu-FAp"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="left" id="FfX-0W-Uk0" userLabel="swipeLeft">
+                    <connections>
+                        <action selector="didSwipeWithGestureRecognizer:" destination="eDi-4V-7Jd" id="EAd-27-IxW"/>
+                    </connections>
+                </swipeGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="89" y="342"/>
+        </scene>
     </scenes>
     <resources>
         <image name="first" width="30" height="30"/>
+        <image name="swipeScreen" width="320" height="507"/>
     </resources>
 </document>
