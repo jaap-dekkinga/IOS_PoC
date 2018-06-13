@@ -3,4 +3,5 @@ use_frameworks!
 
 target :AudioTriggerPOC do
     pod 'Alamofire'
+    pod 'DMSwipeCards'
 end

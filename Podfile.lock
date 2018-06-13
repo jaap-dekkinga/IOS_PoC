@@ -1,12 +1,20 @@
 PODS:
   - Alamofire (4.7.0)
+  - DMSwipeCards (1.0.3)
 
 DEPENDENCIES:
   - Alamofire
+  - DMSwipeCards
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - DMSwipeCards
 
 SPEC CHECKSUMS:
   Alamofire: 907e0a98eb68cdb7f9d1f541a563d6ac5dc77b25
+  DMSwipeCards: 0f2488120c13eb73366f01e87d1423495cde8ed4
 
-PODFILE CHECKSUM: 6dab122f75177097f6d6db93adfe6755f18c8bb2
+PODFILE CHECKSUM: ca7555072cb2e32a488049532b24d2225805c796
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0

@@ -28,6 +28,7 @@
 		60D361E320CB40380079C14C /* EncodableExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E220CB40380079C14C /* EncodableExtension.swift */; };
 		60D361E520CBA7410079C14C /* SwipeActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E420CBA7410079C14C /* SwipeActionViewController.swift */; };
 		60D361E720CDC17C0079C14C /* VoteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E620CDC17C0079C14C /* VoteManager.swift */; };
+		60D361E920D164540079C14C /* SwipeCardActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E820D164540079C14C /* SwipeCardActionViewController.swift */; };
 		DCC3A21648720C0E8D25B72B /* Pods_AudioTriggerPOC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B422BDFF2F9DB84C9FB29E /* Pods_AudioTriggerPOC.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +81,7 @@
 		60D361E220CB40380079C14C /* EncodableExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodableExtension.swift; sourceTree = "<group>"; };
 		60D361E420CBA7410079C14C /* SwipeActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionViewController.swift; sourceTree = "<group>"; };
 		60D361E620CDC17C0079C14C /* VoteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteManager.swift; sourceTree = "<group>"; };
+		60D361E820D164540079C14C /* SwipeCardActionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeCardActionViewController.swift; sourceTree = "<group>"; };
 		BBCE85622A4AC53FBFA986B1 /* Pods-AudioTriggerPOC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AudioTriggerPOC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC.debug.xcconfig"; sourceTree = "<group>"; };
 		BDE2CA3B2B257A37E40EE614 /* Pods-AudioTriggerPOC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AudioTriggerPOC.release.xcconfig"; path = "Pods/Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC.release.xcconfig"; sourceTree = "<group>"; };
 		D2B422BDFF2F9DB84C9FB29E /* Pods_AudioTriggerPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AudioTriggerPOC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +149,7 @@
 				60D361E220CB40380079C14C /* EncodableExtension.swift */,
 				60D361E420CBA7410079C14C /* SwipeActionViewController.swift */,
 				60D361E620CDC17C0079C14C /* VoteManager.swift */,
+				60D361E820D164540079C14C /* SwipeCardActionViewController.swift */,
 			);
 			path = AudioTriggerPOC;
 			sourceTree = "<group>";
@@ -190,7 +193,6 @@
 				60523637201FE51900B65A72 /* Frameworks */,
 				60523638201FE51900B65A72 /* Resources */,
 				15DDF9EFD846B8237765A3BC /* [CP] Embed Pods Frameworks */,
-				C25E034A7DC0C6CB04DFC557 /* [CP] Copy Pods Resources */,
 				6052366D202009FD00B65A72 /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -298,10 +300,12 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/DMSwipeCards/DMSwipeCards.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DMSwipeCards.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -326,21 +330,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C25E034A7DC0C6CB04DFC557 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -360,6 +349,7 @@
 				6052363E201FE51900B65A72 /* AppDelegate.swift in Sources */,
 				60523640201FE51900B65A72 /* MainViewController.swift in Sources */,
 				603D9EE1206170130014824E /* SampleDetailsViewController.swift in Sources */,
+				60D361E920D164540079C14C /* SwipeCardActionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

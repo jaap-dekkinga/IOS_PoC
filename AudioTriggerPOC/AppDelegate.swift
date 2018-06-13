@@ -104,8 +104,9 @@ extension AppDelegate {
 
 extension AppDelegate: NotifyDelegate {
     func notificationSelected(sampleUrl: URL, notificationId: String) {
-        let swipeActionViewController = SwipeActionViewController.create(with: sampleUrl)
-        self.window?.rootViewController?.present(swipeActionViewController,
+//        let swipeActionViewController = SwipeActionViewController.create(with: sampleUrl)
+        let swipeCardActionViewController = SwipeCardActionViewController.create(with: sampleUrl)
+        self.window?.rootViewController?.present(swipeCardActionViewController,
                                                  animated: true,
                                                  completion: nil)
     }
