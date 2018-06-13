@@ -36,6 +36,7 @@ class SampleData: NSObject, NSCoding, Codable {
     let songName: String
     let title: String
     let url: String
+    var pollDataResponse: PollDataResponse?
 
     init(status: String, confidence: Int, desc: String, sha1: String,
          matchTime: String, offset: String, offsetSeconds: String,
@@ -66,9 +67,11 @@ class SampleData: NSObject, NSCoding, Codable {
         aCoder.encode(songName, forKey: "song_name")
         aCoder.encode(title, forKey: "title")
         aCoder.encode(url, forKey: "url")
+        aCoder.encode(pollDataResponse, forKey: "pollDataResponse")
     }
 
     public required convenience init?(coder aDecoder: NSCoder) {
+        let pollDataResponse = aDecoder.decodeObject(forKey: "pollDataResponse") as? PollDataResponse
         let confidence = aDecoder.decodeInteger(forKey: "confidence")
         guard let status = aDecoder.decodeObject(forKey: "status") as? String,
             let desc = aDecoder.decodeObject(forKey: "description") as? String,
@@ -94,23 +97,37 @@ class SampleData: NSObject, NSCoding, Codable {
                   songName: songName,
                   title: title,
                   url: url)
+        self.pollDataResponse = pollDataResponse
     }
 }
 
 extension SampleData {
     func prettyDescription() -> String {
+        let pollResults = pollDataResponse?.value.first(where: { $0.name == title })
         return "\n"
             + "status: " + status + "\n"
-            + "confidence: " + String(confidence) + "\n"
-            + "description: " + desc + "\n"
-            + "sha1: " + sha1 + "\n"
-            + "match time: " + matchTime + "\n"
-            + "offset: " + offset + "\n"
-            + "offset (secs): " + offsetSeconds + "\n"
-            + "song id: " + songId + "\n"
-            + "song name: " + songName + "\n"
+//            + "confidence: " + String(confidence) + "\n"
+//            + "description: " + desc + "\n"
+//            + "sha1: " + sha1 + "\n"
+//            + "match time: " + matchTime + "\n"
+//            + "offset: " + offset + "\n"
+//            + "offset (secs): " + offsetSeconds + "\n"
+//            + "song id: " + songId + "\n"
+//            + "song name: " + songName + "\n"
             + "title: " + title + "\n"
-            + "url: " + url + "\n"
+//            + "url: " + url + "\n"
+            + "\n"
+            + "Poll Data Response: " + (pollResults?.prettyDescription() ?? "missing") + "\n"
+            + "\n"
+    }
+}
+
+extension PollDataResponse.PollItem {
+    func prettyDescription() -> String {
+        return "\n"
+            + "name: " + name + "\n"
+            + "yes count: " + String(numberOfYes) + "\n"
+            + "no count: " + String(numberOfNo) + "\n"
             + "\n"
     }
 }

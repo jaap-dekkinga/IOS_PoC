@@ -19,11 +19,22 @@ class VoteManager: NSObject {
                 try? FileManager.default.removeItem(at: sampleUrl)
             }
 
-            self.sampleDataManager.add(response)
-
             let pollData = PollData(response: userResponse,
                                     name: response.title)
-            self.pollClient.postVote(pollData: pollData)
+            self.pollClient.postVote(pollData: pollData, completion: { (pollDataResponse) in
+
+                //TODO: See if there will be the need for this in the future
+                // if yes, refactor, if no delete
+                var augmentedResponse = response
+                switch response {
+                case .success(let sampleData):
+                    sampleData.pollDataResponse = pollDataResponse
+                    augmentedResponse = SampleResult.success(sampleData)
+                case .failure(_):
+                    augmentedResponse = response
+                }
+                self.sampleDataManager.add(augmentedResponse)
+            })
         })
     }
 }

@@ -8,6 +8,18 @@
 
 import Alamofire
 
+struct PollDataResponse: Codable {
+    struct PollItem: Codable {
+        let numberOfYes: Int
+        let numberOfNo: Int
+        let timeStamp: String
+        let name: String
+    }
+
+    let value: [PollItem]
+    let statusCode: Int
+}
+
 class PollData: NSObject {
     let response: Bool
     let name: String
@@ -49,12 +61,23 @@ class PollClient: NSObject {
         return "http://" + host + path
     }
 
-    func postVote(pollData: PollData) {
+    func postVote(pollData: PollData, completion: @escaping (_ response: PollDataResponse?)->()) {
         let url = URL(string: self.url)!
         Alamofire.request(url, method: .post,
                           parameters: pollData.parameters,
                           encoding: JSONEncoding.default).response { (response) in
-                            print(response)
+
+            guard let data = response.data else {
+                completion(nil)
+                return
+            }
+
+            guard let resp = try? JSONDecoder().decode(PollDataResponse.self, from: data) else {
+                completion(nil)
+                return
+            }
+
+            completion(resp)
         }
     }
 
