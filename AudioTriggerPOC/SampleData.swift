@@ -103,7 +103,7 @@ class SampleData: NSObject, NSCoding, Codable {
 
 extension SampleData {
     func prettyDescription() -> String {
-        let pollResults = pollDataResponse?.value.first(where: { $0.name == title })
+//        let pollResults = pollDataResponse?.value.first(where: { $0.name == title })
         return "\n"
             + "status: " + status + "\n"
 //            + "confidence: " + String(confidence) + "\n"
@@ -117,7 +117,25 @@ extension SampleData {
             + "title: " + title + "\n"
 //            + "url: " + url + "\n"
             + "\n"
-            + "Poll Data Response: " + (pollResults?.prettyDescription() ?? "missing") + "\n"
+//            + "Poll Data Response: " + (pollResults?.prettyDescription() ?? "missing") + "\n"
+            + "Poll Data Response: " + (pollDataResponse?.prettyDescription(by: title) ?? "missing") + "\n"
+            + "\n"
+    }
+}
+
+extension PollDataResponse {
+    func prettyDescription(by name: String) -> String {
+        let allbyName = self.value.filter { (item) -> Bool in
+            return item.name == name
+        }
+        let sumYesNo = allbyName.reduce((yes: 0, no: 0)) { (result, item) in
+            return (yes: result.yes + item.numberOfYes, no: result.no + item.numberOfNo)
+        }
+
+        return "\n"
+            + "name: " + name + "\n"
+            + "yes count: " + String(sumYesNo.yes) + "\n"
+            + "no count: " + String(sumYesNo.no) + "\n"
             + "\n"
     }
 }
