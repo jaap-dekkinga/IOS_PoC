@@ -29,7 +29,12 @@ class PollData: NSObject {
         return response ? "yes" : "no"
     }
     var timestampString: String {
-        return timestamp.description
+        let dateFormatter = DateFormatter()
+        let timeZone = TimeZone(identifier: "UTC")
+        dateFormatter.dateFormat = "YYYY-MM-dd HH:mm:ss.SSS"
+        dateFormatter.timeZone = timeZone
+
+        return dateFormatter.string(from: timestamp)
     }
 
     init(response: Bool, name: String, timestamp: Date = Date()) {
