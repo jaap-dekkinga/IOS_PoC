@@ -12,6 +12,8 @@ import RunACRSDK
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    weak fileprivate var swipeVC: SwipeCardActionViewController?
+
     enum RunAcrConfig {
         fileprivate static let `default` = RunACR.sharedInstance()!
         fileprivate static let apiKey = "23541eb601555bd15ee658741aa070b2"
@@ -104,10 +106,15 @@ extension AppDelegate {
 
 extension AppDelegate: NotifyDelegate {
     func notificationSelected(sampleUrl: URL, notificationId: String) {
-//        let swipeActionViewController = SwipeActionViewController.create(with: sampleUrl)
+        if let cleanSwipeVC = self.swipeVC {
+            cleanSwipeVC.dismiss(animated: false, completion: nil)
+        }
+
         let swipeCardActionViewController = SwipeCardActionViewController.create(with: sampleUrl)
         self.window?.rootViewController?.present(swipeCardActionViewController,
                                                  animated: true,
-                                                 completion: nil)
+                                                 completion: {
+                                                    self.swipeVC = swipeCardActionViewController
+        })
     }
 }

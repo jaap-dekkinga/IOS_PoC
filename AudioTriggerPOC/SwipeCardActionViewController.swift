@@ -12,6 +12,7 @@ import DMSwipeCards
 class SwipeCardActionViewController: UIViewController {
     private var swipeView: DMSwipeCardsView<String>!
     private var count = 0
+    fileprivate let notificationCenter = NotificationCenter.default
 
     fileprivate var sampleUrl: URL?
     fileprivate let voteManager = VoteManager()
@@ -27,6 +28,9 @@ class SwipeCardActionViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        notificationCenter.addObserver(self, selector: #selector(applicationWillResignActive),
+                                       name: Notification.Name.UIApplicationWillResignActive,
+                                       object: nil)
 
         self.view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
 
@@ -135,9 +139,29 @@ class SwipeCardActionViewController: UIViewController {
         addCard()
     }
 
-    func addCard() {
+    private func addCard() {
         self.swipeView.addCards(["Swipe to make your choice"], onTop: true)
         self.count = self.count + 1
+    }
+
+    func addDoneView() {
+        let doneView = UIView(frame: self.view.frame)
+        doneView.backgroundColor = UIColor.white
+        self.view.addSubview(doneView)
+
+        let label = UILabel()
+        label.frame.size = CGSize(width: doneView.frame.width * 0.8, height: 100)
+        label.center = CGPoint(x: doneView.frame.width / 2,
+                               y: doneView.frame.height / 2)
+        label.clipsToBounds = true
+        label.font = UIFont.systemFont(ofSize: 24, weight: UIFont.Weight.thin)
+        label.adjustsFontSizeToFitWidth = true
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.textColor = UIColor.black
+        doneView.addSubview(label)
+
+        label.text = "Your choice has been recorded\nThank you"
     }
 }
 
@@ -163,7 +187,7 @@ extension SwipeCardActionViewController: DMSwipeCardsViewDelegate {
     }
 
     func reachedEndOfStack() {
-        self.dismiss(animated: true, completion: nil)
+        self.addDoneView()
     }
 }
 
@@ -172,5 +196,10 @@ extension SwipeCardActionViewController {
         let vc = SwipeCardActionViewController(nibName: nil, bundle: nil)
         vc.sampleUrl = sampleUrl
         return vc
+    }
+
+    @objc func applicationWillResignActive() {
+        self.notificationCenter.removeObserver(self)
+        self.dismiss(animated: false, completion: nil)
     }
 }
