@@ -12,6 +12,7 @@
 		600A6EBC205EBDE000F96F7A /* AudioSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EBB205EBDE000F96F7A /* AudioSampler.swift */; };
 		600A6EBE205EBEC500F96F7A /* AudioMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */; };
 		6024B74120606C8D0005A984 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6024B74020606C8D0005A984 /* SampleData.swift */; };
+		6035D1F720E51A1300E85117 /* RunACRSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; };
 		603D9EE1206170130014824E /* SampleDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603D9EE0206170130014824E /* SampleDetailsViewController.swift */; };
 		6052363E201FE51900B65A72 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6052363D201FE51900B65A72 /* AppDelegate.swift */; };
 		60523640201FE51900B65A72 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6052363F201FE51900B65A72 /* MainViewController.swift */; };
@@ -19,9 +20,7 @@
 		60523647201FE51900B65A72 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60523646201FE51900B65A72 /* Assets.xcassets */; };
 		6052364A201FE51900B65A72 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60523648201FE51900B65A72 /* LaunchScreen.storyboard */; };
 		60523655201FE51900B65A72 /* AudioTriggerPOCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60523654201FE51900B65A72 /* AudioTriggerPOCTests.swift */; };
-		60523669202001A300B65A72 /* RunACRSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; };
 		6052366A202009DA00B65A72 /* RunACRSDK.framework in Resources */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; };
-		6052366C202009FD00B65A72 /* RunACRSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6052366F20200BEE00B65A72 /* combined.runacr in Resources */ = {isa = PBXBuildFile; fileRef = 6052366E20200BEE00B65A72 /* combined.runacr */; };
 		6059B0B4205F018B00E4386A /* up.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6059B0B3205F018B00E4386A /* up.mp3 */; };
 		60D361E120CB31470079C14C /* PollClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E020CB31470079C14C /* PollClient.swift */; };
@@ -41,20 +40,6 @@
 			remoteInfo = AudioTriggerPOC;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		6052366D202009FD00B65A72 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				6052366C202009FD00B65A72 /* RunACRSDK.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		600A6EB7205EB2B500F96F7A /* Notify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notify.swift; sourceTree = "<group>"; };
@@ -92,7 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				60523669202001A300B65A72 /* RunACRSDK.framework in Frameworks */,
+				6035D1F720E51A1300E85117 /* RunACRSDK.framework in Frameworks */,
 				DCC3A21648720C0E8D25B72B /* Pods_AudioTriggerPOC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,7 +178,6 @@
 				60523637201FE51900B65A72 /* Frameworks */,
 				60523638201FE51900B65A72 /* Resources */,
 				15DDF9EFD846B8237765A3BC /* [CP] Embed Pods Frameworks */,
-				6052366D202009FD00B65A72 /* Embed Frameworks */,
 				6035D1EF20E28EAC00E85117 /* Clean archs for Release */,
 			);
 			buildRules = (
