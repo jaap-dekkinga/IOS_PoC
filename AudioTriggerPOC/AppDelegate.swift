@@ -86,13 +86,6 @@ extension AppDelegate {
 
     fileprivate func enterForeground(_ application: UIApplication) {
         stopBackgroundTask(application)
-
-//        let jsonString = "{\"song_id\":56,\"description\":\"Nice Song Described here -- testfile2+opening audio\",\"title\":\"Nice Song - testfile2+opening audio\",\"url\":\"http://www.google.com/songs/testfile2+opening audio.mp3\",\"song_name\":\"testfile2+opening audio\",\"file_sha1\":\"128837DEB9A2E6C458630E37B22547E147228578\",\"confidence\":38,\"offset_seconds\":-0.04644,\"match_time\":2.53413987159729,\"offset\":-1}"
-//        let jsonData = jsonString.data(using: .utf8)!
-//        let jsonDict = try? JSONSerialization.jsonObject(with: jsonData, options: .allowFragments)
-//        let dummyData = SampleData(jsonDict: jsonDict as! [String: Any])!
-//
-//        self.sampleDataManager.add(dummyData)
     }
 
     fileprivate func becomeActive(_ application: UIApplication) {

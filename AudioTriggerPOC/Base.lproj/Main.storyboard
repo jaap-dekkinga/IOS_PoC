@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UEu-BU-4Hg">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -97,6 +98,46 @@
             </objects>
             <point key="canvasLocation" x="90" y="-322"/>
         </scene>
+        <!--Home View Controller-->
+        <scene sceneID="U3g-HA-0us">
+            <objects>
+                <viewController id="UEu-BU-4Hg" customClass="HomeViewController" customModule="AudioTriggerPOC" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="egx-iY-fmE">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-outline-fade" translatesAutoresizingMaskIntoConstraints="NO" id="J8U-R6-I8w" userLabel="infoRequested">
+                                <rect key="frame" x="37.5" y="193.5" width="300" height="300"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="J8U-R6-I8w" secondAttribute="height" multiplier="1:1" id="aXb-ai-dal"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Audio Trigger" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wB0-au-q7j">
+                                <rect key="frame" x="113" y="596.5" width="149" height="31.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.1450980392" green="0.76078431369999999" blue="0.3803921569" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="pWy-4M-CbJ" firstAttribute="bottom" secondItem="wB0-au-q7j" secondAttribute="bottom" constant="39" id="6wX-zu-0dG"/>
+                            <constraint firstItem="J8U-R6-I8w" firstAttribute="centerX" secondItem="pWy-4M-CbJ" secondAttribute="centerX" id="g8h-bL-GmY"/>
+                            <constraint firstItem="J8U-R6-I8w" firstAttribute="centerY" secondItem="pWy-4M-CbJ" secondAttribute="centerY" id="jML-Wy-oSE"/>
+                            <constraint firstItem="J8U-R6-I8w" firstAttribute="width" secondItem="egx-iY-fmE" secondAttribute="width" multiplier="0.8" id="mRW-3v-NDo"/>
+                            <constraint firstItem="wB0-au-q7j" firstAttribute="centerX" secondItem="pWy-4M-CbJ" secondAttribute="centerX" id="sEO-Y6-5PA"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="pWy-4M-CbJ"/>
+                    </view>
+                    <connections>
+                        <outlet property="iconImage" destination="J8U-R6-I8w" id="U0Z-K7-ggn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hSs-4g-aZj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1047.2" y="-981.85907046476768"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
             <objects>
@@ -158,6 +199,7 @@
     </scenes>
     <resources>
         <image name="first" width="30" height="30"/>
+        <image name="icon-outline-fade" width="940" height="932"/>
         <image name="swipeScreen" width="320" height="507"/>
     </resources>
 </document>
