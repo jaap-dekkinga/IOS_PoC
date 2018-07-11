@@ -26,7 +26,7 @@
 		<true/>
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Run App</string>
+	<string>The app uses your microphone to record the turl to send 5-10 seconds of audio to our API. The recorded audio is used to match to the correct turl record. The recorded audio is only used in the API transaction and not permanently stored anywhere on the phone or on the server-side.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
@@ -62,5 +62,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
