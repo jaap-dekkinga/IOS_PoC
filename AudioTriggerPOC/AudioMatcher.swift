@@ -15,6 +15,13 @@ protocol AudioMatcherDelegate {
 
 class AudioMatcher: NSObject {
     private let runAcr: RunACR
+    var enabled: Bool = true {
+        didSet {
+            if enabled {
+                self.start()
+            }
+        }
+    }
     var delegate: AudioMatcherDelegate?
 
     init(runAcr: RunACR, apiKey: String, sampleDataPath: String) {
@@ -37,12 +44,16 @@ class AudioMatcher: NSObject {
 extension AudioMatcher: RunACRDelegate {
     func didRecognize(_ trackId: Int32, absoluteTimeOffset: Float, relativeTimeOffset: Float) {
         print("did Recognize")
-        delegate?.foundMatch(self)
-        self.runAcr.startRecognize()
+        if self.enabled {
+            delegate?.foundMatch(self)
+            self.runAcr.startRecognize()
+        }
     }
 
     func didNotRecognize() {
         print("did Not Recognize")
-        self.runAcr.startRecognize()
+        if self.enabled {
+            self.runAcr.startRecognize()
+        }
     }
 }

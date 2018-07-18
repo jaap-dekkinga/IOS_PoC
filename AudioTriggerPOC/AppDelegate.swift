@@ -19,9 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         fileprivate static let apiKey = "23541eb601555bd15ee658741aa070b2"
         fileprivate static let matchDataPath = Bundle.main.path(forResource: "combined",
                                                                 ofType: "runacr")!
-        fileprivate static let matcher = AudioMatcher(runAcr: RunAcrConfig.default,
-                                                      apiKey: RunAcrConfig.apiKey,
-                                                      sampleDataPath: RunAcrConfig.matchDataPath)
+        //TODO: removed fileprivate
+        static let matcher = AudioMatcher(runAcr: RunAcrConfig.default,
+                                          apiKey: RunAcrConfig.apiKey,
+                                          sampleDataPath: RunAcrConfig.matchDataPath)
         fileprivate static let sampler = AudioSampler()
         fileprivate static let notify = Notify()
     }
