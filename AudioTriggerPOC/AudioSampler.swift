@@ -36,7 +36,7 @@ class AudioSampler: NSObject {
             }
         }
 
-        if session.recordPermission() == .denied {
+        if session.recordPermission == .denied {
             print("audio permission denied")
         }
     }
@@ -60,7 +60,7 @@ class AudioSampler: NSObject {
             }
         }
 
-        if session.recordPermission() == .denied {
+        if session.recordPermission == .denied {
             print("permission denied")
         }
     }
@@ -68,7 +68,7 @@ class AudioSampler: NSObject {
     fileprivate func setSessionRecord() {
         let session = self.audioSession
         do {
-            try session.setCategory(AVAudioSessionCategoryRecord)
+            try session.setCategory(AVAudioSession.Category.record, mode: .default)
 //            try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .defaultToSpeaker)
         } catch {
             print("could not set session category with error: \n" + error.localizedDescription)

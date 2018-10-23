@@ -34,9 +34,9 @@ extension SwipeActionViewController {
 
         var userResponse: Bool? = nil
         switch gestureRecognizer.direction {
-        case UISwipeGestureRecognizerDirection.left:
+        case UISwipeGestureRecognizer.Direction.left:
             userResponse = false
-        case UISwipeGestureRecognizerDirection.right:
+        case UISwipeGestureRecognizer.Direction.right:
             userResponse = true
         default:
             print("none")

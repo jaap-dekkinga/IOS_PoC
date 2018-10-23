@@ -29,7 +29,7 @@ class SwipeCardActionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         notificationCenter.addObserver(self, selector: #selector(applicationWillResignActive),
-                                       name: Notification.Name.UIApplicationWillResignActive,
+                                       name: UIApplication.willResignActiveNotification,
                                        object: nil)
 
         self.view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)

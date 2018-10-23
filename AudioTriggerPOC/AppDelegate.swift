@@ -29,9 +29,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     var window: UIWindow?
-    fileprivate var bgTask = UIBackgroundTaskInvalid
+    fileprivate var bgTask = UIBackgroundTaskIdentifier.invalid
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         firstStart(application)
         return true
@@ -65,9 +65,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate {
     fileprivate func stopBackgroundTask(_ application: UIApplication) {
-        if bgTask != UIBackgroundTaskInvalid {
+        if bgTask != UIBackgroundTaskIdentifier.invalid {
             application.endBackgroundTask(bgTask)
-            bgTask = UIBackgroundTaskInvalid
+            bgTask = UIBackgroundTaskIdentifier.invalid
         }
     }
 
