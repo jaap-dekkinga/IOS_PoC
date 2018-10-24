@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit.UIApplication
 
 class VoteManager: NSObject {
     fileprivate let samplesClient = SamplesClient()
@@ -17,6 +18,23 @@ class VoteManager: NSObject {
         samplesClient.send(sampleUrl: sampleUrl, completion: { (response) in
             defer {
                 try? FileManager.default.removeItem(at: sampleUrl)
+            }
+
+            if response.desc == "open_page" {
+                switch userResponse {
+                case true:
+                    if let urlString = response.url, let url = URL(string: urlString) {
+                        UIApplication.shared.open(url, completionHandler: { (success) in
+                            print((success ? "Page openned" : "Error opening page")
+                                + ": "
+                                +  urlString)
+                        })
+                    }
+                case false:
+                    print("User decided not to open page")
+                    break
+                }
+                return
             }
 
             let pollData = PollData(response: userResponse,
@@ -36,5 +54,43 @@ class VoteManager: NSObject {
                 self.sampleDataManager.add(augmentedResponse)
             })
         })
+    }
+}
+
+private extension SampleResult {
+    var title: String {
+        switch self {
+        case .success(let value):
+            return value.title
+        case .failure(_):
+            return "unknown"
+        }
+    }
+
+    var desc: String {
+        switch self {
+        case .success(let value):
+            return value.desc
+        case .failure(let error):
+            return error.desc
+        }
+    }
+
+    var url: String? {
+        switch self {
+        case .success(let value):
+            return value.url
+        case .failure:
+            return nil
+        }
+    }
+
+    func prettyDescription() -> String {
+        switch self {
+        case .success(let value):
+            return value.prettyDescription()
+        case .failure(let error):
+            return "error: " + error.desc + " " + String(error.code)
+        }
     }
 }

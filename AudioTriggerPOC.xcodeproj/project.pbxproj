@@ -13,15 +13,12 @@
 		600A6EBE205EBEC500F96F7A /* AudioMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */; };
 		601E0C1420FF81A200AD535E /* BoolExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601E0C1320FF81A200AD535E /* BoolExtension.swift */; };
 		6024B74120606C8D0005A984 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6024B74020606C8D0005A984 /* SampleData.swift */; };
-		603D9EE1206170130014824E /* SampleDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603D9EE0206170130014824E /* SampleDetailsViewController.swift */; };
 		6052363E201FE51900B65A72 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6052363D201FE51900B65A72 /* AppDelegate.swift */; };
-		60523640201FE51900B65A72 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6052363F201FE51900B65A72 /* MainViewController.swift */; };
 		60523645201FE51900B65A72 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60523643201FE51900B65A72 /* Main.storyboard */; };
 		60523647201FE51900B65A72 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60523646201FE51900B65A72 /* Assets.xcassets */; };
 		6052364A201FE51900B65A72 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60523648201FE51900B65A72 /* LaunchScreen.storyboard */; };
 		60523655201FE51900B65A72 /* AudioTriggerPOCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60523654201FE51900B65A72 /* AudioTriggerPOCTests.swift */; };
 		6052366F20200BEE00B65A72 /* combined.runacr in Resources */ = {isa = PBXBuildFile; fileRef = 6052366E20200BEE00B65A72 /* combined.runacr */; };
-		6059B0B4205F018B00E4386A /* up.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6059B0B3205F018B00E4386A /* up.mp3 */; };
 		6097122820F65883006E68DF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6097122720F65883006E68DF /* HomeViewController.swift */; };
 		60AB312420EAC64100AF494D /* RunACRSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; };
 		60AB312620EAC65300AF494D /* RunACRSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -64,10 +61,8 @@
 		600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMatcher.swift; sourceTree = "<group>"; };
 		601E0C1320FF81A200AD535E /* BoolExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoolExtension.swift; sourceTree = "<group>"; };
 		6024B74020606C8D0005A984 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
-		603D9EE0206170130014824E /* SampleDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDetailsViewController.swift; sourceTree = "<group>"; };
 		6052363A201FE51900B65A72 /* AudioTriggerPOC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioTriggerPOC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6052363D201FE51900B65A72 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6052363F201FE51900B65A72 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		60523644201FE51900B65A72 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		60523646201FE51900B65A72 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		60523649201FE51900B65A72 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -78,7 +73,6 @@
 		60523664201FFE9A00B65A72 /* AudioTriggerPOC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AudioTriggerPOC-Bridging-Header.h"; sourceTree = "<group>"; };
 		60523668202001A300B65A72 /* RunACRSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RunACRSDK.framework; path = SDK/RunACRSDK.framework; sourceTree = "<group>"; };
 		6052366E20200BEE00B65A72 /* combined.runacr */ = {isa = PBXFileReference; lastKnownFileType = file; name = combined.runacr; path = SDK/combined.runacr; sourceTree = SOURCE_ROOT; };
-		6059B0B3205F018B00E4386A /* up.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = up.mp3; path = ../../_test_files/up.mp3; sourceTree = "<group>"; };
 		6097122720F65883006E68DF /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		60D361E020CB31470079C14C /* PollClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollClient.swift; sourceTree = "<group>"; };
 		60D361E220CB40380079C14C /* EncodableExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodableExtension.swift; sourceTree = "<group>"; };
@@ -133,10 +127,8 @@
 		6052363C201FE51900B65A72 /* AudioTriggerPOC */ = {
 			isa = PBXGroup;
 			children = (
-				6059B0B3205F018B00E4386A /* up.mp3 */,
 				6052366E20200BEE00B65A72 /* combined.runacr */,
 				6052363D201FE51900B65A72 /* AppDelegate.swift */,
-				6052363F201FE51900B65A72 /* MainViewController.swift */,
 				60523643201FE51900B65A72 /* Main.storyboard */,
 				60523646201FE51900B65A72 /* Assets.xcassets */,
 				60523648201FE51900B65A72 /* LaunchScreen.storyboard */,
@@ -147,7 +139,6 @@
 				600A6EBB205EBDE000F96F7A /* AudioSampler.swift */,
 				600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */,
 				6024B74020606C8D0005A984 /* SampleData.swift */,
-				603D9EE0206170130014824E /* SampleDetailsViewController.swift */,
 				60D361E020CB31470079C14C /* PollClient.swift */,
 				60D361E220CB40380079C14C /* EncodableExtension.swift */,
 				60D361E420CBA7410079C14C /* SwipeActionViewController.swift */,
@@ -282,7 +273,6 @@
 			files = (
 				6052364A201FE51900B65A72 /* LaunchScreen.storyboard in Resources */,
 				6052366F20200BEE00B65A72 /* combined.runacr in Resources */,
-				6059B0B4205F018B00E4386A /* up.mp3 in Resources */,
 				60523647201FE51900B65A72 /* Assets.xcassets in Resources */,
 				60523645201FE51900B65A72 /* Main.storyboard in Resources */,
 			);
@@ -369,8 +359,6 @@
 				60D361E120CB31470079C14C /* PollClient.swift in Sources */,
 				600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */,
 				6052363E201FE51900B65A72 /* AppDelegate.swift in Sources */,
-				60523640201FE51900B65A72 /* MainViewController.swift in Sources */,
-				603D9EE1206170130014824E /* SampleDetailsViewController.swift in Sources */,
 				60D361E920D164540079C14C /* SwipeCardActionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
