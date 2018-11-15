@@ -15,6 +15,7 @@ class VoteManager: NSObject {
     fileprivate let sampleDataManager = SampleDataManager()
 
     func castVote(userResponse: Bool, for sampleUrl: URL) {
+        print("Cast Vote")
         SamplesManager.shared.sample(for: sampleUrl) { (response) in
             defer {
                 try? FileManager.default.removeItem(at: sampleUrl)

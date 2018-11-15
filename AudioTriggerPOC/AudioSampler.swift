@@ -15,6 +15,7 @@ protocol AudioSamplerDelegate {
 }
 
 class AudioSampler: NSObject {
+    private let duration = TimeInterval(5)
     fileprivate var recorder: AVAudioRecorder!
     fileprivate let audioSession = AVAudioSession.sharedInstance()
     fileprivate var isRunning: Bool
@@ -52,8 +53,8 @@ class AudioSampler: NSObject {
                     if setup {
                         self.setupRecorder()
                     }
-                    print("recording for 10 sesc")
-                    self.recorder.record(forDuration: TimeInterval(10))
+                    print("recording for \(self.duration) sesc")
+                    self.recorder.record(forDuration: self.duration)
                 }
             } else {
                 print("Permission to record not granted")
@@ -126,7 +127,7 @@ class AudioSampler: NSObject {
             recordWithPermission(true)
         } else {
             print("recording. recorder NOT nil")
-            self.recorder.record(forDuration: TimeInterval(10))
+            self.recorder.record(forDuration: duration)
             recordWithPermission(false)
         }
     }

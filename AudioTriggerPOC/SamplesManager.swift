@@ -18,8 +18,9 @@ class SamplesManager: NSObject {
     let cache = NSCache<Box<URL>, SampleData>()
 
     func sample(for url: URL, completion: completionHandler? = nil) {
-
+        print("Requesting a sample")
         if let sample = cache.object(forKey: Box(url)) {
+            print("Returning from cache")
             completion?(.success(sample))
             return
         }
@@ -31,9 +32,11 @@ class SamplesManager: NSObject {
 
             switch response {
             case .success(let sampleData):
+                print("Adding to cache")
                 self.cache.setObject(sampleData, forKey: Box(url))
 //                try? FileManager.default.removeItem(at: url)
             case .failure:
+                print("Failure")
                 break
             }
 

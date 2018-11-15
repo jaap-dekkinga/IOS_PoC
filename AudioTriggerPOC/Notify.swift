@@ -149,8 +149,9 @@ extension Notify: UNUserNotificationCenterDelegate {
 
 extension Notify: AudioSamplerDelegate {
     func sampleReady(_ sampleUrl: URL) {
-        SamplesManager.shared.sample(for: sampleUrl)
-        notifySave(sampleUrl)
+        SamplesManager.shared.sample(for: sampleUrl) { _ in
+            self.notifySave(sampleUrl)
+        }
     }
 }
 
