@@ -15,7 +15,7 @@ class VoteManager: NSObject {
     fileprivate let sampleDataManager = SampleDataManager()
 
     func castVote(userResponse: Bool, for sampleUrl: URL) {
-        samplesClient.send(sampleUrl: sampleUrl, completion: { (response) in
+        SamplesManager.shared.sample(for: sampleUrl) { (response) in
             defer {
                 try? FileManager.default.removeItem(at: sampleUrl)
             }
@@ -53,7 +53,7 @@ class VoteManager: NSObject {
                 }
                 self.sampleDataManager.add(augmentedResponse)
             })
-        })
+        }
     }
 }
 

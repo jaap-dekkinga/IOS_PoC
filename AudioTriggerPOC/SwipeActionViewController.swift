@@ -18,6 +18,7 @@ class SwipeActionViewController: UIViewController {
 
 extension SwipeActionViewController {
     class func create(with sampleUrl: URL) -> SwipeActionViewController {
+        SamplesManager.shared.sample(for: sampleUrl)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "SwipeActionViewController-SI")
             as! SwipeActionViewController
