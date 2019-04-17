@@ -180,7 +180,7 @@ class SampleDataManager: NSObject {
     }
 
     func remove(_ sampleResult: SampleResult) {
-        let ix = sampleResults.index { (result) -> Bool in
+        let ix = sampleResults.firstIndex { (result) -> Bool in
             return sampleResult == result
         }
         guard let ixValue = ix else {
