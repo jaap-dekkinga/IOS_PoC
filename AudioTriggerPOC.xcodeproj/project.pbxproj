@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EB7205EB2B500F96F7A /* Notify.swift */; };
 		600A6EBA205EB41A00F96F7A /* SamplesClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EB9205EB41A00F96F7A /* SamplesClient.swift */; };
-		600A6EBC205EBDE000F96F7A /* AudioSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EBB205EBDE000F96F7A /* AudioSampler.swift */; };
 		600A6EBE205EBEC500F96F7A /* AudioMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */; };
 		601E0C1420FF81A200AD535E /* BoolExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601E0C1320FF81A200AD535E /* BoolExtension.swift */; };
 		601F74EA219B1CAD0053EFB9 /* SamplesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601F74E9219B1CAC0053EFB9 /* SamplesManager.swift */; };
@@ -31,6 +30,8 @@
 		60D361E720CDC17C0079C14C /* VoteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E620CDC17C0079C14C /* VoteManager.swift */; };
 		60D361E920D164540079C14C /* SwipeCardActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E820D164540079C14C /* SwipeCardActionViewController.swift */; };
 		DCC3A21648720C0E8D25B72B /* Pods_AudioTriggerPOC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B422BDFF2F9DB84C9FB29E /* Pods_AudioTriggerPOC.framework */; };
+		EC4E097F231EDF8300445E52 /* AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E097E231EDF8300445E52 /* AudioBuffer.swift */; };
+		EC4E0980231EE76600445E52 /* AudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E097C231EDC6500445E52 /* AudioCapture.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,7 +61,6 @@
 /* Begin PBXFileReference section */
 		600A6EB7205EB2B500F96F7A /* Notify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notify.swift; sourceTree = "<group>"; };
 		600A6EB9205EB41A00F96F7A /* SamplesClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesClient.swift; sourceTree = "<group>"; };
-		600A6EBB205EBDE000F96F7A /* AudioSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSampler.swift; sourceTree = "<group>"; };
 		600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMatcher.swift; sourceTree = "<group>"; };
 		601E0C1320FF81A200AD535E /* BoolExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoolExtension.swift; sourceTree = "<group>"; };
 		601F74E9219B1CAC0053EFB9 /* SamplesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesManager.swift; sourceTree = "<group>"; };
@@ -88,6 +88,8 @@
 		BBCE85622A4AC53FBFA986B1 /* Pods-AudioTriggerPOC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AudioTriggerPOC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC.debug.xcconfig"; sourceTree = "<group>"; };
 		BDE2CA3B2B257A37E40EE614 /* Pods-AudioTriggerPOC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AudioTriggerPOC.release.xcconfig"; path = "Pods/Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC.release.xcconfig"; sourceTree = "<group>"; };
 		D2B422BDFF2F9DB84C9FB29E /* Pods_AudioTriggerPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AudioTriggerPOC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC4E097C231EDC6500445E52 /* AudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCapture.swift; sourceTree = "<group>"; };
+		EC4E097E231EDF8300445E52 /* AudioBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBuffer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,27 +135,28 @@
 		6052363C201FE51900B65A72 /* AudioTriggerPOC */ = {
 			isa = PBXGroup;
 			children = (
-				6052366E20200BEE00B65A72 /* combined.runacr */,
-				6052363D201FE51900B65A72 /* AppDelegate.swift */,
-				60523643201FE51900B65A72 /* Main.storyboard */,
 				60523646201FE51900B65A72 /* Assets.xcassets */,
-				60523648201FE51900B65A72 /* LaunchScreen.storyboard */,
+				6052366E20200BEE00B65A72 /* combined.runacr */,
 				6052364B201FE51900B65A72 /* Info.plist */,
+				60523648201FE51900B65A72 /* LaunchScreen.storyboard */,
+				60523643201FE51900B65A72 /* Main.storyboard */,
 				60523664201FFE9A00B65A72 /* AudioTriggerPOC-Bridging-Header.h */,
-				600A6EB7205EB2B500F96F7A /* Notify.swift */,
-				601F74E9219B1CAC0053EFB9 /* SamplesManager.swift */,
-				600A6EB9205EB41A00F96F7A /* SamplesClient.swift */,
-				600A6EBB205EBDE000F96F7A /* AudioSampler.swift */,
+				6052363D201FE51900B65A72 /* AppDelegate.swift */,
+				EC4E097E231EDF8300445E52 /* AudioBuffer.swift */,
+				EC4E097C231EDC6500445E52 /* AudioCapture.swift */,
 				600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */,
-				6024B74020606C8D0005A984 /* SampleData.swift */,
-				60D361E020CB31470079C14C /* PollClient.swift */,
-				60D361E220CB40380079C14C /* EncodableExtension.swift */,
-				60D361E420CBA7410079C14C /* SwipeActionViewController.swift */,
-				60D361E620CDC17C0079C14C /* VoteManager.swift */,
-				60D361E820D164540079C14C /* SwipeCardActionViewController.swift */,
-				6097122720F65883006E68DF /* HomeViewController.swift */,
 				601E0C1320FF81A200AD535E /* BoolExtension.swift */,
 				601F74EB219B1E470053EFB9 /* Box.swift */,
+				60D361E220CB40380079C14C /* EncodableExtension.swift */,
+				6097122720F65883006E68DF /* HomeViewController.swift */,
+				600A6EB7205EB2B500F96F7A /* Notify.swift */,
+				60D361E020CB31470079C14C /* PollClient.swift */,
+				6024B74020606C8D0005A984 /* SampleData.swift */,
+				600A6EB9205EB41A00F96F7A /* SamplesClient.swift */,
+				601F74E9219B1CAC0053EFB9 /* SamplesManager.swift */,
+				60D361E420CBA7410079C14C /* SwipeActionViewController.swift */,
+				60D361E820D164540079C14C /* SwipeCardActionViewController.swift */,
+				60D361E620CDC17C0079C14C /* VoteManager.swift */,
 			);
 			path = AudioTriggerPOC;
 			sourceTree = "<group>";
@@ -162,8 +165,8 @@
 			isa = PBXGroup;
 			children = (
 				60523654201FE51900B65A72 /* AudioTriggerPOCTests.swift */,
-				60523656201FE51900B65A72 /* Info.plist */,
 				601F74ED219B24500053EFB9 /* BoxTests.swift */,
+				60523656201FE51900B65A72 /* Info.plist */,
 			);
 			path = AudioTriggerPOCTests;
 			sourceTree = "<group>";
@@ -356,21 +359,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				600A6EBA205EB41A00F96F7A /* SamplesClient.swift in Sources */,
-				60D361E720CDC17C0079C14C /* VoteManager.swift in Sources */,
-				6024B74120606C8D0005A984 /* SampleData.swift in Sources */,
-				600A6EBC205EBDE000F96F7A /* AudioSampler.swift in Sources */,
-				60D361E520CBA7410079C14C /* SwipeActionViewController.swift in Sources */,
-				6097122820F65883006E68DF /* HomeViewController.swift in Sources */,
-				601E0C1420FF81A200AD535E /* BoolExtension.swift in Sources */,
-				60D361E320CB40380079C14C /* EncodableExtension.swift in Sources */,
-				600A6EBE205EBEC500F96F7A /* AudioMatcher.swift in Sources */,
-				601F74EC219B1E470053EFB9 /* Box.swift in Sources */,
-				60D361E120CB31470079C14C /* PollClient.swift in Sources */,
-				600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */,
 				6052363E201FE51900B65A72 /* AppDelegate.swift in Sources */,
-				60D361E920D164540079C14C /* SwipeCardActionViewController.swift in Sources */,
+				EC4E097F231EDF8300445E52 /* AudioBuffer.swift in Sources */,
+				EC4E0980231EE76600445E52 /* AudioCapture.swift in Sources */,
+				600A6EBE205EBEC500F96F7A /* AudioMatcher.swift in Sources */,
+				601E0C1420FF81A200AD535E /* BoolExtension.swift in Sources */,
+				601F74EC219B1E470053EFB9 /* Box.swift in Sources */,
+				60D361E320CB40380079C14C /* EncodableExtension.swift in Sources */,
+				6097122820F65883006E68DF /* HomeViewController.swift in Sources */,
+				600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */,
+				60D361E120CB31470079C14C /* PollClient.swift in Sources */,
+				6024B74120606C8D0005A984 /* SampleData.swift in Sources */,
+				600A6EBA205EB41A00F96F7A /* SamplesClient.swift in Sources */,
 				601F74EA219B1CAD0053EFB9 /* SamplesManager.swift in Sources */,
+				60D361E520CBA7410079C14C /* SwipeActionViewController.swift in Sources */,
+				60D361E920D164540079C14C /* SwipeCardActionViewController.swift in Sources */,
+				60D361E720CDC17C0079C14C /* VoteManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

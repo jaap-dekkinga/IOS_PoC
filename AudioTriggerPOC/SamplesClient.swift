@@ -68,7 +68,7 @@ class SamplesClient: NSObject {
     // "2600:1f14:2b5:e614:115e:850e:e4ce:eba7"
     // "35.163.163.91"
 //    private let host = "35.163.163.91"
-    private let host = "ec2-34-208-97-117.us-west-2.compute.amazonaws.com"
+	private let host = "ec2-54-213-252-225.us-west-2.compute.amazonaws.com"
     private let path = "/api/match"
     private var url: String {
         return "http://" + host + path
@@ -98,7 +98,9 @@ class SamplesClient: NSObject {
                             return
                     }
 
-                    completion?(.success(sampleData))
+					print("Server response: \(jsonRoot)")
+
+					completion?(.success(sampleData))
                 }
             case .failure(let error):
                 print("Error in upload: \(error.localizedDescription)")

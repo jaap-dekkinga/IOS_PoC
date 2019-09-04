@@ -23,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         static let matcher = AudioMatcher(runAcr: RunAcrConfig.default,
                                           apiKey: RunAcrConfig.apiKey,
                                           sampleDataPath: RunAcrConfig.matchDataPath)
-        fileprivate static let sampler = AudioSampler()
         fileprivate static let notify = Notify()
     }
 
@@ -72,7 +71,7 @@ extension AppDelegate {
     }
 
     fileprivate func firstStart(_ application: UIApplication) {
-        RunAcrConfig.matcher.delegate = RunAcrConfig.sampler
+        RunAcrConfig.matcher.delegate = RunAcrConfig.notify
         DispatchQueue.main.async {
             self.enterForeground(application)
         }
@@ -90,11 +89,9 @@ extension AppDelegate {
     }
 
     fileprivate func becomeActive(_ application: UIApplication) {
-        RunAcrConfig.notify.requestAccess()
-        RunAcrConfig.sampler.requestAccess()
-        RunAcrConfig.sampler.delegate = RunAcrConfig.notify
-        RunAcrConfig.matcher.start()
+        RunAcrConfig.notify.requestPermissionForNotifications()
         RunAcrConfig.notify.delegate = self
+		RunAcrConfig.matcher.start()
     }
 }
 

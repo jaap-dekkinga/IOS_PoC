@@ -46,7 +46,7 @@ class Notify: NSObject {
         }
     }
 
-    func requestAccess() {
+    func requestPermissionForNotifications() {
         self.userCenter.requestAuthorization(options: self.userNotifyOptions) { (granted, _) in
             self.updateEnabledStatus()
         }
@@ -147,11 +147,10 @@ extension Notify: UNUserNotificationCenterDelegate {
     }
 }
 
-extension Notify: AudioSamplerDelegate {
+extension Notify: AudioMatcherDelegate {
     func sampleReady(_ sampleUrl: URL) {
         SamplesManager.shared.sample(for: sampleUrl) { _ in
             self.notifySave(sampleUrl)
         }
     }
 }
-
