@@ -90,6 +90,7 @@
 		D2B422BDFF2F9DB84C9FB29E /* Pods_AudioTriggerPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AudioTriggerPOC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC4E097C231EDC6500445E52 /* AudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCapture.swift; sourceTree = "<group>"; };
 		EC4E097E231EDF8300445E52 /* AudioBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBuffer.swift; sourceTree = "<group>"; };
+		ECBD100E2322EFDC005415EF /* UpdateBuildNumber.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = UpdateBuildNumber.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +116,7 @@
 		60523631201FE51800B65A72 = {
 			isa = PBXGroup;
 			children = (
+				ECBD100E2322EFDC005415EF /* UpdateBuildNumber.sh */,
 				6052363C201FE51900B65A72 /* AudioTriggerPOC */,
 				60523653201FE51900B65A72 /* AudioTriggerPOCTests */,
 				6052363B201FE51900B65A72 /* Products */,
@@ -197,6 +199,7 @@
 			buildConfigurationList = 60523659201FE51900B65A72 /* Build configuration list for PBXNativeTarget "AudioTriggerPOC" */;
 			buildPhases = (
 				186E8413ADA85B0054EFCE84 /* [CP] Check Pods Manifest.lock */,
+				ECBD100F2322F003005415EF /* Update Build Number */,
 				60523636201FE51900B65A72 /* Sources */,
 				60523637201FE51900B65A72 /* Frameworks */,
 				60523638201FE51900B65A72 /* Resources */,
@@ -351,6 +354,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\n# Should be renamed to CommonLibrary.framework for distribution\nLIB_NAME='DUMMY'\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    LIB_NAME='RunACRSDK.framework'\nfi\n\nfind \"$APP_PATH\" -name \"$LIB_NAME\" -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone";
+		};
+		ECBD100F2322F003005415EF /* Update Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Update Build Number";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"UpdateBuildNumber.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
