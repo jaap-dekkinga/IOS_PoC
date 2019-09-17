@@ -1,6 +1,0 @@
-framework module RunACRSDK {
-  umbrella header "RunACRSDK.h"
-
-  export *
-  module * { export * }
-}

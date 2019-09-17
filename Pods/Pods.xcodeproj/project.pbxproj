@@ -15,28 +15,42 @@
 /* Begin PBXContainerItemProxy section */
 		177A2E3456AF8BB0BE45000DDC930B4F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 4841C1C05CB4B600A7E0A9EB726C200D /* Alamofire.xcodeproj */;
+			containerPortal = 4841C1C05CB4B600A7E0A9EB726C200D /* Alamofire */;
 			proxyType = 1;
 			remoteGlobalIDString = 81B7E9B7CD0CADA087A4BB042FBA92E7;
 			remoteInfo = Alamofire;
 		};
 		6E512A85414D71886FBF2BAAEF979987 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = D516ADC57DB09CC13F83D84DCB3A04FA /* DMSwipeCards.xcodeproj */;
+			containerPortal = D516ADC57DB09CC13F83D84DCB3A04FA /* DMSwipeCards */;
 			proxyType = 1;
 			remoteGlobalIDString = 7751EC388309BEEC5178ED1F536D6D2D;
+			remoteInfo = DMSwipeCards;
+		};
+		EC30064E23315D0D0013B8F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4841C1C05CB4B600A7E0A9EB726C200D /* Alamofire */;
+			proxyType = 2;
+			remoteGlobalIDString = D063EE811069D306211D06E68BEF5C09;
+			remoteInfo = Alamofire;
+		};
+		EC30065023315D0D0013B8F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D516ADC57DB09CC13F83D84DCB3A04FA /* DMSwipeCards */;
+			proxyType = 2;
+			remoteGlobalIDString = 04507C2F9ED7E2ECD7B7B2A883A60638;
 			remoteInfo = DMSwipeCards;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		22C6E369C1013C27076F2B8A5788DAA5 /* Pods-AudioTriggerPOC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AudioTriggerPOC.release.xcconfig"; sourceTree = "<group>"; };
-		246AD651358825AB3D54305A6E44B8EB /* Pods_AudioTriggerPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AudioTriggerPOC.framework; path = "Pods-AudioTriggerPOC.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		246AD651358825AB3D54305A6E44B8EB /* Pods_AudioTriggerPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AudioTriggerPOC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		36A9DA61C9E44D73AA1628868FF78EEE /* Pods-AudioTriggerPOC-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AudioTriggerPOC-frameworks.sh"; sourceTree = "<group>"; };
 		4841C1C05CB4B600A7E0A9EB726C200D /* Alamofire */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire; path = Alamofire.xcodeproj; sourceTree = "<group>"; };
 		5D4F52732540FB795C0EC5984E2F394A /* Pods-AudioTriggerPOC-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AudioTriggerPOC-dummy.m"; sourceTree = "<group>"; };
 		91696739DCD91394BF560AE47A0DA99E /* Pods-AudioTriggerPOC-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AudioTriggerPOC-Info.plist"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		AC9645475767FE00B9B956C2C88233CB /* Pods-AudioTriggerPOC-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AudioTriggerPOC-acknowledgements.plist"; sourceTree = "<group>"; };
 		CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		CE87E3F6C9DA2E0BC06A682674C836D4 /* Pods-AudioTriggerPOC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AudioTriggerPOC.debug.xcconfig"; sourceTree = "<group>"; };
@@ -127,6 +141,22 @@
 			path = "Target Support Files/Pods-AudioTriggerPOC";
 			sourceTree = "<group>";
 		};
+		EC30064A233158DD0013B8F8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EC30065123315D0D0013B8F8 /* DMSwipeCards.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EC30064C233158DD0013B8F8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EC30064F23315D0D0013B8F8 /* Alamofire.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -172,19 +202,22 @@
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 8.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
 			productRefGroup = 93C6EF6E4EE76114B5F4EFE80A3731AB /* Products */;
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = EC30064C233158DD0013B8F8 /* Products */;
 					ProjectRef = 4841C1C05CB4B600A7E0A9EB726C200D /* Alamofire */;
 				},
 				{
+					ProductGroup = EC30064A233158DD0013B8F8 /* Products */;
 					ProjectRef = D516ADC57DB09CC13F83D84DCB3A04FA /* DMSwipeCards */;
 				},
 			);
@@ -194,6 +227,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		EC30064F23315D0D0013B8F8 /* Alamofire.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Alamofire.framework;
+			remoteRef = EC30064E23315D0D0013B8F8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EC30065123315D0D0013B8F8 /* DMSwipeCards.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = DMSwipeCards.framework;
+			remoteRef = EC30065023315D0D0013B8F8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		0A32F07BA4044820B90DB56094F17F8D /* Resources */ = {
@@ -283,8 +333,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.2;
 				SYMROOT = "${SRCROOT}/../build";
 			};

@@ -6,13 +6,15 @@
 //  Copyright © 2018 Aleksandar Mihailovski. All rights reserved.
 //
 
+
 import AVFoundation
 import Foundation
-import RunACRSDK
+
 
 protocol AudioMatcherDelegate {
 	func sampleReady(_ sampleUrl: URL)
 }
+
 
 class AudioMatcher: NSObject {
 
@@ -23,10 +25,11 @@ class AudioMatcher: NSObject {
 	// private
 	private let audioBuffer: AudioBuffer
 	private var audioCapture: AudioCapture?
-	private let runAcr: RunACR
+
+	// MARK: -
 
 	var enabled: Bool = true {
-        didSet {
+		didSet {
 			if enabled != oldValue {
 				if enabled {
 					start()
@@ -34,24 +37,22 @@ class AudioMatcher: NSObject {
 					stop()
 				}
 			}
-        }
-    }
+		}
+	}
 
 	// MARK: -
 
-    init(runAcr: RunACR, apiKey: String, sampleDataPath: String) {
-        self.runAcr = runAcr
+	override init()
+	{
+		// setup the audio buffer
 		audioBuffer = AudioBuffer(captureDuration: 10.0, sampleRate: 44100.0)
 
 		super.init()
 
 		audioBuffer.reset()
-        self.runAcr.initialize(withAPIKey: apiKey)
-        self.runAcr.updateDatabasePath(sampleDataPath)
-        self.runAcr.delegate = self
-    }
+	}
 
-    func start()
+	func start()
 	{
 		let audioSession = AVAudioSession.sharedInstance()
 
@@ -81,25 +82,8 @@ class AudioMatcher: NSObject {
 
 	// MARK: -
 
-	private func startMatching()
+	func recognizedSound(_ trackId: Int32, absoluteTimeOffset: Float, relativeTimeOffset: Float)
 	{
-		DispatchQueue.main.async {
-			// start audio capture
-			if (self.audioCapture == nil) {
-				self.audioBuffer.reset()
-				self.audioCapture = AudioCapture(audioBuffer: self.audioBuffer, sampleRate: 44100.0, delegate: nil)
-				_ = self.audioCapture?.start()
-			}
-			// start trigger sound detection
-			self.runAcr.startRecognize()
-        }
-    }
-}
-
-extension AudioMatcher: RunACRDelegate {
-
-	func didRecognize(_ trackId: Int32, absoluteTimeOffset: Float, relativeTimeOffset: Float) {
-
 		let formatter = DateFormatter()
 		formatter.dateStyle = .none
 		formatter.timeStyle = .medium
@@ -140,20 +124,22 @@ extension AudioMatcher: RunACRDelegate {
 				self.delegate?.sampleReady(soundFileURL)
 			}
 		}
-
-		// restart trigger sound detection
-		self.runAcr.startRecognize()
 	}
 
-    func didNotRecognize() {
-		let formatter = DateFormatter()
-		formatter.dateStyle = .none
-		formatter.timeStyle = .medium
-		let currentTime = formatter.string(from: Date())
-		print("(\(currentTime)): Did not recognize.")
-        if self.enabled {
-            self.runAcr.startRecognize()
-        }
-    }
+	// MARK: -
+	// MARK: Private
+
+	private func startMatching()
+	{
+		DispatchQueue.main.async {
+			// start audio capture
+			if (self.audioCapture == nil) {
+				self.audioBuffer.reset()
+				self.audioCapture = AudioCapture(audioBuffer: self.audioBuffer, sampleRate: 44100.0, delegate: nil)
+				_ = self.audioCapture?.start()
+			}
+			// TODO: start audio matching...
+		}
+	}
 
 }

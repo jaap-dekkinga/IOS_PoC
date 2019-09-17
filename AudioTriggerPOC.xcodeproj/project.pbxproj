@@ -20,10 +20,7 @@
 		60523647201FE51900B65A72 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60523646201FE51900B65A72 /* Assets.xcassets */; };
 		6052364A201FE51900B65A72 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60523648201FE51900B65A72 /* LaunchScreen.storyboard */; };
 		60523655201FE51900B65A72 /* AudioTriggerPOCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60523654201FE51900B65A72 /* AudioTriggerPOCTests.swift */; };
-		6052366F20200BEE00B65A72 /* combined.runacr in Resources */ = {isa = PBXBuildFile; fileRef = 6052366E20200BEE00B65A72 /* combined.runacr */; };
 		6097122820F65883006E68DF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6097122720F65883006E68DF /* HomeViewController.swift */; };
-		60AB312420EAC64100AF494D /* RunACRSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; };
-		60AB312620EAC65300AF494D /* RunACRSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 60523668202001A300B65A72 /* RunACRSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		60D361E120CB31470079C14C /* PollClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E020CB31470079C14C /* PollClient.swift */; };
 		60D361E320CB40380079C14C /* EncodableExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E220CB40380079C14C /* EncodableExtension.swift */; };
 		60D361E520CBA7410079C14C /* SwipeActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E420CBA7410079C14C /* SwipeActionViewController.swift */; };
@@ -44,20 +41,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		60AB312720EAC65400AF494D /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				60AB312620EAC65300AF494D /* RunACRSDK.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		600A6EB7205EB2B500F96F7A /* Notify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notify.swift; sourceTree = "<group>"; };
 		600A6EB9205EB41A00F96F7A /* SamplesClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamplesClient.swift; sourceTree = "<group>"; };
@@ -77,8 +60,6 @@
 		60523654201FE51900B65A72 /* AudioTriggerPOCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioTriggerPOCTests.swift; sourceTree = "<group>"; };
 		60523656201FE51900B65A72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		60523664201FFE9A00B65A72 /* AudioTriggerPOC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AudioTriggerPOC-Bridging-Header.h"; sourceTree = "<group>"; };
-		60523668202001A300B65A72 /* RunACRSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RunACRSDK.framework; path = SDK/RunACRSDK.framework; sourceTree = "<group>"; };
-		6052366E20200BEE00B65A72 /* combined.runacr */ = {isa = PBXFileReference; lastKnownFileType = file; name = combined.runacr; path = SDK/combined.runacr; sourceTree = SOURCE_ROOT; };
 		6097122720F65883006E68DF /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		60D361E020CB31470079C14C /* PollClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollClient.swift; sourceTree = "<group>"; };
 		60D361E220CB40380079C14C /* EncodableExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodableExtension.swift; sourceTree = "<group>"; };
@@ -98,7 +79,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				60AB312420EAC64100AF494D /* RunACRSDK.framework in Frameworks */,
 				DCC3A21648720C0E8D25B72B /* Pods_AudioTriggerPOC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -138,7 +118,6 @@
 			isa = PBXGroup;
 			children = (
 				60523646201FE51900B65A72 /* Assets.xcassets */,
-				6052366E20200BEE00B65A72 /* combined.runacr */,
 				6052364B201FE51900B65A72 /* Info.plist */,
 				60523648201FE51900B65A72 /* LaunchScreen.storyboard */,
 				60523643201FE51900B65A72 /* Main.storyboard */,
@@ -176,7 +155,6 @@
 		706DE416CDBE83EE3CBC91AD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				60523668202001A300B65A72 /* RunACRSDK.framework */,
 				D2B422BDFF2F9DB84C9FB29E /* Pods_AudioTriggerPOC.framework */,
 			);
 			name = Frameworks;
@@ -204,8 +182,6 @@
 				60523637201FE51900B65A72 /* Frameworks */,
 				60523638201FE51900B65A72 /* Resources */,
 				15DDF9EFD846B8237765A3BC /* [CP] Embed Pods Frameworks */,
-				60AB312720EAC65400AF494D /* Embed Frameworks */,
-				6035D1EF20E28EAC00E85117 /* Clean archs for Release */,
 			);
 			buildRules = (
 			);
@@ -242,7 +218,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
 				LastUpgradeCheck = 1000;
-				ORGANIZATIONNAME = "Aleksandar Mihailovski";
+				ORGANIZATIONNAME = "TuneURL Inc.";
 				TargetAttributes = {
 					60523639201FE51900B65A72 = {
 						CreatedOnToolsVersion = 9.2;
@@ -286,9 +262,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6052364A201FE51900B65A72 /* LaunchScreen.storyboard in Resources */,
-				6052366F20200BEE00B65A72 /* combined.runacr in Resources */,
 				60523647201FE51900B65A72 /* Assets.xcassets in Resources */,
+				6052364A201FE51900B65A72 /* LaunchScreen.storyboard in Resources */,
 				60523645201FE51900B65A72 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -340,20 +315,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		6035D1EF20E28EAC00E85117 /* Clean archs for Release */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Clean archs for Release";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\n# Should be renamed to CommonLibrary.framework for distribution\nLIB_NAME='DUMMY'\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    LIB_NAME='RunACRSDK.framework'\nfi\n\nfind \"$APP_PATH\" -name \"$LIB_NAME\" -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone";
 		};
 		ECBD100F2322F003005415EF /* Update Build Number */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -561,13 +522,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J4H5ML29CZ;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/SDK",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = AudioTriggerPOC/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.demo.AudioTriggerPOC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "AudioTriggerPOC/AudioTriggerPOC-Bridging-Header.h";
@@ -584,13 +541,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J4H5ML29CZ;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/SDK",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = AudioTriggerPOC/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.demo.AudioTriggerPOC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "AudioTriggerPOC/AudioTriggerPOC-Bridging-Header.h";
@@ -609,7 +562,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.demo.AudioTriggerPOCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AudioTriggerPOC.app/AudioTriggerPOC";
 			};
@@ -626,7 +578,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.demo.AudioTriggerPOCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AudioTriggerPOC.app/AudioTriggerPOC";
 			};
