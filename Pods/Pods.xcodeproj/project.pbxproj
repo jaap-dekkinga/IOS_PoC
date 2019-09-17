@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A3E2088A973DB12AA2E26C5E2D715F4 /* Pods-AudioTriggerPOC-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DC085C26E1060E43F3AA6CFF7ADD1E43 /* Pods-AudioTriggerPOC-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8A3E2088A973DB12AA2E26C5E2D715F4 /* Pods-TuneURL-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DC085C26E1060E43F3AA6CFF7ADD1E43 /* Pods-TuneURL-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		945DA8C2FF262EE4DBD941A8B3595F8E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */; };
-		A25142E65D2AE88852FB98AAC151E008 /* Pods-AudioTriggerPOC-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D4F52732540FB795C0EC5984E2F394A /* Pods-AudioTriggerPOC-dummy.m */; };
+		A25142E65D2AE88852FB98AAC151E008 /* Pods-TuneURL-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D4F52732540FB795C0EC5984E2F394A /* Pods-TuneURL-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,20 +44,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		22C6E369C1013C27076F2B8A5788DAA5 /* Pods-AudioTriggerPOC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AudioTriggerPOC.release.xcconfig"; sourceTree = "<group>"; };
-		246AD651358825AB3D54305A6E44B8EB /* Pods_AudioTriggerPOC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AudioTriggerPOC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		36A9DA61C9E44D73AA1628868FF78EEE /* Pods-AudioTriggerPOC-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AudioTriggerPOC-frameworks.sh"; sourceTree = "<group>"; };
+		22C6E369C1013C27076F2B8A5788DAA5 /* Pods-TuneURL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-TuneURL.release.xcconfig"; sourceTree = "<group>"; };
+		246AD651358825AB3D54305A6E44B8EB /* Pods_TuneURL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TuneURL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		36A9DA61C9E44D73AA1628868FF78EEE /* Pods-TuneURL-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-TuneURL-frameworks.sh"; sourceTree = "<group>"; };
 		4841C1C05CB4B600A7E0A9EB726C200D /* Alamofire */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire; path = Alamofire.xcodeproj; sourceTree = "<group>"; };
-		5D4F52732540FB795C0EC5984E2F394A /* Pods-AudioTriggerPOC-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AudioTriggerPOC-dummy.m"; sourceTree = "<group>"; };
-		91696739DCD91394BF560AE47A0DA99E /* Pods-AudioTriggerPOC-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AudioTriggerPOC-Info.plist"; sourceTree = "<group>"; };
+		5D4F52732540FB795C0EC5984E2F394A /* Pods-TuneURL-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-TuneURL-dummy.m"; sourceTree = "<group>"; };
+		91696739DCD91394BF560AE47A0DA99E /* Pods-TuneURL-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-TuneURL-Info.plist"; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		AC9645475767FE00B9B956C2C88233CB /* Pods-AudioTriggerPOC-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AudioTriggerPOC-acknowledgements.plist"; sourceTree = "<group>"; };
+		AC9645475767FE00B9B956C2C88233CB /* Pods-TuneURL-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-TuneURL-acknowledgements.plist"; sourceTree = "<group>"; };
 		CB4607EFCA7C5F75397649E792E2AFCB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		CE87E3F6C9DA2E0BC06A682674C836D4 /* Pods-AudioTriggerPOC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AudioTriggerPOC.debug.xcconfig"; sourceTree = "<group>"; };
-		CF0961572424C73A15507441A270C6A8 /* Pods-AudioTriggerPOC.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AudioTriggerPOC.modulemap"; sourceTree = "<group>"; };
+		CE87E3F6C9DA2E0BC06A682674C836D4 /* Pods-TuneURL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-TuneURL.debug.xcconfig"; sourceTree = "<group>"; };
+		CF0961572424C73A15507441A270C6A8 /* Pods-TuneURL.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-TuneURL.modulemap"; sourceTree = "<group>"; };
 		D516ADC57DB09CC13F83D84DCB3A04FA /* DMSwipeCards */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DMSwipeCards; path = DMSwipeCards.xcodeproj; sourceTree = "<group>"; };
-		DC085C26E1060E43F3AA6CFF7ADD1E43 /* Pods-AudioTriggerPOC-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AudioTriggerPOC-umbrella.h"; sourceTree = "<group>"; };
-		FCA0827C7B427219A8B764A91B13D3DB /* Pods-AudioTriggerPOC-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AudioTriggerPOC-acknowledgements.markdown"; sourceTree = "<group>"; };
+		DC085C26E1060E43F3AA6CFF7ADD1E43 /* Pods-TuneURL-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-TuneURL-umbrella.h"; sourceTree = "<group>"; };
+		FCA0827C7B427219A8B764A91B13D3DB /* Pods-TuneURL-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-TuneURL-acknowledgements.markdown"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 		7B1A403444C7DB7B4F5FEB0A4160E940 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				EA8786505B53F964E6CF676F6B503BB2 /* Pods-AudioTriggerPOC */,
+				EA8786505B53F964E6CF676F6B503BB2 /* Pods-TuneURL */,
 			);
 			name = "Targets Support Files";
 			sourceTree = "<group>";
@@ -92,7 +92,7 @@
 		93C6EF6E4EE76114B5F4EFE80A3731AB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				246AD651358825AB3D54305A6E44B8EB /* Pods_AudioTriggerPOC.framework */,
+				246AD651358825AB3D54305A6E44B8EB /* Pods_TuneURL.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,21 +124,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		EA8786505B53F964E6CF676F6B503BB2 /* Pods-AudioTriggerPOC */ = {
+		EA8786505B53F964E6CF676F6B503BB2 /* Pods-TuneURL */ = {
 			isa = PBXGroup;
 			children = (
-				CF0961572424C73A15507441A270C6A8 /* Pods-AudioTriggerPOC.modulemap */,
-				FCA0827C7B427219A8B764A91B13D3DB /* Pods-AudioTriggerPOC-acknowledgements.markdown */,
-				AC9645475767FE00B9B956C2C88233CB /* Pods-AudioTriggerPOC-acknowledgements.plist */,
-				5D4F52732540FB795C0EC5984E2F394A /* Pods-AudioTriggerPOC-dummy.m */,
-				36A9DA61C9E44D73AA1628868FF78EEE /* Pods-AudioTriggerPOC-frameworks.sh */,
-				91696739DCD91394BF560AE47A0DA99E /* Pods-AudioTriggerPOC-Info.plist */,
-				DC085C26E1060E43F3AA6CFF7ADD1E43 /* Pods-AudioTriggerPOC-umbrella.h */,
-				CE87E3F6C9DA2E0BC06A682674C836D4 /* Pods-AudioTriggerPOC.debug.xcconfig */,
-				22C6E369C1013C27076F2B8A5788DAA5 /* Pods-AudioTriggerPOC.release.xcconfig */,
+				CF0961572424C73A15507441A270C6A8 /* Pods-TuneURL.modulemap */,
+				FCA0827C7B427219A8B764A91B13D3DB /* Pods-TuneURL-acknowledgements.markdown */,
+				AC9645475767FE00B9B956C2C88233CB /* Pods-TuneURL-acknowledgements.plist */,
+				5D4F52732540FB795C0EC5984E2F394A /* Pods-TuneURL-dummy.m */,
+				36A9DA61C9E44D73AA1628868FF78EEE /* Pods-TuneURL-frameworks.sh */,
+				91696739DCD91394BF560AE47A0DA99E /* Pods-TuneURL-Info.plist */,
+				DC085C26E1060E43F3AA6CFF7ADD1E43 /* Pods-TuneURL-umbrella.h */,
+				CE87E3F6C9DA2E0BC06A682674C836D4 /* Pods-TuneURL.debug.xcconfig */,
+				22C6E369C1013C27076F2B8A5788DAA5 /* Pods-TuneURL.release.xcconfig */,
 			);
-			name = "Pods-AudioTriggerPOC";
-			path = "Target Support Files/Pods-AudioTriggerPOC";
+			name = "Pods-TuneURL";
+			path = "Target Support Files/Pods-TuneURL";
 			sourceTree = "<group>";
 		};
 		EC30064A233158DD0013B8F8 /* Products */ = {
@@ -164,16 +164,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A3E2088A973DB12AA2E26C5E2D715F4 /* Pods-AudioTriggerPOC-umbrella.h in Headers */,
+				8A3E2088A973DB12AA2E26C5E2D715F4 /* Pods-TuneURL-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		6BBA73ABEADA262A1FD60B1A728BF228 /* Pods-AudioTriggerPOC */ = {
+		6BBA73ABEADA262A1FD60B1A728BF228 /* Pods-TuneURL */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E140437731643AE90B5131390C3514D0 /* Build configuration list for PBXNativeTarget "Pods-AudioTriggerPOC" */;
+			buildConfigurationList = E140437731643AE90B5131390C3514D0 /* Build configuration list for PBXNativeTarget "Pods-TuneURL" */;
 			buildPhases = (
 				D1B53188CC5AA46BF872C93CE7AFCA5D /* Headers */,
 				2820F6A7C3ADA61AB14D0C9348DFD666 /* Sources */,
@@ -186,9 +186,9 @@
 				66C71D69E105F863C0DF6C96A1D5842B /* PBXTargetDependency */,
 				DC0E4DF9647481396C3729389F88EAC9 /* PBXTargetDependency */,
 			);
-			name = "Pods-AudioTriggerPOC";
-			productName = "Pods-AudioTriggerPOC";
-			productReference = 246AD651358825AB3D54305A6E44B8EB /* Pods_AudioTriggerPOC.framework */;
+			name = "Pods-TuneURL";
+			productName = "Pods-TuneURL";
+			productReference = 246AD651358825AB3D54305A6E44B8EB /* Pods_TuneURL.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -223,7 +223,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				6BBA73ABEADA262A1FD60B1A728BF228 /* Pods-AudioTriggerPOC */,
+				6BBA73ABEADA262A1FD60B1A728BF228 /* Pods-TuneURL */,
 			);
 		};
 /* End PBXProject section */
@@ -260,7 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A25142E65D2AE88852FB98AAC151E008 /* Pods-AudioTriggerPOC-dummy.m in Sources */,
+				A25142E65D2AE88852FB98AAC151E008 /* Pods-TuneURL-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,14 +334,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
 			name = Release;
 		};
 		49FEFFF39CD1ECD090B5829CBA0CC209 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 22C6E369C1013C27076F2B8A5788DAA5 /* Pods-AudioTriggerPOC.release.xcconfig */;
+			baseConfigurationReference = 22C6E369C1013C27076F2B8A5788DAA5 /* Pods-TuneURL.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -354,12 +354,12 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC-Info.plist";
+				INFOPLIST_FILE = "Target Support Files/Pods-TuneURL/Pods-TuneURL-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC.modulemap";
+				MODULEMAP_FILE = "Target Support Files/Pods-TuneURL/Pods-TuneURL.modulemap";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
@@ -433,14 +433,14 @@
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
 			name = Debug;
 		};
 		7F00475EBC63BF417928BA74F167121D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CE87E3F6C9DA2E0BC06A682674C836D4 /* Pods-AudioTriggerPOC.debug.xcconfig */;
+			baseConfigurationReference = CE87E3F6C9DA2E0BC06A682674C836D4 /* Pods-TuneURL.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -453,12 +453,12 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC-Info.plist";
+				INFOPLIST_FILE = "Target Support Files/Pods-TuneURL/Pods-TuneURL-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-AudioTriggerPOC/Pods-AudioTriggerPOC.modulemap";
+				MODULEMAP_FILE = "Target Support Files/Pods-TuneURL/Pods-TuneURL.modulemap";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
@@ -484,7 +484,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E140437731643AE90B5131390C3514D0 /* Build configuration list for PBXNativeTarget "Pods-AudioTriggerPOC" */ = {
+		E140437731643AE90B5131390C3514D0 /* Build configuration list for PBXNativeTarget "Pods-TuneURL" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7F00475EBC63BF417928BA74F167121D /* Debug */,

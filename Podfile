@@ -8,7 +8,7 @@ install! 'cocoapods',
          :generate_multiple_pod_projects => true,
          :incremental_installation => true
 
-target :AudioTriggerPOC do
+target :TuneURL do
     pod 'Alamofire'
     pod 'DMSwipeCards'
 end

@@ -8,13 +8,15 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
-
 # Xcode
 #######
 *.pbxuser
 *.mode1v3
 *.mode2v3
 *.perspectivev3
+*.xcbkptlist
+*.xcuserstate
+Build/*
 
 !default.pbxuser
 !default.mode1v3
@@ -33,3 +35,6 @@ DerivedData/
 # AppCode
 */.idea/workspace.xml
 */.idea/Truecaller_iOS.iml
+
+# CocoaPods
+*/.project_cache/*
