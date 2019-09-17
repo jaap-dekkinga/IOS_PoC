@@ -91,7 +91,7 @@ class AudioMatcher: NSObject {
 				_ = self.audioCapture?.start()
 			}
 			// start trigger sound detection
-            self.runAcr.startRecognize()
+			self.runAcr.startRecognize()
         }
     }
 }

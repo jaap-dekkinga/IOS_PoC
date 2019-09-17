@@ -89,8 +89,8 @@ class AudioCapture: NSObject {
 		// stop the audio buffer
 		audioBuffer.stopRecording()
 
-		// stop the audio session
-		_ = try? audioSession.setActive(false)
+//		// stop the audio session
+//		_ = try? audioSession.setActive(false)
 
 		// notify the delegate
 		delegate?.audioCaptureStatusChanged()
@@ -102,7 +102,7 @@ class AudioCapture: NSObject {
 	private func setupAudioSession()
 	{
 		do {
-			try audioSession.setCategory(AVAudioSession.Category.record, mode: .default)
+			try audioSession.setCategory(.playAndRecord, mode: .default)
 			try audioSession.setActive(true)
 		} catch {
 			NSLog("AudioCapture: Error setting up audio session. (\(error.localizedDescription))")
