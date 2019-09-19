@@ -12,20 +12,18 @@ import Foundation
 
 class Spectrogram {
 
-//	let sampleRate: Float = 44100.0
-	let sampleRate: Float = (2048.0 * 5.0)
+	// private
+	private let sampleRate = FingerprintProperties.sampleRate
 
+	private var absoluteSpectrogram = [[Float]]() // absolute spectrogram
+	private var spectrogram = [[Float]]()	// relative spectrogram
 	private var waveData: [Int16]
 	private var waveDuration: Float = 0.0
-	private var spectrogram = [[Float]]()	// relative spectrogram
-	private var absoluteSpectrogram = [[Float]]() // absolute spectrogram
 
 	private var fftSampleSize: Int		// number of samples in fft, the value needed to be a number to power of 2
-	private var overlapFactor: Int		// 1/overlapFactor overlapping, e.g. 1/4=25% overlapping
-//	private var numFrames: Int			// number of frames of the spectrogram
-//	private var framesPerSecond: Int	// frame per second of the spectrogram
-//	private var numFrequencyUnit: Int	// number of y-axis unit
-//	private var unitFrequency: Float	// frequency per y-axis unit
+	private var overlapFactor: Int		// 1 / overlapFactor overlapping, e.g. 1 / 4 = 25% overlapping
+
+	// MARK: -
 
 	init(wave: [Int16], fftSampleSize: Int, overlapFactor: Int)
 	{
@@ -56,7 +54,7 @@ class Spectrogram {
 			while (i < amplitudes.count) {
 				overlapAmp[pointer] = amplitudes[i]
 				pointer += 1
-				if (pointer % fftSampleSize == fftSampleSize_1) {
+				if ((pointer % fftSampleSize) == fftSampleSize_1) {
 					// overlap
 					i -= backSamples
 				}
@@ -74,8 +72,10 @@ class Spectrogram {
 		}
 		// ----
 */
+		// number of frames of the spectrogram
 		let numFrames = (numSamples / fftSampleSize)
-		let framesPerSecond = Int(Float(numFrames) / waveDuration)
+
+		// TODO: Optimization: Use vDSP for the window function.
 
 		// set signals for fft
 		let window = WindowFunction()
@@ -87,7 +87,7 @@ class Spectrogram {
 		for f in 0 ..< numFrames {
 			var array = [Float](repeating: 0.0, count: fftSampleSize)
 //			signals[f] = [Float](repeating: 0.0, count: fftSampleSize)
-			let startSample = f * fftSampleSize
+			let startSample = (f * fftSampleSize)
 			for n in 0 ..< fftSampleSize {
 //				signals[f][n] = amplitudes[startSample + n] * win[n]
 				array[n] = Float(amplitudes[startSample + n]) * win[n]
@@ -122,9 +122,8 @@ class Spectrogram {
 */
 		if (absoluteSpectrogram.count > 0) {
 
+			// number of y-axis unit
 			let numFrequencyUnit = absoluteSpectrogram[0].count
-			let unitFrequency = sampleRate / 2.0 / Float(numFrequencyUnit)
-			// Note: frequency could be caught within the half of nSamples according to Nyquist theory
 
 			// get max and min amplitudes of the absoluteSpectrogram
 			var maxAmp = Float.leastNormalMagnitude
@@ -180,30 +179,6 @@ class Spectrogram {
 /*
 	public double[][] getAbsoluteSpectrogramData(){
 	return absoluteSpectrogram
-	}
-
-	public int getNumFrames(){
-	return numFrames
-	}
-
-	public int getFramesPerSecond(){
-	return framesPerSecond
-	}
-
-	public int getNumFrequencyUnit(){
-	return numFrequencyUnit
-	}
-
-	public double getUnitFrequency(){
-	return unitFrequency
-	}
-
-	public int getFftSampleSize() {
-	return fftSampleSize
-	}
-
-	public int getOverlapFactor() {
-	return overlapFactor
 	}
 */
 }

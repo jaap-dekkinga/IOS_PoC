@@ -12,46 +12,28 @@ import Foundation
 
 class PairManager {
 
-	// From FingerprintProperties
-	// in order to have 5fps with 2048 sampleSizePerFrame, wave's sample rate need to be 10240 (sampleSizePerFrame*fps)
-	private let fps = 5
-	private let numFilterBanks = 4
-	// in frames (5fps,4 overlap per second)
-	private let anchorPointsIntervalLength = 4
-	private let numAnchorPointsPerInterval = 10
-	// max. active pairs per anchor point for reference songs
-	private let refMaxActivePairs = 1
-	// max. active pairs per anchor point for sample clip
-	private let sampleMaxActivePairs = 10
+	// private
+	private let fps = FingerprintProperties.fps
+	private let numFilterBanks = FingerprintProperties.numFilterBanks
+	private let anchorPointsIntervalLength = FingerprintProperties.anchorPointsIntervalLength
+	private let numAnchorPointsPerInterval = FingerprintProperties.numAnchorPointsPerInterval
+	private let refMaxActivePairs = FingerprintProperties.refMaxActivePairs
+	private let sampleMaxActivePairs = FingerprintProperties.sampleMaxActivePairs
+	private let upperBoundedFrequency = FingerprintProperties.upperBoundedFrequency
+	private let lowerBoundedFrequency = FingerprintProperties.lowerBoundedFrequency
+	private let maxTargetZoneDistance = FingerprintProperties.maxTargetZoneDistance
+	private let numFrequencyUnits = FingerprintProperties.numFrequencyUnits
 
-	private let upperBoundedFrequency = 1500	// low pass
-	private let lowerBoundedFrequency = 400		// high pass
-	// in frame (5fps,4 overlap per second)
-	private let maxTargetZoneDistance = 4
-	// num frequency units
-//	private let numFrequencyUnits = (upperBoundedFrequency - lowerBoundedFrequency + 1) / fps + 1
-	private let numFrequencyUnits: Int
-	// ----
-
-//	FingerprintProperties fingerprintProperties=FingerprintProperties.getInstance()
-//	private var numFilterBanks = fingerprintProperties.getNumFilterBanks()
 	private var bandwidthPerBank: Int
-//	private var anchorPointsIntervalLength = fingerprintProperties.getAnchorPointsIntervalLength()
-//	private var numAnchorPointsPerInterval = fingerprintProperties.getNumAnchorPointsPerInterval()
-//	private var maxTargetZoneDistance = fingerprintProperties.getMaxTargetZoneDistance()
-//	private var numFrequencyUnits = fingerprintProperties.getNumFrequencyUnits()
-
 	private var maxPairs: Int
 	private var isReferencePairing: Bool
-//	private var stopPairTable = HashMap<Integer, Boolean>()
 	private var stopPairTable = [Int : Bool]()
 
 	// MARK: -
 
 	init()
 	{
-		numFrequencyUnits = (upperBoundedFrequency - lowerBoundedFrequency + 1) / fps + 1
-		bandwidthPerBank = numFrequencyUnits / numFilterBanks
+		bandwidthPerBank = (numFrequencyUnits / numFilterBanks)
 
 		maxPairs = refMaxActivePairs
 		isReferencePairing = true
@@ -60,19 +42,18 @@ class PairManager {
 	/**
 	* Constructor, number of pairs of robust points depends on the parameter isReferencePairing
 	* no. of pairs of reference and sample can be different due to environmental influence of source
-	* @param isReferencePairing
 	*/
 
 	init(isReferencePairing: Bool)
 	{
-		numFrequencyUnits = (upperBoundedFrequency - lowerBoundedFrequency + 1) / fps + 1
-		bandwidthPerBank = numFrequencyUnits / numFilterBanks
+		bandwidthPerBank = (numFrequencyUnits / numFilterBanks)
 
 		if (isReferencePairing) {
 			maxPairs = refMaxActivePairs
 		} else {
 			maxPairs = sampleMaxActivePairs
 		}
+
 		self.isReferencePairing = isReferencePairing
 	}
 
@@ -219,6 +200,9 @@ class PairManager {
 		return pairList
 	}
 
+	// MARK: -
+	// MARK: Private
+
 	private func getSortedCoordinateList(fingerprint: [UInt8]) -> [ArrayCoord]
 	{
 		// each point data is 8 bytes
@@ -258,30 +242,6 @@ class PairManager {
 		// ----
 */
 		return sortedCoordinateList
-	}
-
-	/**
-	* Convert hashed pair to bytes
-	*
-	* @param pairHashcode hashed pair
-	* @return byte array
-	*/
-
-	static func pairHashcodeToBytes(_ pairHashcode: Int) -> [UInt8]
-	{
-		return [ UInt8((pairHashcode >> 8) & 0xFF), UInt8(pairHashcode & 0xFF) ]
-	}
-
-	/**
-	* Convert bytes to hased pair
-	*
-	* @param pairBytes
-	* @return hashed pair
-	*/
-
-	static func pairBytesToHashcode(_ pairBytes: [UInt8]) -> Int
-	{
-		return Int(pairBytes[0] & 0xFF) << 8 | Int(pairBytes[1] & 0xFF)
 	}
 
 }

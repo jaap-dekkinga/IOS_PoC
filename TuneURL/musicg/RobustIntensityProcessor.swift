@@ -12,6 +12,7 @@ import Foundation
 
 class RobustIntensityProcessor {
 
+	// private
 	private var intensities: [[Float]]
 	private var numPointsPerFrame: Int
 
@@ -30,13 +31,12 @@ class RobustIntensityProcessor {
 		var processedIntensities = [[Float]](repeating: [Float](repeating: 0.0, count: numY), count: numX)
 
 		for i in 0 ..< numX {
-//			var tmpArray = intensities[i]
-//			var tmpArray = [Float](repeating: 0.0, count: numY)
-//			System.arraycopy(intensities[i], 0, tmpArray, 0, numY)
+
+			// TODO: Optimization: Using a sorted array is overkill.
+			// Instead find the smallest value and use that as the pass value.
 
 			// pass value is the last some elements in sorted array
 			let arrayRankFloat = ArrayRankFloat(array: intensities[i])
-//			let passValue = arrayRankFloat.getNthOrderedValue(tmpArray, numPointsPerFrame, false)
 			let passValue = arrayRankFloat.getNthOrderedValue(n: numPointsPerFrame, ascending: false)
 
 			// only passed elements will be assigned a value

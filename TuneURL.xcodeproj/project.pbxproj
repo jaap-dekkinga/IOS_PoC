@@ -41,6 +41,7 @@
 		EC30069423317E6D0013B8F8 /* FingerprintSimilarityComputer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068723317E6D0013B8F8 /* FingerprintSimilarityComputer.swift */; };
 		EC30069523317E6D0013B8F8 /* FastFourierTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068823317E6D0013B8F8 /* FastFourierTransform.swift */; };
 		EC30069723317E8E0013B8F8 /* Trigger-Audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = EC30069623317E8E0013B8F8 /* Trigger-Audio.wav */; };
+		EC31C3BE2333A43500D8E57C /* FingerprintProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C3BD2333A43500D8E57C /* FingerprintProperties.swift */; };
 		EC4E097F231EDF8300445E52 /* AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E097E231EDF8300445E52 /* AudioBuffer.swift */; };
 		EC4E0980231EE76600445E52 /* AudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E097C231EDC6500445E52 /* AudioCapture.swift */; };
 /* End PBXBuildFile section */
@@ -96,6 +97,7 @@
 		EC30068723317E6D0013B8F8 /* FingerprintSimilarityComputer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FingerprintSimilarityComputer.swift; sourceTree = "<group>"; };
 		EC30068823317E6D0013B8F8 /* FastFourierTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastFourierTransform.swift; sourceTree = "<group>"; };
 		EC30069623317E8E0013B8F8 /* Trigger-Audio.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Trigger-Audio.wav"; sourceTree = "<group>"; };
+		EC31C3BD2333A43500D8E57C /* FingerprintProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FingerprintProperties.swift; sourceTree = "<group>"; };
 		EC4E097C231EDC6500445E52 /* AudioCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioCapture.swift; sourceTree = "<group>"; };
 		EC4E097E231EDF8300445E52 /* AudioBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioBuffer.swift; sourceTree = "<group>"; };
 		ECBD100E2322EFDC005415EF /* UpdateBuildNumber.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = UpdateBuildNumber.sh; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				EC30067D23317E6D0013B8F8 /* ArrayRankFloat.swift */,
 				EC30068823317E6D0013B8F8 /* FastFourierTransform.swift */,
 				EC30068523317E6D0013B8F8 /* FingerprintManager.swift */,
+				EC31C3BD2333A43500D8E57C /* FingerprintProperties.swift */,
 				EC30068623317E6D0013B8F8 /* FingerprintSimilarity.swift */,
 				EC30068723317E6D0013B8F8 /* FingerprintSimilarityComputer.swift */,
 				EC30067C23317E6D0013B8F8 /* MapRankInteger.swift */,
@@ -395,6 +398,7 @@
 				EC30068C23317E6D0013B8F8 /* AudioUtility.swift in Sources */,
 				EC30069523317E6D0013B8F8 /* FastFourierTransform.swift in Sources */,
 				EC30069223317E6D0013B8F8 /* FingerprintManager.swift in Sources */,
+				EC31C3BE2333A43500D8E57C /* FingerprintProperties.swift in Sources */,
 				EC30069323317E6D0013B8F8 /* FingerprintSimilarity.swift in Sources */,
 				EC30069423317E6D0013B8F8 /* FingerprintSimilarityComputer.swift in Sources */,
 				EC30068923317E6D0013B8F8 /* MapRankInteger.swift in Sources */,

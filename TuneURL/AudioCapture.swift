@@ -123,15 +123,14 @@ class AudioCapture: NSObject {
 		let audioMatcher = AppDelegate.audioMatcher
 		let triggerFingerprint = audioMatcher.triggerFingerprint
 
-		// compare the fingerprint similarity
+		// calculate the fingerprint match results
 		let fingerprintComputer = FingerprintSimilarityComputer(fingerprint1: bufferFingerprint, fingerprint2: triggerFingerprint)
-//		let fingerprintComputer = FingerprintSimilarityComputer(fingerprint1: triggerFingerprint, fingerprint2: bufferFingerprint)
-		let similarity = fingerprintComputer.getFingerprintsSimilarity()
-		if (similarity.getSimilarity() > 0.1) {
+		let matchResults = fingerprintComputer.getMatchResults()
+		if (matchResults.similarity > 0.1) {
 
 			// calculate the time of the sound relative to now
-			let mostSimilarStartingTime = similarity.getsetMostSimilarTimePosition()
-			let similarityConfidence = similarity.getSimilarity()
+			let mostSimilarStartingTime = matchResults.mostSimilarStartTime
+			let similarityConfidence = matchResults.similarity
 			let relativeTime = (Float(triggerWindowDuration) - mostSimilarStartingTime)
 			print("\tTrigger detected \(relativeTime) seconds ago.")
 
@@ -143,10 +142,10 @@ class AudioCapture: NSObject {
 #if DEBUG
 			// dump fingerprint data
 			var string = ""
-			string += "\tFingerprint score: \(similarity.getScore())\n"
-			string += "\tFingerprint similarity: \(similarity.getSimilarity())\n"
-			string += "\tFingerprint similar time: \(similarity.getsetMostSimilarTimePosition())\n"
-			string += "\tFingerprint most similar frame: \(similarity.getMostSimilarFramePosition())\n"
+			string += "\tFingerprint score: \(matchResults.score)\n"
+			string += "\tFingerprint similarity: \(matchResults.similarity)\n"
+			string += "\tFingerprint similar time: \(matchResults.mostSimilarStartTime)\n"
+			string += "\tFingerprint most similar frame: \(matchResults.mostSimilarFramePosition)\n"
 			print(string)
 
 			// create the file name

@@ -15,6 +15,8 @@ struct ArrayCoord {
 	var x: Int
 	var y: Int
 
+	// MARK: -
+
 	init(x: Int, y: Int)
 	{
 		self.x = x

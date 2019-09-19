@@ -12,14 +12,14 @@ import Foundation
 
 class MapRankInteger {
 
-	private var map: Dictionary<Int, Int>
-	private var ascending = true
-
+	// private
+	private var map: [Int : Int]
 	private var array: [Int]
+	private var ascending = true
 
 	// MARK: -
 
-	init(_ map: Dictionary<Int, Int>, ascending: Bool)
+	init(_ map: [Int : Int], ascending: Bool)
 	{
 		self.map = map
 		self.ascending = ascending
@@ -150,12 +150,9 @@ class MapRankInteger {
 	// sort the partitions by quick sort, and locate the target index
 	private func locate(_ left: Int, _ right: Int, _ index: Int)
 	{
-		let mid = (left + right) / 2
-		//System.out.println(left+" to "+right+" ("+mid+")");
+		let mid = ((left + right) / 2)
 
 		if (right == left) {
-			//System.out.println("* "+array[targetIndex]);
-			//result=array[targetIndex];
 			return
 		}
 
@@ -165,13 +162,10 @@ class MapRankInteger {
 			var j = (right + 1)
 
 			while (true) {
-
-//				while(array[++i] < s) ;
 				repeat {
 					i += 1
 				} while (array[i] < s)
 
-//				while(array[--j] > s) ;
 				repeat {
 					j -= 1
 				} while (array[j] > s)
@@ -183,15 +177,11 @@ class MapRankInteger {
 				swap(i, j)
 			}
 
-			//System.out.println("2 parts: "+left+"-"+(i-1)+" and "+(j+1)+"-"+right);
-
 			if (i > index) {
 				// the target index in the left partition
-				//System.out.println("left partition");
 				locate(left, i - 1, index)
 			} else {
 				// the target index in the right partition
-				//System.out.println("right partition");
 				locate(j + 1, right, index)
 			}
 		}

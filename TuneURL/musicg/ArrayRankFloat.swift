@@ -42,6 +42,7 @@ public class ArrayRankFloat {
 	}
 
 	// MARK: -
+	// MARK: Private
 
 	private func getOrderedValue(index: Int) -> Float
 	{

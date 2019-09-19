@@ -12,8 +12,11 @@ import Foundation
 
 class QuickSortInteger {
 
-	private var indexes: [Int]
+	// private
 	private var array: [Int]
+	private var indexes: [Int]
+
+	// MARK: -
 
 	init(_ array: [Int])
 	{
@@ -26,16 +29,13 @@ class QuickSortInteger {
 
 	func getSortIndexes() -> [Int]
 	{
-		sort()
+		quicksort(0, (indexes.count - 1))
 		return indexes
 	}
 
-	private func sort()
-	{
-		quicksort(0, indexes.count - 1)
-	}
+	// MARK: -
+	// MARK: Private
 
-	// quicksort a[left] to a[right]
 	private func quicksort(_ left: Int, _ right: Int)
 	{
 		if (right <= left) {
@@ -43,20 +43,19 @@ class QuickSortInteger {
 		}
 
 		let i = partition(left, right)
-		quicksort(left, i - 1)
-		quicksort(i + 1, right)
+		quicksort(left, (i - 1))
+		quicksort((i + 1), right)
 	}
 
 	// partition a[left] to a[right], assumes left < right
 	private func partition(_ left: Int, _ right: Int) -> Int
 	{
-		var i = left - 1
+		var i = (left - 1)
 		var j = right
 
 		while (true) {
 			// find item on left to swap, a[right] acts as sentinel
 
-//			while (array[indexes[++i]] < array[indexes[right]]);
 			repeat {
 				i += 1
 			} while (array[indexes[i]] < array[indexes[right]])
@@ -90,7 +89,6 @@ class QuickSortInteger {
 		return i
 	}
 
-	// exchange a[i] and a[j]
 	private func swap(_ i: Int, _ j: Int)
 	{
 		let swap = indexes[i]

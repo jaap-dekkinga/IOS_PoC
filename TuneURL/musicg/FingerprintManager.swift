@@ -10,38 +10,19 @@
 import Foundation
 
 
-var TEMPindex = 0
-
-
 class FingerprintManager {
 
-	// From FingerPrintProperties
-	let sampleRate: Float = (2048.0 * 5.0)
-	let numFilterBanks = 4
-	// ----
+	// private
+	private let sampleRate = FingerprintProperties.sampleRate
+	private let numFilterBanks = FingerprintProperties.numFilterBanks
+
+	// MARK: -
 
 	func extractFingerprint(_ wave: [Int16], resample: Bool) -> [UInt8]?
 	{
-//		int[][] coordinates;	// coordinates[x][0..3]=y0..y3
-//		byte[] fingerprint=new byte[0];
-/*
-		// resample to target rate
-		Resampler resampler=new Resampler();
-		int sourceRate = wave.getWaveHeader().getSampleRate();
-		int targetRate = fingerprintProperties.getSampleRate();
-
-		byte[] resampledWaveData=resampler.reSample(wave.getBytes(), wave.getWaveHeader().getBitsPerSample(), sourceRate, targetRate);
-
-		// update the wave header
-		WaveHeader resampledWaveHeader=wave.getWaveHeader();
-		resampledWaveHeader.setSampleRate(targetRate);
-
-		// make resampled wave
-		Wave resampledWave=new Wave(resampledWaveHeader,resampledWaveData);
-		// end resample to target rate
-*/
-
+		// resample the wave
 		let resampledWave: [Int16]
+
 		if (resample) {
 			guard let resampled = AudioUtility.changeSampleRate(sampleRate: Double(sampleRate), buffer1: wave) else {
 				return nil
@@ -50,7 +31,6 @@ class FingerprintManager {
 		} else {
 			resampledWave = wave
 		}
-
 
 // TEMP: dump the resampled file
 /*
@@ -67,23 +47,15 @@ class FingerprintManager {
 */
 // ----
 
+		let numRobustPointsPerFrame = FingerprintProperties.numRobustPointsPerFrame
+		let overlapFactor = FingerprintProperties.overlapFactor
+		let sampleSizePerFrame = FingerprintProperties.sampleSizePerFrame
 
-		// from FingerprintProperties
-		// number of points in each frame, i.e. top 4 intensities in fingerprint
-		let numRobustPointsPerFrame = 4
-
-		// overlapFactor: 8 means each move 1/8 nSample length. 1 means no overlap, better 1,2,4,8 ...	32
-		let overlapFactor = 4
-		// sampleSizePerFrame: number of audio samples in a frame, it is suggested to be the FFT Size
-		let sampleSizePerFrame = 2048
-		// ----
-
-		// get spectrogram's data
-//		Spectrogram spectrogram=resampledWave.getSpectrogram(sampleSizePerFrame, overlapFactor)
+		// get the spectrogram data
 		let spectrogram = Spectrogram(wave: resampledWave, fftSampleSize: sampleSizePerFrame, overlapFactor: overlapFactor)
 		let spectrogramData = spectrogram.getNormalizedSpectrogramData()
 
-//		List<Integer>[] pointsLists = getRobustPointList(spectrogramData)
+		// get the robust point list
 		var pointsLists = getRobustPointList(spectrogramData)
 		let numFrames = pointsLists.count
 
@@ -107,53 +79,37 @@ class FingerprintManager {
 		}
 		// end make fingerprint
 
-		// for each valid coordinate, append with its intensity
-//		List<Byte> byteList=new LinkedList<Byte>();
-		var byteList = [UInt8]()
+		// build the fingerprint data
+		var fingerprintData = [UInt8]()
 
 		for i in 0 ..< numFrames {
 			for j in 0 ..< numRobustPointsPerFrame {
 				if (coordinates[i][j] != -1) {
-					// first 2 bytes is x
+					// x-coordinate (2 byte integer)
 					let x = i
-					byteList.append(UInt8((x >> 8) & 0xFF))
-					byteList.append(UInt8(x & 0xFF))
+					fingerprintData.append(UInt8((x >> 8) & 0xFF))
+					fingerprintData.append(UInt8(x & 0xFF))
 
-					// next 2 bytes is y
+					// y-coordinate (2 byte integer)
 					let y = coordinates[i][j]
-					byteList.append(UInt8((y >> 8) & 0xFF))
-					byteList.append(UInt8(y & 0xFF))
+					fingerprintData.append(UInt8((y >> 8) & 0xFF))
+					fingerprintData.append(UInt8(y & 0xFF))
 
-					// next 4 bytes is intensity
-					let intMax = Double(0x7FFFFFFF)
-//					let intMax = Double(UInt32.max)
+					// intensity (4 byte integer)
+					let integerMax = Double(0x7FFFFFFF)
 					let intensityFloat = spectrogramData[x][y]
-					let intensityDouble = (Double(intensityFloat) * intMax)
+					let intensityDouble = (Double(intensityFloat) * integerMax)
 					let intensity = Int(intensityDouble)
-//					let intensity = Int(intensityFloat * Float(UInt32.max))
-					// spectrogramData is ranged from 0~1
-					byteList.append(UInt8((intensity >> 24) & 0xFF))
-					byteList.append(UInt8((intensity >> 16) & 0xFF))
-					byteList.append(UInt8((intensity >> 8) & 0xFF))
-					byteList.append(UInt8(intensity & 0xFF))
+					fingerprintData.append(UInt8((intensity >> 24) & 0xFF))
+					fingerprintData.append(UInt8((intensity >> 16) & 0xFF))
+					fingerprintData.append(UInt8((intensity >> 8) & 0xFF))
+					fingerprintData.append(UInt8(intensity & 0xFF))
 				}
 			}
 		}
-		// end for each valid coordinate, append with its intensity
 
-		// TODO: finish below...
-
-		return byteList
-/*
-		fingerprint = new byte[byteList.count]
-		Iterator<Byte> byteListIterator=byteList.iterator();
-		int pointer = 0;
-		while(byteListIterator.hasNext()) {
-			fingerprint[pointer++] = byteListIterator.next();
-		}
-
-		return fingerprint;
-*/	}
+		return fingerprintData
+	}
 
 
 	// robustLists[x]=y1,y2,y3,...
