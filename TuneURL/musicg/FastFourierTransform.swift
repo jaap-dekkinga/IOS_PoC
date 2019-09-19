@@ -22,7 +22,7 @@ class FastFourierTransform {
 	var complexARealP: [Float]
 	var complexAImagP: [Float]
 
-	// Your fft output data
+	// output data
 	var outFFTData: [Float]
 
 	// MARK: -
@@ -69,26 +69,16 @@ class FastFourierTransform {
 				complexAImagP.withUnsafeMutableBufferPointer {
 					imagPBufferPointer in
 
+					// copy the contents of an interleaved complex vector C to a split complex vector Z; single precision.
 					var complexA = COMPLEX_SPLIT(realp: realPBufferPointer.baseAddress!, imagp: imagPBufferPointer.baseAddress!)
-//					complexA.realp = realPBufferPointer.baseAddress!
-//					complexA.imagp = imagPBufferPointer.baseAddress!
-
-					// Convert float array of reals samples to COMPLEX_SPLIT array A
-
-					// Copies the contents of an interleaved complex vector C to a split complex vector Z; single precision.
 					vDSP_ctoz(timeDomainPointer, 2, &complexA, 1, vDSP_Length(fftFrameSize))
 
 					// Perform FFT using fftSetup and A
 					// Results are returned in A
 
-					// Computes an in-place single-precision real discrete Fourier transform, either from the time domain to the frequency domain (forward) or from the frequency domain to the time domain (inverse).
-//					vDSP_fft_zrip(setup, &complexA, 1, log2n, FFTDirection(FFT_FORWARD))
+					// in-place single-precision complex discrete Fourier transform
 					vDSP_fft_zip(setup, &complexA, 1, log2n, FFTDirection(FFT_FORWARD))
 
-					// scale fft
-					// Single-precision real vector-scalar multiply.
-//					vDSP_vsmul(complexA.realp, 1, &mFFTNormFactor, complexA.realp, 1, fftFrameSize)
-//					vDSP_vsmul(complexA.imagp, 1, &mFFTNormFactor, complexA.imagp, 1, fftFrameSize)
 /*
 					outFFTData.withUnsafeMutableBufferPointer {
 						outFFTDataBufferPointer in
@@ -99,10 +89,6 @@ class FastFourierTransform {
 						vDSP_zvmags(&complexA, 1, outDataPointer, 1, fftFrameSize)
 					}
 */
-					//to check everything =============================
-//					vDSP_fft_zrip(setup, &complexA, 1, log2n, FFTDirection(FFT_INVERSE))
-//					vDSP_ztoc(&complexA, 1, (COMPLEX*)invertedCheckData , 2, (numSamples / 2))
-					//=================================================
 				}
 			}
 		}

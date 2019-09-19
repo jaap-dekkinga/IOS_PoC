@@ -10,8 +10,9 @@
 import Foundation
 
 
-public class ArrayRankFloat {
+class ArrayRankFloat {
 
+	// private
 	private var array: [Float]
 
 	// MARK: -

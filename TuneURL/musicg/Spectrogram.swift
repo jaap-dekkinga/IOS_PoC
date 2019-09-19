@@ -20,8 +20,8 @@ class Spectrogram {
 	private var waveData: [Int16]
 	private var waveDuration: Float = 0.0
 
-	private var fftSampleSize: Int		// number of samples in fft, the value needed to be a number to power of 2
-	private var overlapFactor: Int		// 1 / overlapFactor overlapping, e.g. 1 / 4 = 25% overlapping
+	private var fftSampleSize: Int	// number of samples in fft, the value needed to be a number to power of 2
+	private var overlapFactor: Int	// 1 / overlapFactor overlapping, e.g. 1 / 4 = 25% overlapping
 
 	// MARK: -
 
@@ -41,15 +41,14 @@ class Spectrogram {
 	{
 		var amplitudes = waveData
 		var numSamples = amplitudes.count
-		var pointer = 0
 
-		// overlapping
+		// create the overlapping amplitude data
 		if (overlapFactor > 1) {
 			let numOverlappedSamples = (numSamples * overlapFactor)
 			let backSamples = fftSampleSize * (overlapFactor - 1) / overlapFactor
 			let fftSampleSize_1 = (fftSampleSize - 1)
 			var overlapAmp = [Int16](repeating: 0, count: numOverlappedSamples)
-			pointer = 0
+			var pointer = 0
 			var i = 0
 			while (i < amplitudes.count) {
 				overlapAmp[pointer] = amplitudes[i]
@@ -63,7 +62,7 @@ class Spectrogram {
 			numSamples = numOverlappedSamples
 			amplitudes = overlapAmp
 		}
-		// end overlapping
+
 /*
 		// TEMP: dump for comparison testing
 		print("buildSpectrogram amplitudes (\(amplitudes.count)):")
@@ -72,29 +71,25 @@ class Spectrogram {
 		}
 		// ----
 */
+
 		// number of frames of the spectrogram
 		let numFrames = (numSamples / fftSampleSize)
 
 		// TODO: Optimization: Use vDSP for the window function.
 
-		// set signals for fft
-		let window = WindowFunction()
-		window.windowType = .hamming
-		let win = window.generate(fftSampleSize)
+		// create the signals array for fft
+		let windowFunction = WindowFunction()
+		windowFunction.windowType = .hamming
+		let window = windowFunction.generate(fftSampleSize)
 
-//		double[][] signals=new double[numFrames][]
-		var signals = [[Float]](repeating: [Float](), count: numFrames)
-		for f in 0 ..< numFrames {
-			var array = [Float](repeating: 0.0, count: fftSampleSize)
-//			signals[f] = [Float](repeating: 0.0, count: fftSampleSize)
-			let startSample = (f * fftSampleSize)
+		var signals = [[Float]](repeating: [Float](repeating: 0.0, count: fftSampleSize), count: numFrames)
+		for frameIndex in 0 ..< numFrames {
+			let startSample = (frameIndex * fftSampleSize)
 			for n in 0 ..< fftSampleSize {
-//				signals[f][n] = amplitudes[startSample + n] * win[n]
-				array[n] = Float(amplitudes[startSample + n]) * win[n]
+				signals[frameIndex][n] = (Float(amplitudes[startSample + n]) * window[n])
 			}
-			signals[f] = array
 		}
-		// end set signals for fft
+
 /*
 		// TEMP: dump for comparison testing
 		print("buildSpectrogram signals (\(signals.count)):")
@@ -103,15 +98,16 @@ class Spectrogram {
 		}
 		// ----
 */
-		// TODO: move the FFT setup to initialization elsewhere (instead of every time)
 
-//		absoluteSpectrogram = new double[numFrames][]
+		// TODO: Optimization: Move the FFT setup elsewhere (instead of setting up every time).
+
 		absoluteSpectrogram = [[Float]](repeating: [Float](), count: numFrames)
 		// for each frame in signals, do fft on it
 		let fft = FastFourierTransform(fftSampleSize)
 		for i in 0 ..< numFrames {
 			absoluteSpectrogram[i] = fft.getMagnitudes(signals[i])
 		}
+
 /*
 		// TEMP: dump for comparison testing
 		print("buildSpectrogram absoluteSpectrogram (\(absoluteSpectrogram.count)):")
@@ -120,47 +116,45 @@ class Spectrogram {
 		}
 		// ----
 */
+
 		if (absoluteSpectrogram.count > 0) {
 
 			// number of y-axis unit
 			let numFrequencyUnit = absoluteSpectrogram[0].count
 
 			// get max and min amplitudes of the absoluteSpectrogram
-			var maxAmp = Float.leastNormalMagnitude
-			var minAmp = Float.greatestFiniteMagnitude
+			var maxAmplitude = Float.leastNormalMagnitude
+			var minAmplitude = Float.greatestFiniteMagnitude
 			for i in 0 ..< numFrames {
 				for j in 0 ..< numFrequencyUnit {
-					if (absoluteSpectrogram[i][j] > maxAmp) {
-						maxAmp = absoluteSpectrogram[i][j]
-					} else if (absoluteSpectrogram[i][j] < minAmp) {
-						minAmp = absoluteSpectrogram[i][j]
+					if (absoluteSpectrogram[i][j] > maxAmplitude) {
+						maxAmplitude = absoluteSpectrogram[i][j]
+					} else if (absoluteSpectrogram[i][j] < minAmplitude) {
+						minAmplitude = absoluteSpectrogram[i][j]
 					}
 				}
 			}
-			// end set max and min amplitudes
 
-			// normalization
-			// avoid divide by zero
-			let minValidAmp: Float = 0.00000000001
-			if (minAmp == 0.0) {
-				minAmp = minValidAmp
+			// safety check the minimum amplitude to avoid divide by zero
+			let minValidAmplitude: Float = 0.00000000001
+			if (minAmplitude == 0.0) {
+				minAmplitude = minValidAmplitude
 			}
 
-			// normalization of absoluteSpectrogram
-//			spectrogram = new double[numFrames][numFrequencyUnit]
+			// normalize the absolute spectrogram
 			spectrogram = [[Float]](repeating: [Float](repeating: 0.0, count: numFrequencyUnit), count: numFrames)
 
-			let diff = log10(maxAmp / minAmp)	// perceptual difference
+			let diff = log10(maxAmplitude / minAmplitude)	// perceptual difference
 			for i in 0 ..< numFrames {
 				for j in 0 ..< numFrequencyUnit {
-					if (absoluteSpectrogram[i][j] < minValidAmp) {
-						spectrogram[i][j] = 0
+					if (absoluteSpectrogram[i][j] < minValidAmplitude) {
+						spectrogram[i][j] = 0.0
 					} else {
-						spectrogram[i][j] = (log10(absoluteSpectrogram[i][j] / minAmp)) / diff
+						spectrogram[i][j] = ((log10(absoluteSpectrogram[i][j] / minAmplitude)) / diff)
 					}
 				}
 			}
-			// end normalization
+
 /*
 	// TEMP: dump for comparison testing
 			print("buildSpectrogram spectrogram (\(spectrogram.count)):")
@@ -169,6 +163,7 @@ class Spectrogram {
 			}
 	// ----
 */
+
 		}
 	}
 
@@ -176,9 +171,5 @@ class Spectrogram {
 	{
 		return spectrogram
 	}
-/*
-	public double[][] getAbsoluteSpectrogramData(){
-	return absoluteSpectrogram
-	}
-*/
+
 }

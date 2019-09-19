@@ -27,13 +27,10 @@ class MapRankInteger {
 		array = [Int](repeating: 0, count: map.count)
 	}
 
-	public func getOrderedKeyList(_ numKeys1: Int, _ sharpLimit: Bool) -> [Int]
+	func getOrderedKeyList(_ numKeys1: Int, _ sharpLimit: Bool) -> [Int]
 	{
 		// if sharp limited, will return sharp numKeys, otherwise will return until the values not equals the exact key's value
 
-//		Set mapEntrySet = map.entrySet()
-		let mapEntrySet = map.values
-//		var keyList = new LinkedList()
 		var keyList = [Int]()
 		var numKeys = numKeys1
 
@@ -41,85 +38,60 @@ class MapRankInteger {
 		if (numKeys > map.count) {
 			numKeys = map.count
 		}
-		// end if the numKeys is larger than map size, limit it
 
 		if (map.count > 0) {
 //			var array = [Int](repeating: 0, count: map.count)
 			var count = 0
 
 			// get the pass values
-//			Iterator<Entry> mapIterator = mapEntrySet.iterator();
-//			while (mapIterator.hasNext()) {
-//				Entry entry = mapIterator.next();
-			for entry in mapEntrySet {
-//				array[count++] = (Integer)entry.getValue();
-				array[count] = entry
+			for value in map.values {
+				array[count] = value
 				count += 1
 			}
-			// end get the pass values
 
 			var targetindex: Int
 			if (ascending) {
 				targetindex = numKeys
 			} else {
-				targetindex = array.count - numKeys
+				targetindex = (array.count - numKeys)
 			}
 
-			let passValue = getOrderedValue(targetindex)	// this value is the value of the numKey-th element
 			// get the passed keys and values
-//			Map passedMap = new HashMap()
+			let passValue = getOrderedValue(targetindex)	// this value is the value of the numKey-th element
 			var passedMap = [Int : Int]()
-//			List<Integer> valueList = new LinkedList<Integer>()
 			var valueList = [Int]()
 
-//			mapIterator = mapEntrySet.iterator()
-//			while (mapIterator.hasNext()){
-//				Entry entry=mapIterator.next();
-			for (entryKey, value) in map {
-
-//				int value=(Integer)entry.getValue();
-
-				if ((ascending && value <= passValue) || (!ascending && value >= passValue)) {
-//					passedMap.put(entry.getKey(), value);
-					passedMap[entryKey] = value
+			for (key, value) in map {
+				if ((ascending && (value <= passValue)) || (!ascending && (value >= passValue))) {
+					passedMap[key] = value
 					valueList.append(value)
 				}
 			}
-			// end get the passed keys and values
 
 			// sort the value list
-//			Integer[] listArr = new Integer[valueList.count]
-//			valueList.toArray(listArr)
-			var listArr = valueList
-//			Arrays.sort(listArr);
-			listArr.sort()
-			// end sort the value list
+			var sortedValueList = valueList.sorted()
 
 			// get the list of keys
 			var resultCount = 0
 			var index: Int
-			if (ascending){
+
+			if (ascending) {
 				index = 0
 			} else {
-				index = listArr.count - 1
+				index = (sortedValueList.count - 1)
 			}
 
 			if (!sharpLimit) {
-				numKeys = listArr.count
+				numKeys = sortedValueList.count
 			}
 
 			while (true) {
-				let targetValue = listArr[index]
-//				Iterator<Entry> passedMapIterator = passedMap.entrySet().iterator();
-//				while(passedMapIterator.hasNext()) {
-//					Entry entry=passedMapIterator.next()
-				for (entryKey, entryValue) in passedMap {
-//					if ((Integer)entry.getValue()==targetValue) {
-					if (entryValue == targetValue) {
-//						keyList.append(entry.getKey())
-						keyList.append(entryKey)
-//						passedMapIterator.remove()
-						passedMap.removeValue(forKey: entryKey)
+				let targetValue = sortedValueList[index]
+
+				for (key, value) in passedMap {
+					if (value == targetValue) {
+						keyList.append(key)
+						passedMap.removeValue(forKey: key)
 						resultCount += 1
 						break
 					}
@@ -135,15 +107,17 @@ class MapRankInteger {
 					break
 				}
 			}
-			// end get the list of keys
 		}
 
 		return keyList
 	}
 
+	// MARK: -
+	// MARK: Private
+
 	private func getOrderedValue(_ index: Int) -> Int
 	{
-		locate(0, array.count - 1, index)
+		locate(0, (array.count - 1), index)
 		return array[index]
 	}
 
@@ -179,10 +153,10 @@ class MapRankInteger {
 
 			if (i > index) {
 				// the target index in the left partition
-				locate(left, i - 1, index)
+				locate(left, (i - 1), index)
 			} else {
 				// the target index in the right partition
-				locate(j + 1, right, index)
+				locate((j + 1), right, index)
 			}
 		}
 	}

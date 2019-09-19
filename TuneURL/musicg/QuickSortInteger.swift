@@ -21,6 +21,7 @@ class QuickSortInteger {
 	init(_ array: [Int])
 	{
 		self.array = array
+
 		indexes = [Int](repeating: 0, count: array.count)
 		for i in 0 ..< indexes.count {
 			indexes[i] = i
@@ -47,7 +48,6 @@ class QuickSortInteger {
 		quicksort((i + 1), right)
 	}
 
-	// partition a[left] to a[right], assumes left < right
 	private func partition(_ left: Int, _ right: Int) -> Int
 	{
 		var i = (left - 1)
@@ -61,9 +61,9 @@ class QuickSortInteger {
 			} while (array[indexes[i]] < array[indexes[right]])
 
 			// find item on right to swap
-//			while (array[indexes[right]] < array[indexes[--j]]) {
 			while (true) {
 				j -= 1
+
 				if (!(array[indexes[right]] < array[indexes[j]])) {
 					break
 				}

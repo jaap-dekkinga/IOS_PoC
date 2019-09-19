@@ -13,8 +13,8 @@ import Foundation
 class FingerprintManager {
 
 	// private
-	private let sampleRate = FingerprintProperties.sampleRate
 	private let numFilterBanks = FingerprintProperties.numFilterBanks
+	private let sampleRate = FingerprintProperties.sampleRate
 
 	// MARK: -
 
@@ -65,7 +65,7 @@ class FingerprintManager {
 
 		for x in 0 ..< numFrames {
 			if (pointsLists[x].count == numRobustPointsPerFrame) {
-//				Iterator<Integer> pointsListsIterator=pointsLists[x].iterator();
+//				Iterator<Integer> pointsListsIterator=pointsLists[x].iterator()
 				for y in 0 ..< numRobustPointsPerFrame {
 //					coordinates[x][y] = pointsListsIterator.next()
 					coordinates[x][y] = pointsLists[x][y]
@@ -77,7 +77,6 @@ class FingerprintManager {
 				}
 			}
 		}
-		// end make fingerprint
 
 		// build the fingerprint data
 		var fingerprintData = [UInt8]()
@@ -111,8 +110,10 @@ class FingerprintManager {
 		return fingerprintData
 	}
 
+	// MARK: -
+	// MARK: Private
 
-	// robustLists[x]=y1,y2,y3,...
+	// robustLists[x] = y1, y2, y3, ...
 	private func getRobustPointList(_ spectrogramData: [[Float]]) -> [[Int]]
 	{
 		let numX = spectrogramData.count
@@ -132,8 +133,6 @@ class FingerprintManager {
 			}
 
 			// get the most robust point in each filter bank
-//			let processorChain = TopManyPointsProcessorChain(bankIntensities, 1)
-//			var processedIntensities = processorChain.getIntensities()
 			let processor = RobustIntensityProcessor(intensities: bankIntensities, numPointsPerFrame: 1)
 			processor.execute()
 			let processedIntensities = processor.getIntensities()
@@ -145,35 +144,20 @@ class FingerprintManager {
 			}
 		}
 
-//		List<int[]> robustPointList = new LinkedList<int[]>()
 		var robustPointList = [ArrayCoord]()
 
 		// find robust points
 		for i in 0 ..< allBanksIntensities.count {
 			for j in 0 ..< allBanksIntensities[i].count {
 				if (allBanksIntensities[i][j] > 0.0) {
-
-//					int[] point = new int[]{i,j}
-					//System.out.println(i+","+frequency)
-//					robustPointList.add(point)
 					robustPointList.append(ArrayCoord(x: i, y: j))
 				}
 			}
 		}
-		// end find robust points
 
-//		List<Integer>[] robustLists = new LinkedList[spectrogramData.count]
-//		for i in 0 ..< robustLists.count {
-//			robustLists[i] = new LinkedList<Integer>()
-//		}
+		// robustLists[x] = y1, y2, y3, ...
 		var robustLists = [[Int]](repeating: [Int](), count: spectrogramData.count)
-
-		// robustLists[x]=y1,y2,y3,...
-//		Iterator<int[]> robustPointListIterator=robustPointList.iterator();
 		for coord in robustPointList {
-//		while (robustPointListIterator.hasNext()) {
-//			int[] coor=robustPointListIterator.next()
-//			robustLists[coor[0]].append(coor[1])
 			robustLists[coord.x].append(coord.y)
 		}
 
@@ -189,7 +173,7 @@ class FingerprintManager {
 			return 0
 		}
 
-		// get the last x-coordinate (length-8&length-7)bytes from fingerprint
+		// get the last x-coordinate (length - 8 & length - 7) bytes from fingerprint
 		let numFrames = ((Int(fingerprint[fingerprint.count - 8] & 0xFF) << 8) | Int(fingerprint[fingerprint.count - 7] & 0xFF)) + 1
 		return numFrames
 	}
