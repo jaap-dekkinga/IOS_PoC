@@ -22,7 +22,7 @@ class AudioBuffer {
 	private let bufferQueue: DispatchQueue
 
 	// memory buffer
-	private var memoryBuffer: [UInt8]
+	private var memoryBuffer: Data
 	private var memoryBufferCurrentOffset = 0
 	private var memoryBufferCurrentSize = 0
 	private var memoryBufferMaxSize = 0
@@ -31,6 +31,9 @@ class AudioBuffer {
 	private let sampleRate: Double
 	private let sampleSize = 2	// 16-bit mono audio sample size (in bytes)
 
+	// fingerprint detection
+	private var untestedSize = 0
+
 	// MARK: -
 
 	var totalTimeRecorded: Double {
@@ -38,11 +41,16 @@ class AudioBuffer {
 		return (Double(memoryBufferCurrentSize / sampleSize) / sampleRate)
 	}
 
+	var untestedTime: Double {
+		// calculate the untested duration (in seconds)
+		return ((Double(untestedSize) / Double(sampleSize)) / sampleRate)
+	}
+
 	// MARK: -
 
 	static func dataSizeForRecordingTime(_ seconds: Double, sampleRate: Double, sampleSize: Int) -> Int
 	{
-		// calculate the bytes required to save the recoring time
+		// calculate the bytes required to save the recording time
 		return Int(ceil((seconds * sampleRate) * Double(sampleSize)))
 	}
 
@@ -58,7 +66,7 @@ class AudioBuffer {
 
 		// setup the memory buffer
 		memoryBufferMaxSize = AudioBuffer.dataSizeForRecordingTime(captureDuration, sampleRate: sampleRate, sampleSize: sampleSize)
-		memoryBuffer = [UInt8](repeatElement(0, count: memoryBufferMaxSize))
+		memoryBuffer = Data(count: memoryBufferMaxSize)
 	}
 
 	deinit
@@ -76,6 +84,9 @@ class AudioBuffer {
 			// reset the buffer
 			self.memoryBufferCurrentOffset = 0
 			self.memoryBufferCurrentSize = 0
+
+			// reset fingerprint detection
+			self.untestedSize = 0
 
 		}
 	}
@@ -118,6 +129,7 @@ class AudioBuffer {
 					// update the buffer sizes
 					self.memoryBufferCurrentSize += availableSize
 					self.memoryBufferCurrentSize = min(self.memoryBufferCurrentSize, self.memoryBufferMaxSize)
+					self.untestedSize += availableSize
 					sampleBufferOffset += availableSize
 					copyLength -= availableSize
 				}
@@ -143,6 +155,66 @@ class AudioBuffer {
 			// update the buffer size
 			self.memoryBufferCurrentSize += copyLength
 			self.memoryBufferCurrentSize = min(self.memoryBufferCurrentSize, self.memoryBufferMaxSize)
+			self.untestedSize += copyLength
+		}
+	}
+
+	func copyBufferData(maxDuration: Double) -> [Int16]?
+	{
+		return bufferQueue.sync {
+
+			// safety check
+			guard (maxDuration > 1.0) else {
+				NSLog("AudioBuffer: Attempting to create sample buffer that's too short.")
+				return nil
+			}
+
+			// calculate the data size
+			let maxCopyLength = AudioBuffer.dataSizeForRecordingTime(maxDuration, sampleRate: sampleRate, sampleSize: sampleSize)
+			var memoryCopyLength = min(memoryBufferCurrentSize, maxCopyLength)
+
+			// check the memory copy length
+			guard (memoryCopyLength > 0) else {
+				return nil
+			}
+
+			// write the data from the memory buffer
+			var returnBuffer = [Int16](repeating: 0, count: (memoryCopyLength >> 1))
+			var returnBufferOffset = 0
+
+			// calculate the starting offset for the copy
+			var copyOffset = (memoryBufferCurrentOffset - memoryCopyLength)
+			if (copyOffset < 0) {
+				copyOffset += memoryBufferMaxSize
+			}
+
+			// start writing to the return buffer
+			returnBuffer.withUnsafeMutableBufferPointer {
+				returnBufferPointer in
+
+				// copy data from the memory buffer
+				while (memoryCopyLength > 0) {
+					let availableLength = (memoryBufferMaxSize - copyOffset)
+					let currentChunkLength = min(memoryCopyLength, availableLength)
+
+					let destinationSlice = returnBufferPointer[returnBufferOffset...]
+					let destinationBufferPointer = UnsafeMutableBufferPointer(rebasing: destinationSlice)
+
+					let sourceRange = (copyOffset ..< (copyOffset + currentChunkLength))
+					memoryBuffer.copyBytes(to: destinationBufferPointer, from: sourceRange)
+
+					// update the copy
+					returnBufferOffset += (currentChunkLength >> 1)
+					memoryCopyLength -= currentChunkLength
+					copyOffset += currentChunkLength
+					if (copyOffset >= memoryBufferMaxSize) {
+						// wrap to the start of the buffer
+						copyOffset = 0
+					}
+				}
+			}
+
+			return returnBuffer
 		}
 	}
 
@@ -167,28 +239,26 @@ class AudioBuffer {
 		}
 	}
 
+	func resetUntestedSize()
+	{
+		untestedSize = 0
+	}
+
 	// MARK: -
 	// MARK: Private
 
 	private func copyToMemoryBuffer(from sampleBuffer: AVAudioPCMBuffer, atOffset sampleBufferOffset: Int, toOffset memoryOffset: Int, length copyLength: Int)
 	{
-		// access the memory buffer
-		memoryBuffer.withUnsafeMutableBytes {
-			memoryBufferPointer in
+		if let int16Data = sampleBuffer.int16ChannelData {
+			let sourcePointer = int16Data[0].advanced(by: (sampleBufferOffset >> 1))
 
-			// create the copy pointers
-			let pointer = memoryBufferPointer.baseAddress
-			let destinationPointer = pointer?.advanced(by: memoryOffset)
-			if let int16Data = sampleBuffer.int16ChannelData {
-				let sourcePointer = int16Data[0].advanced(by: (sampleBufferOffset >> 1))
-
-				// copy the data
-				memcpy(destinationPointer, sourcePointer, copyLength)
-			}
+			// copy the data
+			let copyRange = (memoryOffset ..< (memoryOffset + copyLength))
+			memoryBuffer.replaceSubrange(copyRange, with: sourcePointer, count: copyLength)
 		}
 	}
 
-	func durationForDataSize(_ dataSize: Int) -> Double
+	private func durationForDataSize(_ dataSize: Int) -> Double
 	{
 		return (Double(dataSize / sampleSize) / sampleRate)
 	}

@@ -21,6 +21,7 @@ class AudioMatcher: NSObject {
 	// public
 	var delegate: AudioMatcherDelegate?
 	public private(set) var isRunning = false
+	var triggerFingerprint = [UInt8]()
 
 	// private
 	private let audioBuffer: AudioBuffer
@@ -50,6 +51,7 @@ class AudioMatcher: NSObject {
 		super.init()
 
 		audioBuffer.reset()
+		prepareAudioTrigger()
 	}
 
 	func start()
@@ -82,13 +84,13 @@ class AudioMatcher: NSObject {
 
 	// MARK: -
 
-	func recognizedSound(_ trackId: Int32, absoluteTimeOffset: Float, relativeTimeOffset: Float)
+	func recognizedSound(timeRelativeToNow: Float)
 	{
 		let formatter = DateFormatter()
 		formatter.dateStyle = .none
 		formatter.timeStyle = .medium
 		let currentTime = formatter.string(from: Date())
-		print("(\(currentTime)): Did Recognize: window time: \(-absoluteTimeOffset) seconds, \(-relativeTimeOffset) seconds ago")
+		print("(\(currentTime)): Did Recognize: window time: \(-timeRelativeToNow) seconds ago")
 
 		// verify matching is enabled
 		if self.enabled == false {
@@ -100,7 +102,7 @@ class AudioMatcher: NSObject {
 		// Note: adding a half second of audio to the identifiable audio section to accomodate
 		// processing time.
 		let identifiableAudioDuration = 5.0
-		let recordedSampleDuration = (Double(relativeTimeOffset) - triggerSoundDuration)
+		let recordedSampleDuration = (Double(timeRelativeToNow) - triggerSoundDuration)
 		var remainingTimeToRecord = (identifiableAudioDuration - recordedSampleDuration)
 		remainingTimeToRecord = max(remainingTimeToRecord, 0.0)
 
@@ -123,6 +125,71 @@ class AudioMatcher: NSObject {
 				// notify the delegate
 				self.delegate?.sampleReady(soundFileURL)
 			}
+		}
+	}
+
+	// MARK: -
+	// MARK: Private
+
+	private func generateFingerprint(for fileURL: URL, resample: Bool) -> [UInt8]?
+	{
+		var result: OSStatus = noErr
+		var audioFile: AudioFileID?
+		var propertyDataSize: UInt32 = 8
+		var dataSize: UInt64 = 0
+
+		result = AudioFileOpenURL(fileURL as CFURL, .readPermission, kAudioFileAIFFType, &audioFile)
+		if (result != noErr) {
+			print("AudioMatcher: Error opening audio file. \(result)")
+			return nil
+		}
+
+		result = AudioFileGetProperty(audioFile!, kAudioFilePropertyAudioDataByteCount, &propertyDataSize, &dataSize)
+		if (result != noErr) {
+			print("AudioMatcher: Error getting audio file property. \(result)")
+			return nil
+		}
+
+		let frameCount = UInt32(dataSize >> 1)	// 16-bit audio
+		var dataBuffer = [Int16](repeating: 0, count: Int(frameCount))
+		dataBuffer.withUnsafeMutableBytes {
+			bufferPointer in
+
+			var packetCount = frameCount
+			var dataRead = UInt32(dataSize)
+
+			result = AudioFileReadPacketData(audioFile!, false, &dataRead, nil, 0, &packetCount, bufferPointer.baseAddress)
+		}
+
+		// check the result of the read
+		if (result != noErr) {
+			print("AudioMatcher: Error reading audio file packet data. \(result)")
+			return nil
+		}
+
+		result = AudioFileClose(audioFile!)
+		if (result != noErr) {
+			print("AudioMatcher: Error closing audio file. \(result)")
+		}
+
+		let fingerprinter = FingerprintManager()
+		if let fingerprint = fingerprinter.extractFingerprint(dataBuffer, resample: resample) {
+			return fingerprint
+		}
+
+		return nil
+	}
+
+	private func prepareAudioTrigger()
+	{
+		// get the url for the trigger audio file
+		guard let triggerFileURL = Bundle.main.url(forResource: "Trigger-Audio", withExtension: "wav") else {
+			return
+		}
+
+		// create the fingerprint
+		if let fingerprint = generateFingerprint(for: triggerFileURL, resample: true) {
+			triggerFingerprint = fingerprint
 		}
 	}
 

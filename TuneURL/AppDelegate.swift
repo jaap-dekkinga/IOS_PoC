@@ -63,6 +63,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	}
 
+	// MARK: -
+	// MARK: Private
+
+	private func cleanDocumentsFolder()
+	{
+		let fileManager = FileManager.default
+
+		// get the documents folder
+		guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+			return
+		}
+
+		// delete every file in the folder
+		if let folderContents = try? fileManager.contentsOfDirectory(at: documentsDirectory, includingPropertiesForKeys: nil, options: []) {
+			for fileURL in folderContents {
+				_ = try? fileManager.removeItem(at: fileURL)
+			}
+		}
+	}
+
 }
 
 extension AppDelegate {
@@ -77,7 +97,12 @@ extension AppDelegate {
 
 	fileprivate func firstStart(_ application: UIApplication)
 	{
+		// clean the documents folder
+		cleanDocumentsFolder()
+
+		// setup the audio matcher
 		AppDelegate.audioMatcher.delegate = AppDelegate.notify
+
 		DispatchQueue.main.async {
 			self.enterForeground(application)
 		}

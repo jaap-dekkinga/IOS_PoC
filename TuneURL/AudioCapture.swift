@@ -27,6 +27,7 @@ class AudioCapture: NSObject {
 	private let audioSession = AVAudioSession.sharedInstance()
 	private var delegate: AudioCaptureDelegate?
 	private let sampleRate: Double
+	private let triggerWindowDuration = 4.0
 
 	// computed
 	var isRunning: Bool {
@@ -89,6 +90,7 @@ class AudioCapture: NSObject {
 		// stop the audio buffer
 		audioBuffer.stopRecording()
 
+		// TODO: restore audio sessions
 //		// stop the audio session
 //		_ = try? audioSession.setActive(false)
 
@@ -98,6 +100,71 @@ class AudioCapture: NSObject {
 
 	// MARK: -
 	// MARK: Private
+
+	private func checkForTriggerSound()
+	{
+		// TODO: move this into the audio matcher
+
+		print("AudioCapture: Checking for trigger sound.")
+		audioBuffer.resetUntestedSize()
+
+		// copy the sound data from the buffer
+		guard let bufferData = audioBuffer.copyBufferData(maxDuration: triggerWindowDuration) else {
+			return
+		}
+
+		// generate a fingerprint
+		let fingerprinter = FingerprintManager()
+		guard let bufferFingerprint = fingerprinter.extractFingerprint(bufferData, resample: true) else {
+			return
+		}
+
+		// get the trigger fingerprint
+		let audioMatcher = AppDelegate.audioMatcher
+		let triggerFingerprint = audioMatcher.triggerFingerprint
+
+		// compare the fingerprint similarity
+		let fingerprintComputer = FingerprintSimilarityComputer(fingerprint1: bufferFingerprint, fingerprint2: triggerFingerprint)
+//		let fingerprintComputer = FingerprintSimilarityComputer(fingerprint1: triggerFingerprint, fingerprint2: bufferFingerprint)
+		let similarity = fingerprintComputer.getFingerprintsSimilarity()
+		if (similarity.getSimilarity() > 0.1) {
+
+			// calculate the time of the sound relative to now
+			let mostSimilarStartingTime = similarity.getsetMostSimilarTimePosition()
+			let similarityConfidence = similarity.getSimilarity()
+			let relativeTime = (Float(triggerWindowDuration) - mostSimilarStartingTime)
+			print("\tTrigger detected \(relativeTime) seconds ago.")
+
+			if (similarityConfidence > 0.2) {
+				let audioMatcher = AppDelegate.audioMatcher
+				audioMatcher.recognizedSound(timeRelativeToNow: relativeTime)
+			}
+
+#if DEBUG
+			// dump fingerprint data
+			var string = ""
+			string += "\tFingerprint score: \(similarity.getScore())\n"
+			string += "\tFingerprint similarity: \(similarity.getSimilarity())\n"
+			string += "\tFingerprint similar time: \(similarity.getsetMostSimilarTimePosition())\n"
+			string += "\tFingerprint most similar frame: \(similarity.getMostSimilarFramePosition())\n"
+			print(string)
+
+			// create the file name
+			let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+			let format = DateFormatter()
+			format.dateFormat = "yyyy-MM-dd-HH-mm-ss"
+			let filename = "Matched-\(format.string(from: Date()))"
+
+			// write the match results
+			let resultsFileURL = documentsDirectory.appendingPathComponent(filename + ".txt")
+			_ = try? string.write(to: resultsFileURL, atomically: true, encoding: .utf8)
+
+			// write the match sound
+			let fingerprintFileURL = documentsDirectory.appendingPathComponent(filename + ".aif")
+			_ = try? AudioUtility.writeAudioFile(to: fingerprintFileURL, buffer: bufferData, sampleRate: 44100.0)
+#endif // DEBUG
+		}
+	}
 
 	private func setupAudioSession()
 	{
@@ -121,6 +188,15 @@ class AudioCapture: NSObject {
 			(buffer: AVAudioPCMBuffer!, time: AVAudioTime!) -> Void in
 			// add the audio to the audio buffer
 			self.audioBuffer.appendSampleBuffer(buffer)
+			// check if we have 5 seconds of data to test
+			if (self.audioBuffer.untestedTime > 5.0) {
+				// reset immediately to prevent next frame from trigger detection
+				self.audioBuffer.resetUntestedSize()
+				DispatchQueue.main.async {
+					// run detection
+					self.checkForTriggerSound()
+				}
+			}
 		})
 
 		audioEngine.mainMixerNode.outputVolume = 0.0
@@ -130,7 +206,7 @@ class AudioCapture: NSObject {
 		do {
 			try audioEngine.start()
 		} catch {
-			NSLog("AudioCapture: Error starting audio engine. (\(error))")
+			NSLog("AudioCapture: Error starting audio engine. (\(error.localizedDescription))")
 			return false
 		}
 
