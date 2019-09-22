@@ -11,6 +11,7 @@ import Alamofire
 
 
 extension Encodable {
+
 	var parameters: Parameters? {
 		guard let data = try? JSONEncoder().encode(self) else {
 			return nil

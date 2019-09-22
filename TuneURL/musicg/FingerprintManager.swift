@@ -35,12 +35,12 @@ class FingerprintManager {
 // TEMP: dump the resampled file
 /*
 		// create the recording file url
-		let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+		let recordingFolderURL = AppDelegate.recordingFolderURL
 
-		let fileURL1 = documentsDirectory.appendingPathComponent("source-\(TEMPindex).wav")
+		let fileURL1 = recordingFolderURL.appendingPathComponent("source-\(TEMPindex).wav")
 		_ = try? AudioUtility.writeAudioFile(to: fileURL1, buffer: wave, sampleRate: 44100.0)
 
-		let fileURL = documentsDirectory.appendingPathComponent("resampled-\(TEMPindex).wav")
+		let fileURL = recordingFolderURL.appendingPathComponent("resampled-\(TEMPindex).wav")
 		_ = try? AudioUtility.writeAudioFile(to: fileURL, buffer: resampledWave, sampleRate: Double(sampleRate))
 
 		TEMPindex += 1

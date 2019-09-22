@@ -41,6 +41,7 @@ class SamplesManager: NSObject {
 			switch response {
 			case .success(let sampleData):
 				print("Adding to cache")
+				MatchedItemCollection.shared.addItem(with: sampleData)
 				self.cache.setObject(sampleData, forKey: Box(url))
 //				try? FileManager.default.removeItem(at: url)
 			case .failure:

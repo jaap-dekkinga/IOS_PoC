@@ -114,30 +114,23 @@ extension Notify: UNUserNotificationCenterDelegate {
 
 	func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
 	{
-
-//        let content = notification.request.content
-//        let notificationId = notification.request.identifier
-//        guard content.categoryIdentifier == Config.saveCategory,
-//            let sampleUrlString = content.userInfo[Config.sampleUrlKey] as? String,
-//            let sampleUrl = URL(string: sampleUrlString) else {
+//		let content = notification.request.content
+//		let notificationId = notification.request.identifier
+//		guard content.categoryIdentifier == Config.saveCategory,
+//			let sampleUrlString = content.userInfo[Config.sampleUrlKey] as? String,
+//			let sampleUrl = URL(string: sampleUrlString) else {
+//			return
+//		}
 //
-//                return
-//        }
+//		let alert = UIAlertController(title: "Save TuneURL?", message: "", preferredStyle: .alert)
+//		let actionYes = UIAlertAction(title: "Yes", style: .default) { _ in
+//			self.delegate?.notificationSelected(sampleUrl: sampleUrl, notificationId: notificationId)
+//		}
+//		let actionNo = UIAlertAction(title: "No", style: .default, handler: nil)
+//		alert.addAction(actionYes)
+//		alert.addAction(actionNo)
 //
-//        let alert = UIAlertController(title: "Save TuneURL?",
-//                                      message: "",
-//                                      preferredStyle: .alert)
-//        let actionYes = UIAlertAction(title: "Yes", style: .default) { _ in
-//            self.delegate?.notificationSelected(sampleUrl: sampleUrl,
-//                                                notificationId: notificationId)
-//        }
-//        let actionNo = UIAlertAction(title: "No", style: .default, handler: nil)
-//        alert.addAction(actionYes)
-//        alert.addAction(actionNo)
-//
-//        UIApplication.shared.keyWindow?.rootViewController?.present(alert,
-//                                                                    animated: true,
-//                                                                    completion: nil)
+//		UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
 
 		completionHandler(.alert)
 	}

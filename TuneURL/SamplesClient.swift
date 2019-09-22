@@ -76,7 +76,8 @@ class SamplesClient: NSObject {
         return "http://" + host + path
     }
 
-    func send(sampleUrl: URL, name: String? = nil, completion: completionHandler?) {
+    func send(sampleUrl: URL, name: String? = nil, completion: completionHandler?)
+	{
         Alamofire.upload(multipartFormData: { (multipartFormData) in
             multipartFormData.append(sampleUrl, withName: "file")
         }, to: url) { (result) in
@@ -113,7 +114,9 @@ class SamplesClient: NSObject {
 }
 
 extension SampleData {
-    convenience init?(jsonDict: [String: Any]) {
+
+	convenience init?(jsonDict: [String: Any])
+	{
         let status = jsonDict["status"] as? String ?? "n/a"
         let confidence = jsonDict["confidence"] as? Int ?? 0
         let sha1 = jsonDict["file_sha1"] as? String ?? "n/a"
@@ -138,4 +141,5 @@ extension SampleData {
                   title: title,
                   url: url)
     }
+
 }

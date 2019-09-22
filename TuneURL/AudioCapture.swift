@@ -90,9 +90,8 @@ class AudioCapture: NSObject {
 		// stop the audio buffer
 		audioBuffer.stopRecording()
 
-		// TODO: restore audio sessions
-//		// stop the audio session
-//		_ = try? audioSession.setActive(false)
+		// stop the audio session
+		_ = try? audioSession.setActive(false)
 
 		// notify the delegate
 		delegate?.audioCaptureStatusChanged()
@@ -149,17 +148,17 @@ class AudioCapture: NSObject {
 			print(string)
 
 			// create the file name
-			let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+			let recordingFolderURL = AppDelegate.recordingFolderURL
 			let format = DateFormatter()
 			format.dateFormat = "yyyy-MM-dd-HH-mm-ss"
 			let filename = "Matched-\(format.string(from: Date()))"
 
 			// write the match results
-			let resultsFileURL = documentsDirectory.appendingPathComponent(filename + ".txt")
+			let resultsFileURL = recordingFolderURL.appendingPathComponent(filename + ".txt")
 			_ = try? string.write(to: resultsFileURL, atomically: true, encoding: .utf8)
 
 			// write the match sound
-			let fingerprintFileURL = documentsDirectory.appendingPathComponent(filename + ".aif")
+			let fingerprintFileURL = recordingFolderURL.appendingPathComponent(filename + ".aif")
 			_ = try? AudioUtility.writeAudioFile(to: fingerprintFileURL, buffer: bufferData, sampleRate: 44100.0)
 #endif // DEBUG
 		}

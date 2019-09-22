@@ -16,6 +16,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// static
 	static let audioMatcher = AudioMatcher()
 
+	static var recordingFolderURL: URL {
+		let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+		return documentsDirectory.appendingPathComponent("Recordings/")
+	}
+
 	// public
 	var window: UIWindow?
 
@@ -28,8 +33,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
 	{
-		// Override point for customization after application launch.
-		firstStart(application)
+		// prepare the recordings folder
+		prepareRecordingsFolder()
+
+		// setup the audio matcher
+		AppDelegate.audioMatcher.delegate = AppDelegate.notify
+
+		DispatchQueue.main.async {
+			self.enterForeground(application)
+		}
+
 		return true
 	}
 
@@ -66,28 +79,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// MARK: -
 	// MARK: Private
 
-	private func cleanDocumentsFolder()
+	private func prepareRecordingsFolder()
 	{
 		let fileManager = FileManager.default
+		let folderURL = AppDelegate.recordingFolderURL
 
-		// get the documents folder
-		guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-			return
-		}
+		// make sure the folder exists
+		_ = try? fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
 
 		// delete every file in the folder
-		if let folderContents = try? fileManager.contentsOfDirectory(at: documentsDirectory, includingPropertiesForKeys: nil, options: []) {
+		if let folderContents = try? fileManager.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil, options: []) {
 			for fileURL in folderContents {
 				_ = try? fileManager.removeItem(at: fileURL)
 			}
 		}
 	}
 
-}
-
-extension AppDelegate {
-
-	fileprivate func stopBackgroundTask(_ application: UIApplication)
+	private func stopBackgroundTask(_ application: UIApplication)
 	{
 		if bgTask != UIBackgroundTaskIdentifier.invalid {
 			application.endBackgroundTask(bgTask)
@@ -95,20 +103,7 @@ extension AppDelegate {
 		}
 	}
 
-	fileprivate func firstStart(_ application: UIApplication)
-	{
-		// clean the documents folder
-		cleanDocumentsFolder()
-
-		// setup the audio matcher
-		AppDelegate.audioMatcher.delegate = AppDelegate.notify
-
-		DispatchQueue.main.async {
-			self.enterForeground(application)
-		}
-	}
-
-	fileprivate func enterBackground(_ application: UIApplication)
+	private func enterBackground(_ application: UIApplication)
 	{
 		bgTask = application.beginBackgroundTask {
 			print("bg task ended")
@@ -116,12 +111,12 @@ extension AppDelegate {
 		}
 	}
 
-	fileprivate func enterForeground(_ application: UIApplication)
+	private func enterForeground(_ application: UIApplication)
 	{
 		stopBackgroundTask(application)
 	}
 
-	fileprivate func becomeActive(_ application: UIApplication)
+	private func becomeActive(_ application: UIApplication)
 	{
 		AppDelegate.notify.requestPermissionForNotifications()
 		AppDelegate.notify.delegate = self

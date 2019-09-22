@@ -114,8 +114,8 @@ class AudioMatcher: NSObject {
 			let sampleFileName = "recording-\(format.string(from: Date())).m4a"
 
 			// create the recording file url
-			let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-			let soundFileURL = documentsDirectory.appendingPathComponent(sampleFileName)
+			let recordingFolderURL = AppDelegate.recordingFolderURL
+			let soundFileURL = recordingFolderURL.appendingPathComponent(sampleFileName)
 
 			print("writing to soundfile url: '\(soundFileURL)'")
 
