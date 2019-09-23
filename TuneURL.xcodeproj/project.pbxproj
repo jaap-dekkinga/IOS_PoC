@@ -21,10 +21,9 @@
 		6052364A201FE51900B65A72 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60523648201FE51900B65A72 /* LaunchScreen.storyboard */; };
 		60523655201FE51900B65A72 /* TuneURLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60523654201FE51900B65A72 /* TuneURLTests.swift */; };
 		6097122820F65883006E68DF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6097122720F65883006E68DF /* HomeViewController.swift */; };
-		60D361E120CB31470079C14C /* PollClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E020CB31470079C14C /* PollClient.swift */; };
+		60D361E120CB31470079C14C /* PollData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E020CB31470079C14C /* PollData.swift */; };
 		60D361E320CB40380079C14C /* EncodableExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E220CB40380079C14C /* EncodableExtension.swift */; };
-		60D361E520CBA7410079C14C /* SwipeActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E420CBA7410079C14C /* SwipeActionViewController.swift */; };
-		60D361E720CDC17C0079C14C /* VoteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E620CDC17C0079C14C /* VoteManager.swift */; };
+		60D361E720CDC17C0079C14C /* PollManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E620CDC17C0079C14C /* PollManager.swift */; };
 		60D361E920D164540079C14C /* SwipeCardActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E820D164540079C14C /* SwipeCardActionViewController.swift */; };
 		DCC3A21648720C0E8D25B72B /* Pods_TuneURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */; };
 		EC30068923317E6D0013B8F8 /* MapRankInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067C23317E6D0013B8F8 /* MapRankInteger.swift */; };
@@ -78,10 +77,9 @@
 		60523654201FE51900B65A72 /* TuneURLTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TuneURLTests.swift; sourceTree = "<group>"; };
 		60523656201FE51900B65A72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6097122720F65883006E68DF /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		60D361E020CB31470079C14C /* PollClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollClient.swift; sourceTree = "<group>"; };
+		60D361E020CB31470079C14C /* PollData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollData.swift; sourceTree = "<group>"; };
 		60D361E220CB40380079C14C /* EncodableExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EncodableExtension.swift; sourceTree = "<group>"; };
-		60D361E420CBA7410079C14C /* SwipeActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeActionViewController.swift; sourceTree = "<group>"; };
-		60D361E620CDC17C0079C14C /* VoteManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoteManager.swift; sourceTree = "<group>"; };
+		60D361E620CDC17C0079C14C /* PollManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollManager.swift; sourceTree = "<group>"; };
 		60D361E820D164540079C14C /* SwipeCardActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeCardActionViewController.swift; sourceTree = "<group>"; };
 		BBCE85622A4AC53FBFA986B1 /* Pods-TuneURL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.debug.xcconfig"; sourceTree = "<group>"; };
 		BDE2CA3B2B257A37E40EE614 /* Pods-TuneURL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.release.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.release.xcconfig"; sourceTree = "<group>"; };
@@ -171,13 +169,12 @@
 				EC4F01352337D03000E6FB77 /* MatchedItemCell.swift */,
 				EC4F01312337CE4700E6FB77 /* MatchedItemCollection.swift */,
 				600A6EB7205EB2B500F96F7A /* Notify.swift */,
-				60D361E020CB31470079C14C /* PollClient.swift */,
+				60D361E020CB31470079C14C /* PollData.swift */,
+				60D361E620CDC17C0079C14C /* PollManager.swift */,
 				6024B74020606C8D0005A984 /* SampleData.swift */,
 				600A6EB9205EB41A00F96F7A /* SamplesClient.swift */,
 				601F74E9219B1CAC0053EFB9 /* SamplesManager.swift */,
-				60D361E420CBA7410079C14C /* SwipeActionViewController.swift */,
 				60D361E820D164540079C14C /* SwipeCardActionViewController.swift */,
-				60D361E620CDC17C0079C14C /* VoteManager.swift */,
 			);
 			path = TuneURL;
 			sourceTree = "<group>";
@@ -428,13 +425,12 @@
 				EC4F01362337D03000E6FB77 /* MatchedItemCell.swift in Sources */,
 				EC4F01322337CE4700E6FB77 /* MatchedItemCollection.swift in Sources */,
 				600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */,
-				60D361E120CB31470079C14C /* PollClient.swift in Sources */,
+				60D361E120CB31470079C14C /* PollData.swift in Sources */,
+				60D361E720CDC17C0079C14C /* PollManager.swift in Sources */,
 				6024B74120606C8D0005A984 /* SampleData.swift in Sources */,
 				600A6EBA205EB41A00F96F7A /* SamplesClient.swift in Sources */,
 				601F74EA219B1CAD0053EFB9 /* SamplesManager.swift in Sources */,
-				60D361E520CBA7410079C14C /* SwipeActionViewController.swift in Sources */,
 				60D361E920D164540079C14C /* SwipeCardActionViewController.swift in Sources */,
-				60D361E720CDC17C0079C14C /* VoteManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

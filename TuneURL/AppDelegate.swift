@@ -123,20 +123,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		AppDelegate.audioMatcher.start()
 	}
 
+	// MARK: -
+
+	func openPoll(with item: MatchedItem)
+	{
+		if let cleanSwipeVC = self.swipeVC {
+			cleanSwipeVC.dismiss(animated: false, completion: nil)
+		}
+
+		let swipeCardActionViewController = SwipeCardActionViewController.create(with: item)
+		self.window?.rootViewController?.present(swipeCardActionViewController, animated: true, completion: {
+			self.swipeVC = swipeCardActionViewController
+		})
+	}
+
 }
 
 extension AppDelegate: NotifyDelegate {
 
 	func notificationSelected(sampleUrl: URL, notificationId: String)
 	{
-		if let cleanSwipeVC = self.swipeVC {
-			cleanSwipeVC.dismiss(animated: false, completion: nil)
-		}
-
-		let swipeCardActionViewController = SwipeCardActionViewController.create(with: sampleUrl)
-		self.window?.rootViewController?.present(swipeCardActionViewController, animated: true, completion: {
-			self.swipeVC = swipeCardActionViewController
-		})
+		// TODO: reimplement this!
 	}
 
 }

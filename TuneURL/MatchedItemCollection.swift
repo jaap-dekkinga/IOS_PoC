@@ -10,7 +10,7 @@
 import Foundation
 
 
-let MatchedItemCollectionChangedNotification = Notification.Name("MatchedItemCollectionChangedNotification")
+let MatchedItemCollectionAddedItemNotification = Notification.Name("MatchedItemCollectionAddedItemNotification")
 
 
 class MatchedItemCollection {
@@ -44,11 +44,24 @@ class MatchedItemCollection {
 	func addItem(with sampleData: SampleData)
 	{
 		// add the item to the collection
-		collectionItems.insert(MatchedItem(with: sampleData), at: 0)
+		let matchedItem = MatchedItem(with: sampleData)
+		collectionItems.insert(matchedItem, at: 0)
 		saveItems()
 
-		// notify observers the collection changed
-		NotificationCenter.default.post(name: MatchedItemCollectionChangedNotification, object: self)
+		// notify observers an item was added
+		NotificationCenter.default.post(name: MatchedItemCollectionAddedItemNotification, object: self, userInfo: [ "Item Index" : 0 ])
+	}
+
+	func removeItem(_ item: MatchedItem) -> Bool
+	{
+		let startCount = collectionItems.count
+		collectionItems.removeAll(where: { $0 === item })
+		if (collectionItems.count < startCount) {
+			saveItems()
+			return true
+		}
+
+		return false
 	}
 
 	func item(withIndex index: Int) -> MatchedItem?

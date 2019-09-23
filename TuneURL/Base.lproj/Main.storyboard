@@ -52,7 +52,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W8f-sf-dcG">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="180"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gv2-u2-817">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gv2-u2-817" userLabel="Icon Button">
                                         <rect key="frame" x="20" y="20" width="140" height="140"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="gv2-u2-817" secondAttribute="height" multiplier="1:1" id="90d-c5-tvV"/>
@@ -72,12 +72,18 @@
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="On/Off" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sMz-Ty-g6z">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Listen Status" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sMz-Ty-g6z">
                                         <rect key="frame" x="180" y="74" width="175" height="32"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="26"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M7a-cM-vzh" userLabel="Listen Enable Button">
+                                        <rect key="frame" x="20" y="20" width="335" height="140"/>
+                                        <connections>
+                                            <action selector="enableButtonPressed:" destination="UEu-BU-4Hg" eventType="touchUpInside" id="zLr-oK-oQz"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -87,8 +93,12 @@
                                     <constraint firstItem="sMz-Ty-g6z" firstAttribute="leading" secondItem="gv2-u2-817" secondAttribute="trailing" constant="20" id="DPi-eU-9c6"/>
                                     <constraint firstItem="T8l-L0-OVp" firstAttribute="centerY" secondItem="W8f-sf-dcG" secondAttribute="centerY" id="EGm-CH-bro"/>
                                     <constraint firstAttribute="trailing" secondItem="sMz-Ty-g6z" secondAttribute="trailing" constant="20" id="JSu-xZ-6HH"/>
+                                    <constraint firstAttribute="trailing" secondItem="M7a-cM-vzh" secondAttribute="trailing" constant="20" id="PRd-ot-oeC"/>
+                                    <constraint firstItem="M7a-cM-vzh" firstAttribute="leading" secondItem="W8f-sf-dcG" secondAttribute="leading" constant="20" id="Qb3-qx-CiU"/>
                                     <constraint firstItem="gv2-u2-817" firstAttribute="leading" secondItem="W8f-sf-dcG" secondAttribute="leading" constant="20" id="VIk-0B-ySi"/>
                                     <constraint firstAttribute="height" constant="180" id="Vvc-Qb-hzu"/>
+                                    <constraint firstItem="M7a-cM-vzh" firstAttribute="top" secondItem="W8f-sf-dcG" secondAttribute="top" constant="20" id="ZUj-15-qU6"/>
+                                    <constraint firstAttribute="bottom" secondItem="M7a-cM-vzh" secondAttribute="bottom" constant="20" id="nmF-D0-bOq"/>
                                     <constraint firstItem="T8l-L0-OVp" firstAttribute="centerX" secondItem="gv2-u2-817" secondAttribute="centerX" id="t2O-7b-gP5"/>
                                     <constraint firstAttribute="bottom" secondItem="gv2-u2-817" secondAttribute="bottom" constant="20" id="wi5-I5-NqY"/>
                                 </constraints>
@@ -132,6 +142,7 @@
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="UEu-BU-4Hg" id="dFh-UX-qph"/>
+                                    <outlet property="delegate" destination="UEu-BU-4Hg" id="krF-VR-lVA"/>
                                 </connections>
                             </tableView>
                         </subviews>
@@ -162,50 +173,8 @@
             </objects>
             <point key="canvasLocation" x="-1047.2" y="-1037.6311844077961"/>
         </scene>
-        <!--Swipe Action View Controller-->
-        <scene sceneID="0t2-WR-yu3">
-            <objects>
-                <viewController storyboardIdentifier="SwipeActionViewController-SI" id="eDi-4V-7Jd" customClass="SwipeActionViewController" customModule="TuneURL" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="V0R-mD-5vh">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="swipeScreen" translatesAutoresizingMaskIntoConstraints="NO" id="DLh-Ii-rNH">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <gestureRecognizers/>
-                            </imageView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="DLh-Ii-rNH" firstAttribute="width" secondItem="anX-Bt-Jx3" secondAttribute="width" id="4Zm-0m-3d7"/>
-                            <constraint firstItem="DLh-Ii-rNH" firstAttribute="leading" secondItem="anX-Bt-Jx3" secondAttribute="leading" id="foo-cF-Cfg"/>
-                            <constraint firstItem="anX-Bt-Jx3" firstAttribute="top" secondItem="DLh-Ii-rNH" secondAttribute="top" id="q1u-Y6-8N6"/>
-                            <constraint firstItem="DLh-Ii-rNH" firstAttribute="height" secondItem="anX-Bt-Jx3" secondAttribute="height" id="sRB-Ow-eDk"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="anX-Bt-Jx3"/>
-                        <connections>
-                            <outletCollection property="gestureRecognizers" destination="ywv-O5-5iK" appends="YES" id="kPL-gs-Kvg"/>
-                            <outletCollection property="gestureRecognizers" destination="FfX-0W-Uk0" appends="YES" id="rSE-8k-z6k"/>
-                        </connections>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="FR8-bO-lbJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <swipeGestureRecognizer direction="right" id="ywv-O5-5iK" userLabel="swipeRight">
-                    <connections>
-                        <action selector="didSwipeWithGestureRecognizer:" destination="eDi-4V-7Jd" id="XiO-Xu-FAp"/>
-                    </connections>
-                </swipeGestureRecognizer>
-                <swipeGestureRecognizer direction="left" id="FfX-0W-Uk0" userLabel="swipeLeft">
-                    <connections>
-                        <action selector="didSwipeWithGestureRecognizer:" destination="eDi-4V-7Jd" id="EAd-27-IxW"/>
-                    </connections>
-                </swipeGestureRecognizer>
-            </objects>
-            <point key="canvasLocation" x="537" y="-1039"/>
-        </scene>
     </scenes>
     <resources>
         <image name="icon-outline-fade" width="940" height="932"/>
-        <image name="swipeScreen" width="320" height="507"/>
     </resources>
 </document>

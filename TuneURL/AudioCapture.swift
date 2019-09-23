@@ -104,7 +104,10 @@ class AudioCapture: NSObject {
 	{
 		// TODO: move this into the audio matcher
 
+#if DEBUG
 		print("AudioCapture: Checking for trigger sound.")
+#endif // DEBUG
+
 		audioBuffer.resetUntestedSize()
 
 		// copy the sound data from the buffer

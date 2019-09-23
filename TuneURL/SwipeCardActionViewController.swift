@@ -11,64 +11,53 @@ import DMSwipeCards
 import UIKit
 
 
-class SwipeCardActionViewController: UIViewController {
+class SwipeCardActionViewController: UIViewController, DMSwipeCardsViewDelegate {
 
 	private var swipeView: DMSwipeCardsView<String>!
-    private var count = 0
-    fileprivate let notificationCenter = NotificationCenter.default
 
-    fileprivate var sampleUrl: URL?
-    fileprivate let voteManager = VoteManager()
+	fileprivate let notificationCenter = NotificationCenter.default
 
-    fileprivate let greenYes = UIColor(red: 35.0/255.0,
-                                       green: 188.0/255.0,
-                                       blue: 73.0/255.0,
-                                       alpha: 1.0)
-    fileprivate let redNo = UIColor(red: 240.0/255.0,
-                                    green: 83.0/255.0,
-                                    blue: 73.0/255.0,
-                                    alpha: 1.0)
+	fileprivate var matchedItem: MatchedItem?
+	fileprivate let pollManager = PollManager()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        notificationCenter.addObserver(self, selector: #selector(applicationWillResignActive),
-                                       name: UIApplication.willResignActiveNotification,
-                                       object: nil)
+	fileprivate let greenYes = UIColor(red: (35.0 / 255.0), green: (188.0 / 255.0), blue: (73.0 / 255.0), alpha: 1.0)
+	fileprivate let redNo = UIColor(red: (240.0 / 255.0), green: (83.0 / 255.0), blue: (73.0 / 255.0), alpha: 1.0)
 
-        self.view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
+	// MARK: -
 
-        /*
-         * In this example we're using `String` as a type.
-         * You can use DMSwipeCardsView though with any custom class.
-         */
+	class func create(with item: MatchedItem) -> SwipeCardActionViewController
+	{
+		let vc = SwipeCardActionViewController(nibName: nil, bundle: nil)
+		vc.matchedItem = item
+		return vc
+	}
 
-        let viewGenerator: (String, CGRect) -> (UIView) = { (element: String, frame: CGRect) -> (UIView) in
-            let container = UIView(frame: CGRect(x: 30, y: 20,
-                                                 width: frame.width - 60,
-                                                 height: frame.height - 40))
-            container.backgroundColor = UIColor(red: 0.11,
-                                                green: 0.48,
-                                                blue: 0.53,
-                                                alpha: 1.00)
-            container.layer.cornerRadius = 20
-            container.clipsToBounds = true
+	// MARK: -
 
-            let touchViewWidth: CGFloat = container.frame.width/2
-            let touchViewHeight: CGFloat = touchViewWidth
+	override func viewDidLoad()
+	{
+		super.viewDidLoad()
+		notificationCenter.addObserver(self, selector: #selector(applicationWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
 
-            let leftView = UIView(frame: CGRect(x: -touchViewWidth/4,
-                                                y: container.frame.height/2 - touchViewHeight/2,
-                                                width: touchViewWidth,
-                                                height: touchViewHeight))
-            leftView.backgroundColor = self.greenYes
-            leftView.layer.cornerRadius = touchViewWidth/2
-            container.addSubview(leftView)
-            let leftLabelRect = CGRect(x: leftView.bounds.origin.x + touchViewWidth/4,
-                                       y: leftView.bounds.origin.y,
-                                       width: leftView.bounds.width * 3/4,
-                                       height: leftView.bounds.height)
-            addLabel(in: leftView, text: "YES >", with: leftLabelRect)
+		self.view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
 
+		let viewGenerator: (String, CGRect) -> (UIView) = {
+			(element: String, frame: CGRect) -> (UIView) in
+
+			let container = UIView(frame: CGRect(x: 30, y: 20, width: (frame.width - 60.0), height: (frame.height - 40.0)))
+			container.backgroundColor = UIColor(red: 0.11, green: 0.48, blue: 0.53, alpha: 1.00)
+			container.layer.cornerRadius = 20
+			container.clipsToBounds = true
+
+			let touchViewWidth: CGFloat = container.frame.width/2
+			let touchViewHeight: CGFloat = touchViewWidth
+
+			let leftView = UIView(frame: CGRect(x: (-touchViewWidth / 4.0), y: (container.frame.height / 2.0 - touchViewHeight / 2.0), width: touchViewWidth, height: touchViewHeight))
+			leftView.backgroundColor = self.greenYes
+			leftView.layer.cornerRadius = touchViewWidth/2
+			container.addSubview(leftView)
+			let leftLabelRect = CGRect(x: leftView.bounds.origin.x + touchViewWidth / 4.0, y: leftView.bounds.origin.y, width: leftView.bounds.width * 3.0 / 4.0, height: leftView.bounds.height)
+			addLabel(in: leftView, text: "YES >", with: leftLabelRect)
 
             let rightView = UIView(frame: CGRect(x: container.frame.width - touchViewWidth + touchViewWidth/4,
                                                 y: container.frame.height/2 - touchViewHeight/2,
@@ -142,67 +131,72 @@ class SwipeCardActionViewController: UIViewController {
         addCard()
     }
 
-    private func addCard() {
-        self.swipeView.addCards(["Swipe to make your choice"], onTop: true)
-        self.count = self.count + 1
-    }
+	@objc func applicationWillResignActive()
+	{
+		self.notificationCenter.removeObserver(self)
+		self.dismiss(animated: false, completion: nil)
+	}
 
-    func addDoneView() {
-        let doneView = UIView(frame: self.view.frame)
-        doneView.backgroundColor = UIColor.white
-        self.view.addSubview(doneView)
+	// MARK: -
+	// MARK: Private
 
-        let label = UILabel()
-        label.frame.size = CGSize(width: doneView.frame.width * 0.8, height: 100)
-        label.center = CGPoint(x: doneView.frame.width / 2,
-                               y: doneView.frame.height / 2)
-        label.clipsToBounds = true
-        label.font = UIFont.systemFont(ofSize: 24, weight: UIFont.Weight.thin)
-        label.adjustsFontSizeToFitWidth = true
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.textColor = UIColor.black
-        doneView.addSubview(label)
+	private func addCard()
+	{
+		self.swipeView.addCards(["Swipe to make your choice"], onTop: true)
+	}
 
-        label.text = "Your choice has been recorded\nThank you"
-    }
-}
+	private func addDoneView()
+	{
+		let doneView = UIView(frame: self.view.frame)
+		doneView.backgroundColor = UIColor.white
+		self.view.addSubview(doneView)
 
-extension SwipeCardActionViewController: DMSwipeCardsViewDelegate {
-    func swipedLeft(_ object: Any) {
-        guard let url = sampleUrl else {
-            print("Error on swipe left, no url")
-            return
-        }
-        voteManager.castVote(userResponse: false, for: url)
-    }
+		let label = UILabel()
+		label.frame.size = CGSize(width: doneView.frame.width * 0.8, height: 100)
+		label.center = CGPoint(x: (doneView.frame.width / 2.0), y: (doneView.frame.height / 2.0))
+		label.clipsToBounds = true
+		label.font = UIFont.systemFont(ofSize: 24, weight: UIFont.Weight.thin)
+		label.adjustsFontSizeToFitWidth = true
+		label.textAlignment = .center
+		label.numberOfLines = 0
+		label.textColor = UIColor.black
+		doneView.addSubview(label)
 
-    func swipedRight(_ object: Any) {
-        guard let url = sampleUrl else {
-            print("Error on swipe right, no url")
-            return
-        }
-        voteManager.castVote(userResponse: true, for: url)
-    }
+		label.text = "Your choice has been recorded\nThank you"
+	}
 
-    func cardTapped(_ object: Any) {
-        print("Tapped on: \(object)")
-    }
+	// MARK: -
+	// MARK: DMSwipeCardsViewDelegate
 
-    func reachedEndOfStack() {
-        self.addDoneView()
-    }
-}
+	func swipedLeft(_ object: Any)
+	{
+		guard let item = matchedItem else {
+			NSLog("SwipeCardActionViewController: Error with matched item on swipe.")
+			return
+		}
 
-extension SwipeCardActionViewController {
-    class func create(with sampleUrl: URL) -> SwipeCardActionViewController {
-        let vc = SwipeCardActionViewController(nibName: nil, bundle: nil)
-        vc.sampleUrl = sampleUrl
-        return vc
-    }
+		pollManager.castVote(userResponse: false, for: item)
+	}
 
-    @objc func applicationWillResignActive() {
-        self.notificationCenter.removeObserver(self)
-        self.dismiss(animated: false, completion: nil)
-    }
+	func swipedRight(_ object: Any)
+	{
+		guard let item = matchedItem else {
+			NSLog("SwipeCardActionViewController: Error with matched item on swipe.")
+			return
+		}
+
+		pollManager.castVote(userResponse: true, for: item)
+	}
+
+	func cardTapped(_ object: Any)
+	{
+		print("Tapped on: \(object)")
+	}
+
+	func reachedEndOfStack()
+	{
+		self.addDoneView()
+		self.dismiss(animated: true, completion: nil)
+	}
+
 }

@@ -100,6 +100,8 @@ extension Notify: UNUserNotificationCenterDelegate {
 
 	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void)
 	{
+		// TODO: reimplement this
+/*
 		let content = response.notification.request.content
 		let notificationId = response.notification.request.identifier
 		guard content.categoryIdentifier == Config.saveCategory,
@@ -110,7 +112,7 @@ extension Notify: UNUserNotificationCenterDelegate {
 
 		self.delegate?.notificationSelected(sampleUrl: sampleUrl, notificationId: notificationId)
 		completionHandler()
-	}
+*/	}
 
 	func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
 	{

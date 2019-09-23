@@ -1,5 +1,5 @@
 //
-//  PollClient.swift
+//  PollData.swift
 //  TuneURL
 //
 //  Created by Aleksandar Mihailovski on 6/8/18.
@@ -7,11 +7,10 @@
 //
 
 
-import Alamofire
 import Foundation
 
 
-struct PollDataResponse: Codable {
+struct PollResponse: Codable {
 
 	struct PollItem: Codable {
 		let numberOfYes: Int
@@ -27,10 +26,10 @@ struct PollDataResponse: Codable {
 
 // MARK: -
 
-class PollData: NSObject {
+class PollData {
 
-	let response: Bool
 	let name: String
+	let response: Bool
 	let timestamp: Date
 
 	var responseString: String {
@@ -69,40 +68,6 @@ extension PollData: Encodable {
 		try container.encode(responseString, forKey: CodingKeys.response)
 		try container.encode(name, forKey: CodingKeys.name)
 		try container.encode(timestampString, forKey: CodingKeys.responseTime)
-	}
-
-}
-
-// MARK: -
-
-class PollClient: NSObject {
-
-	private let host = "pollapiwebservice.us-east-2.elasticbeanstalk.com"
-	private let path = "/api/pollapi"
-	private var url: String {
-		return "http://" + host + path
-	}
-
-	// MARK: -
-
-	func postVote(pollData: PollData, completion: @escaping (_ response: PollDataResponse?)->())
-	{
-		let url = URL(string: self.url)!
-		Alamofire.request(url, method: .post, parameters: pollData.parameters, encoding: JSONEncoding.default).response {
-			(response) in
-
-			guard let data = response.data else {
-				completion(nil)
-				return
-			}
-
-			guard let resp = try? JSONDecoder().decode(PollDataResponse.self, from: data) else {
-				completion(nil)
-				return
-			}
-
-			completion(resp)
-		}
 	}
 
 }

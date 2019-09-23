@@ -45,7 +45,7 @@ class SampleData: NSObject, NSCoding, Codable {
 	let songName: String
 	let title: String
 	let url: String
-	var pollDataResponse: PollDataResponse?
+	var pollResponse: PollResponse?
 
 	// MARK: -
 
@@ -77,12 +77,12 @@ class SampleData: NSObject, NSCoding, Codable {
 		coder.encode(songName, forKey: "song_name")
 		coder.encode(title, forKey: "title")
 		coder.encode(url, forKey: "url")
-		coder.encode(pollDataResponse, forKey: "pollDataResponse")
+		coder.encode(pollResponse, forKey: "pollResponse")
 	}
 
 	required convenience init?(coder aDecoder: NSCoder)
 	{
-		let pollDataResponse = aDecoder.decodeObject(forKey: "pollDataResponse") as? PollDataResponse
+		let pollResponse = aDecoder.decodeObject(forKey: "pollResponse") as? PollResponse
 		let confidence = aDecoder.decodeInteger(forKey: "confidence")
 		guard let status = aDecoder.decodeObject(forKey: "status") as? String,
 			let desc = aDecoder.decodeObject(forKey: "description") as? String,
@@ -98,14 +98,13 @@ class SampleData: NSObject, NSCoding, Codable {
 		}
 
 		self.init(status: status, confidence: confidence, desc: desc, sha1: sha1, matchTime: String(matchTime), offset: String(offset), offsetSeconds: String(offsetSeconds), songId: String(songId), songName: songName, title: title, url: url)
-		self.pollDataResponse = pollDataResponse
+		self.pollResponse = pollResponse
 	}
 
 	// MARK: -
 
 	func prettyDescription() -> String
 	{
-//		let pollResults = pollDataResponse?.value.first(where: { $0.name == title })
 		return "\n"
 			+ "status: " + status + "\n"
 //			+ "confidence: " + String(confidence) + "\n"
@@ -119,8 +118,7 @@ class SampleData: NSObject, NSCoding, Codable {
 			+ "title: " + title + "\n"
 //			+ "url: " + url + "\n"
 			+ "\n"
-//			+ "Poll Data Response: " + (pollResults?.prettyDescription() ?? "missing") + "\n"
-			+ "Poll Data Response: " + (pollDataResponse?.prettyDescription(by: title) ?? "missing") + "\n"
+			+ "Poll Response: " + (pollResponse?.prettyDescription(by: title) ?? "missing") + "\n"
 			+ "\n"
 	}
 
@@ -128,7 +126,7 @@ class SampleData: NSObject, NSCoding, Codable {
 
 // MARK: -
 
-extension PollDataResponse {
+extension PollResponse {
 
 	func prettyDescription(by name: String) -> String
 	{
@@ -150,7 +148,7 @@ extension PollDataResponse {
 
 // MARK: -
 
-extension PollDataResponse.PollItem {
+extension PollResponse.PollItem {
 
 	func prettyDescription() -> String {
 		return "\n"

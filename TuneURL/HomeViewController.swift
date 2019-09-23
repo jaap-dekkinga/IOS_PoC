@@ -10,7 +10,7 @@
 import UIKit
 
 
-class HomeViewController: UIViewController, UITableViewDataSource {
+class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
 	// interface
 	@IBOutlet var enableButton: UIButton!
@@ -18,19 +18,19 @@ class HomeViewController: UIViewController, UITableViewDataSource {
 	@IBOutlet var matchTableView: UITableView!
 	@IBOutlet var tooltipLabel: UILabel!
 
-	fileprivate let vm = HomeViewModel()
-	fileprivate let greenBackOn = UIColor(red: 0.17, green: 0.67, blue: 0.48, alpha: 1.00)
-	fileprivate let greenBackOff = UIColor(red: 0.17, green: 0.55, blue: 0.40, alpha: 1.00)
-
 	// private
+	private let audioMatcher = AppDelegate.audioMatcher
 	private let itemCollection = MatchedItemCollection.shared
+
+	private let greenBackOn = UIColor(red: 0.17, green: 0.67, blue: 0.48, alpha: 1.00)
+	private let greenBackOff = UIColor(red: 0.17, green: 0.55, blue: 0.40, alpha: 1.00)
 
 	// MARK: -
 
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		self.refreshScreen()
+		refreshScreen()
 	}
 
 	override func viewDidAppear(_ animated: Bool)
@@ -43,7 +43,7 @@ class HomeViewController: UIViewController, UITableViewDataSource {
 		}
 
 		// watch for collection changes
-		NotificationCenter.default.addObserver(self, selector: #selector(collectionChanged), name: MatchedItemCollectionChangedNotification, object: itemCollection)
+		NotificationCenter.default.addObserver(self, selector: #selector(collectionAddedItem), name: MatchedItemCollectionAddedItemNotification, object: itemCollection)
 	}
 
 	override func viewWillDisappear(_ animated: Bool)
@@ -56,20 +56,20 @@ class HomeViewController: UIViewController, UITableViewDataSource {
 
 	@IBAction func enableButtonPressed(_ sender: UIButton)
 	{
-		self.vm.isButtonOn.toggle()
+		audioMatcher.enabled.toggle()
 		refreshScreen() //TODO: Move this in feedback loop form VM (delegate)
 	}
 
 	private func refreshScreen()
 	{
-		if self.vm.isButtonOn {
+		if audioMatcher.enabled {
 			self.view.backgroundColor = greenBackOn
-			self.enableLabel.text = "On"
+			self.enableLabel.text = "Listening"
 		} else {
 			self.view.backgroundColor = greenBackOff
-			self.enableLabel.text = "Off"
+			self.enableLabel.text = "Tap to Listen"
 		}
-		buttonGlow(self.enableButton, on: self.vm.isButtonOn)
+		buttonGlow(self.enableButton, on: audioMatcher.enabled)
 	}
 
 	private func buttonGlow(_ button: UIButton, on: Bool)
@@ -84,13 +84,23 @@ class HomeViewController: UIViewController, UITableViewDataSource {
 		button.layer.shadowOffset = CGSize.zero;
 	}
 
-	@objc func collectionChanged(_ : Any?)
+	@objc func collectionAddedItem(_ notification: Notification)
 	{
-		matchTableView.reloadData()
+		guard let newItemIndex = notification.userInfo?["Item Index"] as? Int else {
+			matchTableView.reloadData()
+			return
+		}
+
+		matchTableView.insertRows(at: [IndexPath(row: newItemIndex, section: 0)], with: .top)
 	}
 
 	// MARK: -
 	// MARK: UITableViewDataSource
+
+	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool
+	{
+		return true
+	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
@@ -98,6 +108,20 @@ class HomeViewController: UIViewController, UITableViewDataSource {
 		cell.item = itemCollection.item(withIndex: indexPath.row)
 
 		return cell
+	}
+
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
+	{
+		if (editingStyle == .delete) {
+			// delete the item from the collection
+			if let cell = matchTableView.cellForRow(at: indexPath) as? MatchedItemCell {
+				if let item = cell.item {
+					if (itemCollection.removeItem(item) == true) {
+						matchTableView.deleteRows(at: [indexPath], with: .left)
+					}
+				}
+			}
+		}
 	}
 
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -110,17 +134,43 @@ class HomeViewController: UIViewController, UITableViewDataSource {
 		return 1
 	}
 
-}
+	// MARK: -
+	// MARK: UITableViewDelegate
 
-// MARK: -
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+	{
+		// deselect the row
+		matchTableView.deselectRow(at: indexPath, animated: true)
 
-class HomeViewModel {
+		// get the selected item cell
+		guard let cell = matchTableView.cellForRow(at: indexPath) as? MatchedItemCell else {
+			return
+		}
 
-	private let audioMatcher = AppDelegate.audioMatcher //TODO: Inject
+		// get the item from the cell
+		guard let item = cell.item else {
+			return
+		}
 
-	var isButtonOn: Bool {
-		get { return self.audioMatcher.enabled }
-		set { self.audioMatcher.enabled = newValue }
+		switch (item.action) {
+			case .phoneNumber:
+				// open the phone number
+				if let phoneURL = item.phoneURL {
+					UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+				}
+			case .poll:
+				// open the poll
+				if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+					appDelegate.openPoll(with: item)
+				}
+			case .webPage:
+				// open the web page
+				if let itemURL = item.url {
+					UIApplication.shared.open(itemURL, options: [:], completionHandler: nil)
+				}
+			default:
+				break
+		}
 	}
 
 }
