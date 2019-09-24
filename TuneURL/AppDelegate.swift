@@ -11,7 +11,7 @@ import UIKit
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 
 	// static
 	static let audioMatcher = AudioMatcher()
@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		prepareRecordingsFolder()
 
 		// setup the audio matcher
-		AppDelegate.audioMatcher.delegate = AppDelegate.notify
+		AppDelegate.audioMatcher.delegate = self
 
 		DispatchQueue.main.async {
 			self.enterForeground(application)
@@ -135,6 +135,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		self.window?.rootViewController?.present(swipeCardActionViewController, animated: true, completion: {
 			self.swipeVC = swipeCardActionViewController
 		})
+	}
+
+	func audioMatched(_ matchResponse: SampleData)
+	{
+		// TODO: check the match response to make sure there is a valid match
+		// with decent confidence.
+
+		// audio was successfully matched
+		if let matchedItem = MatchedItemCollection.shared.addItem(with: matchResponse) {
+			AppDelegate.notify.notifySave(matchedItem)
+		}
 	}
 
 }

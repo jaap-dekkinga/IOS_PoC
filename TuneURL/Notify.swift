@@ -18,7 +18,7 @@ protocol NotifyDelegate {
 class Notify: NSObject {
 
 	fileprivate enum Config {
-		static let sampleUrlKey = "sampleUrl"
+		static let itemUUIDKey = "Item UUID"
 		static let saveCategory = "saveCategory"
 		static let saveCategoryActions: [UNNotificationAction] = []
 	}
@@ -42,55 +42,50 @@ class Notify: NSObject {
 
 	private func updateEnabledStatus()
 	{
-		self.userCenter.getNotificationSettings { (settings) in
+		self.userCenter.getNotificationSettings {
+			(settings) in
 			self.isEnabled = settings.authorizationStatus == .authorized && settings.alertStyle != .none
 		}
 	}
 
 	func requestPermissionForNotifications()
 	{
-		self.userCenter.requestAuthorization(options: self.userNotifyOptions) { (granted, _) in
+		self.userCenter.requestAuthorization(options: self.userNotifyOptions) {
+			(granted, _) in
 			self.updateEnabledStatus()
 		}
 	}
 
-	fileprivate func notifySave(_ sampleUrl: URL)
+	func notifySave(_ matchedItem: MatchedItem)
 	{
+		// check that notifications are enabled
+		updateEnabledStatus()
 		guard self.isEnabled else {
-			print("Cannot send notification")
+			print("Cannot send notification.")
 			return
 		}
 
-		cancelAll {
-			let content = UNMutableNotificationContent()
-			content.userInfo = [Config.sampleUrlKey: sampleUrl.absoluteString]
-			content.title = NSString.localizedUserNotificationString(forKey: "Save TuneURL?", arguments: nil)
-			content.body = NSString.localizedUserNotificationString(forKey: "If yes, tap", arguments: nil)
-			content.categoryIdentifier = Config.saveCategory
-			let request = UNNotificationRequest(identifier: UUID.init().uuidString, content: content, trigger: nil)
+		// TODO: don't send notifications when the app is in the foreground
 
-			self.userCenter.add(request) { (error) in
-				print(error?.localizedDescription ?? "no error")
-			}
+		guard let notificationTitle = matchedItem.notificationTitle else {
+			return
 		}
-	}
 
-	fileprivate func cancelAll(completion: @escaping ()->())
-	{
-		self.userCenter.getDeliveredNotifications { (notifications) in
-			notifications.forEach({ (notification) in
-				let content = notification.request.content
-				guard content.categoryIdentifier == Config.saveCategory,
-					let sampleUrlString = content.userInfo[Config.sampleUrlKey] as? String,
-					let sampleUrl = URL(string: sampleUrlString) else {
-						return
-				}
+		// remove all current notifications
+		self.userCenter.removeAllDeliveredNotifications()
 
-				try? FileManager.default.removeItem(at: sampleUrl)
-			})
+		// create the new notification
+		let content = UNMutableNotificationContent()
+		content.categoryIdentifier = Config.saveCategory
+		content.title = notificationTitle
+		content.body = matchedItem.title
 
-			self.userCenter.removeAllDeliveredNotifications()
-			completion()
+		let request = UNNotificationRequest(identifier: matchedItem.uuid, content: content, trigger: nil)
+		self.userCenter.add(request) {
+			(error) in
+			if (error != nil) {
+				print("Notify: Error adding notification: \(error!.localizedDescription)")
+			}
 		}
 	}
 
@@ -135,17 +130,6 @@ extension Notify: UNUserNotificationCenterDelegate {
 //		UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
 
 		completionHandler(.alert)
-	}
-
-}
-
-extension Notify: AudioMatcherDelegate {
-
-	func sampleReady(_ sampleUrl: URL)
-	{
-		SamplesManager.shared.sample(for: sampleUrl) { _ in
-			self.notifySave(sampleUrl)
-		}
 	}
 
 }

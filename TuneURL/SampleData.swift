@@ -64,6 +64,33 @@ class SampleData: NSObject, NSCoding, Codable {
 		self.url = url
 	}
 
+	convenience init?(jsonDict: [String: Any])
+	{
+		let status = jsonDict["status"] as? String ?? "n/a"
+		let confidence = jsonDict["confidence"] as? Int ?? 0
+		let sha1 = jsonDict["file_sha1"] as? String ?? "n/a"
+		let matchTime = jsonDict["match_time"] as? Double ?? 0.0
+		let offset = jsonDict["offset"] as? Int ?? 0
+		let offsetSeconds = jsonDict["offset_seconds"] as? Double ?? 0.0
+		let songId = jsonDict["song_id"] as? Int ?? 0
+		let songName = jsonDict["song_name"] as? String ?? "n/a"
+		let desc = jsonDict["description"] as? String ?? "n/a"
+		let title = jsonDict["title"] as? String ?? "n/a"
+		let url = jsonDict["url"] as? String ?? "n/a"
+
+		self.init(status: status,
+				confidence: confidence,
+				desc: desc,
+				sha1: sha1,
+				matchTime: String(matchTime),
+				offset: String(offset),
+				offsetSeconds: String(offsetSeconds),
+				songId: String(songId),
+				songName: songName,
+				title: title,
+				url: url)
+	}
+
 	func encode(with coder: NSCoder)
 	{
 		coder.encode(status, forKey: "status")
@@ -156,52 +183,6 @@ extension PollResponse.PollItem {
 			+ "yes count: " + String(numberOfYes) + "\n"
 			+ "no count: " + String(numberOfNo) + "\n"
 			+ "\n"
-	}
-
-}
-
-// MARK: -
-
-class SampleDataManager: NSObject {
-
-	private let userDefaults = UserDefaults.standard
-	private(set) var sampleResults: [SampleResult] {
-		get {
-			guard let archData = userDefaults.object(forKey: #function) as? Data else {
-				return []
-			}
-			let decoder = JSONDecoder()
-			let result = (try? decoder.decode([SampleResult].self, from: archData)) ?? []
-			return result
-		}
-		set {
-			let encoder = JSONEncoder()
-			if let archData = try? encoder.encode(newValue) {
-				userDefaults.set(archData, forKey: #function)
-			}
-		}
-	}
-
-	func add(_ sampleResult: SampleResult)
-	{
-		sampleResults.append(sampleResult)
-	}
-
-	func remove(_ sampleResult: SampleResult)
-	{
-		let ix = sampleResults.firstIndex { (result) -> Bool in
-			return sampleResult == result
-		}
-		guard let ixValue = ix else {
-			return
-		}
-
-		sampleResults.remove(at: ixValue)
-	}
-
-	func remove(ix: Int)
-	{
-		sampleResults.remove(at: ix)
 	}
 
 }

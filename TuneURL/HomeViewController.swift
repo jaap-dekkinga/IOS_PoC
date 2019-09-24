@@ -18,12 +18,13 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 	@IBOutlet var matchTableView: UITableView!
 	@IBOutlet var tooltipLabel: UILabel!
 
+	// interface colors
+	private let greenBackOn = UIColor(red: 0.17, green: 0.67, blue: 0.48, alpha: 1.0)
+	private let greenBackOff = UIColor(red: 0.17, green: 0.55, blue: 0.40, alpha: 1.0)
+
 	// private
 	private let audioMatcher = AppDelegate.audioMatcher
 	private let itemCollection = MatchedItemCollection.shared
-
-	private let greenBackOn = UIColor(red: 0.17, green: 0.67, blue: 0.48, alpha: 1.00)
-	private let greenBackOff = UIColor(red: 0.17, green: 0.55, blue: 0.40, alpha: 1.00)
 
 	// MARK: -
 

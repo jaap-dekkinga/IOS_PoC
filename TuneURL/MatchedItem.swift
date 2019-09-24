@@ -26,6 +26,24 @@ class MatchedItem: Codable {
 	public private(set) var pollID: String?
 	public private(set) var title: String = ""
 	public private(set) var url: URL?
+	public private(set) var uuid = UUID().uuidString
+
+	var notificationTitle: String? {
+		switch action {
+			case .phoneNumber:
+				if let phoneNumberString = phoneNumber {
+					return ("Save phone number " + phoneNumberString + "?")
+				} else {
+					return "Save phone number?"
+				}
+			case .poll:
+				return "Vote in the TuneURL Poll!"
+			case .webPage:
+				return "Save Web Page?"
+			default:
+				return nil
+		}
+	}
 
 	var phoneURL: URL? {
 		if let phoneNumber = self.phoneNumber {
@@ -41,6 +59,7 @@ class MatchedItem: Codable {
 		case pollID = "Poll ID"
 		case title = "Title"
 		case url = "URL"
+		case uuid = "UUID"
 	}
 
 	// MARK: -
@@ -97,6 +116,9 @@ class MatchedItem: Codable {
 		if let decodedURL: URL = try? container.decode(URL.self, forKey: .url) {
 			url = decodedURL
 		}
+		if let decodedUUID: String = try? container.decode(String.self, forKey: .uuid) {
+			uuid = decodedUUID
+		}
 	}
 
 	func encode(to encoder: Encoder) throws
@@ -113,6 +135,7 @@ class MatchedItem: Codable {
 		if let url = self.url {
 			try container.encode(url, forKey: .url)
 		}
+		try container.encode(uuid, forKey: .uuid)
 	}
 
 }

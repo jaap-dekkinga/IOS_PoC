@@ -59,77 +59,69 @@ class SwipeCardActionViewController: UIViewController, DMSwipeCardsViewDelegate 
 			let leftLabelRect = CGRect(x: leftView.bounds.origin.x + touchViewWidth / 4.0, y: leftView.bounds.origin.y, width: leftView.bounds.width * 3.0 / 4.0, height: leftView.bounds.height)
 			addLabel(in: leftView, text: "YES >", with: leftLabelRect)
 
-            let rightView = UIView(frame: CGRect(x: container.frame.width - touchViewWidth + touchViewWidth/4,
-                                                y: container.frame.height/2 - touchViewHeight/2,
-                                                width: touchViewWidth,
-                                                height: touchViewHeight))
-            rightView.backgroundColor = self.redNo
-            rightView.layer.cornerRadius = touchViewWidth/2
-            container.addSubview(rightView)
-            let rightLabelRect = CGRect(x: rightView.bounds.origin.x,
-                                        y: rightView.bounds.origin.y,
-                                        width: rightView.bounds.width * 3/4,
-                                        height: rightView.bounds.height)
-            addLabel(in: rightView, text: "< NO", with: rightLabelRect)
+			let rightView = UIView(frame: CGRect(x: container.frame.width - touchViewWidth + touchViewWidth / 4.0, y: container.frame.height / 2.0 - touchViewHeight / 2.0, width: touchViewWidth, height: touchViewHeight))
+			rightView.backgroundColor = self.redNo
+			rightView.layer.cornerRadius = touchViewWidth/2
+			container.addSubview(rightView)
+			let rightLabelRect = CGRect(x: rightView.bounds.origin.x, y: rightView.bounds.origin.y, width: rightView.bounds.width * 3.0 / 4.0, height: rightView.bounds.height)
+			addLabel(in: rightView, text: "< NO", with: rightLabelRect)
 
-            let labelHeight = CGFloat(100)
-            let label = UILabel(frame: CGRect(x: container.bounds.origin.x,
-                                              y: container.bounds.height - labelHeight,
-                                              width: container.bounds.width,
-                                              height: labelHeight))
-            label.text = element
-            label.textAlignment = .center
-            label.textColor = UIColor.white.withAlphaComponent(0.7)
-            label.font = UIFont.systemFont(ofSize: 26, weight: UIFont.Weight.thin)
-            label.clipsToBounds = true
-            label.layer.cornerRadius = 16
-            label.adjustsFontSizeToFitWidth = true
-            container.addSubview(label)
+			let labelHeight = CGFloat(100.0)
+			let label = UILabel(frame: CGRect(x: container.bounds.origin.x, y: container.bounds.height - labelHeight, width: container.bounds.width, height: labelHeight))
+			label.text = element
+			label.textAlignment = .center
+			label.textColor = UIColor.white.withAlphaComponent(0.7)
+			label.font = UIFont.systemFont(ofSize: 26, weight: UIFont.Weight.thin)
+			label.clipsToBounds = true
+			label.layer.cornerRadius = 16
+			label.adjustsFontSizeToFitWidth = true
+			container.addSubview(label)
 
-            container.layer.shadowRadius = 4
-            container.layer.shadowOpacity = 1.0
-            container.layer.shadowColor = UIColor(white: 0.9, alpha: 1.0).cgColor
-            container.layer.shadowOffset = CGSize(width: 0, height: 0)
-            container.layer.shouldRasterize = true
-            container.layer.rasterizationScale = UIScreen.main.scale
+			container.layer.shadowRadius = 4
+			container.layer.shadowOpacity = 1.0
+			container.layer.shadowColor = UIColor(white: 0.9, alpha: 1.0).cgColor
+			container.layer.shadowOffset = CGSize(width: 0, height: 0)
+			container.layer.shouldRasterize = true
+			container.layer.rasterizationScale = UIScreen.main.scale
 
-            return container
-        }
+			return container
+		}
 
-        func addLabel(in container: UIView, text: String, with rect: CGRect? = nil) {
-            let rect = rect ?? container.bounds
-            let label = UILabel(frame: rect)
-            label.text = text
-            label.textAlignment = .center
-            label.font = UIFont.systemFont(ofSize: 32, weight: UIFont.Weight.thin)
-            label.textColor = UIColor.white.withAlphaComponent(0.7)
-            label.clipsToBounds = true
-            label.adjustsFontSizeToFitWidth = true
-            container.addSubview(label)
-        }
+		func addLabel(in container: UIView, text: String, with rect: CGRect? = nil)
+		{
+			let rect = rect ?? container.bounds
+			let label = UILabel(frame: rect)
+			label.text = text
+			label.textAlignment = .center
+			label.font = UIFont.systemFont(ofSize: 32, weight: UIFont.Weight.thin)
+			label.textColor = UIColor.white.withAlphaComponent(0.7)
+			label.clipsToBounds = true
+			label.adjustsFontSizeToFitWidth = true
+			container.addSubview(label)
+		}
 
-        let overlayGenerator: (SwipeMode, CGRect) -> (UIView) = { (mode: SwipeMode, frame: CGRect) -> (UIView) in
-            let label = UILabel()
-            label.frame.size = CGSize(width: 100, height: 100)
-            label.center = CGPoint(x: frame.width / 2, y: frame.height / 2)
-            label.layer.cornerRadius = label.frame.width / 2
-            label.backgroundColor = mode == .left ? self.redNo : self.greenYes
-            label.clipsToBounds = true
-            label.text = mode == .left ? "👎" : "👍"
-            label.font = UIFont.systemFont(ofSize: 24)
-            label.textAlignment = .center
-            return label
-        }
+		let overlayGenerator: (SwipeMode, CGRect) -> (UIView) = {
+			(mode: SwipeMode, frame: CGRect) -> (UIView) in
 
-        let frame = CGRect(x: 0, y: 80, width: self.view.frame.width, height: self.view.frame.height - 160)
-        swipeView = DMSwipeCardsView<String>(frame: frame,
-                                             viewGenerator: viewGenerator,
-                                             overlayGenerator: overlayGenerator)
-        swipeView.delegate = self
-        self.view.addSubview(swipeView)
+			let label = UILabel()
+			label.frame.size = CGSize(width: 100, height: 100)
+			label.center = CGPoint(x: frame.width / 2, y: frame.height / 2)
+			label.layer.cornerRadius = label.frame.width / 2
+			label.backgroundColor = mode == .left ? self.redNo : self.greenYes
+			label.clipsToBounds = true
+			label.text = mode == .left ? "👎" : "👍"
+			label.font = UIFont.systemFont(ofSize: 24)
+			label.textAlignment = .center
+			return label
+		}
 
-        addCard()
-    }
+		let frame = CGRect(x: 0.0, y: 80.0, width: self.view.frame.width, height: self.view.frame.height - 160.0)
+		swipeView = DMSwipeCardsView<String>(frame: frame, viewGenerator: viewGenerator, overlayGenerator: overlayGenerator)
+		swipeView.delegate = self
+		self.view.addSubview(swipeView)
+
+		addCard()
+	}
 
 	@objc func applicationWillResignActive()
 	{

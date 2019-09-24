@@ -12,7 +12,9 @@ import Foundation
 
 
 protocol AudioMatcherDelegate {
-	func sampleReady(_ sampleUrl: URL)
+
+	func audioMatched(_ matchResponse: SampleData)
+
 }
 
 
@@ -20,8 +22,10 @@ class AudioMatcher: NSObject {
 
 	// public
 	var delegate: AudioMatcherDelegate?
+
+	// public (read-only)
 	public private(set) var isRunning = false
-	var triggerFingerprint = [UInt8]()
+	public private(set) var triggerFingerprint = [UInt8]()
 
 	// private
 	private let audioBuffer: AudioBuffer
@@ -117,13 +121,28 @@ class AudioMatcher: NSObject {
 			let recordingFolderURL = AppDelegate.recordingFolderURL
 			let soundFileURL = recordingFolderURL.appendingPathComponent(sampleFileName)
 
-			print("writing to soundfile url: '\(soundFileURL)'")
+#if DEBUG
+			print("Writing recording to: '\(soundFileURL)'")
+#endif // DEBUG
 
 			// write the sample to the file
 			self.audioBuffer.export(to: soundFileURL, maxDuration: identifiableAudioDuration) {
 				(Bool, Double) in
-				// notify the delegate
-				self.delegate?.sampleReady(soundFileURL)
+
+				// ask the server to match the recording
+				MatchServer.shared.requestMatch(for: soundFileURL) {
+					(response: SampleData?) in
+
+					// notfiy the delegate on a successful match
+					if let matchResponse = response {
+						self.delegate?.audioMatched(matchResponse)
+					}
+
+#if !DEBUG
+					// delete the recording
+					_ = try? FileManager.default.removeItem(at: soundFileURL)
+#endif // !DEBUG
+				}
 			}
 		}
 	}

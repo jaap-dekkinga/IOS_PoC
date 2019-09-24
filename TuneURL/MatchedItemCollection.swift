@@ -41,7 +41,7 @@ class MatchedItemCollection {
 
 	// MARK: -
 
-	func addItem(with sampleData: SampleData)
+	func addItem(with sampleData: SampleData) -> MatchedItem?
 	{
 		// add the item to the collection
 		let matchedItem = MatchedItem(with: sampleData)
@@ -50,6 +50,8 @@ class MatchedItemCollection {
 
 		// notify observers an item was added
 		NotificationCenter.default.post(name: MatchedItemCollectionAddedItemNotification, object: self, userInfo: [ "Item Index" : 0 ])
+
+		return matchedItem
 	}
 
 	func removeItem(_ item: MatchedItem) -> Bool
