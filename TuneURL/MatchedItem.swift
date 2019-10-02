@@ -25,6 +25,7 @@ class MatchedItem: Codable {
 
 	// public (read-only)
 	public private(set) var action: Action = .none
+	public private(set) var matchedTime = Date()
 	public private(set) var phoneNumber: String?
 	public private(set) var pollID: String?
 	public private(set) var title: String = ""
@@ -61,6 +62,7 @@ class MatchedItem: Codable {
 	private enum Keys: String, CodingKey {
 		case action = "Action"
 		case favorite = "Favorite"
+		case matchedTime = "Matched Time"
 		case phoneNumber = "Phone Number"
 		case pollID = "Poll ID"
 		case title = "Title"
@@ -105,6 +107,8 @@ class MatchedItem: Codable {
 	{
 		self.init()
 
+		matchedTime = Date.distantPast
+
 		let container = try decoder.container(keyedBy: MatchedItem.Keys.self)
 
 		if let decodedAction: Action = try? container.decode(Action.self, forKey: .action) {
@@ -112,6 +116,9 @@ class MatchedItem: Codable {
 		}
 		if let decodedFavorite: Bool = try? container.decode(Bool.self, forKey: .favorite) {
 			favorite = decodedFavorite
+		}
+		if let decodedMatchedTime: Date = try? container.decode(Date.self, forKey: .matchedTime) {
+			matchedTime = decodedMatchedTime
 		}
 		if let decodedTitle: String = try? container.decode(String.self, forKey: .title) {
 			title = decodedTitle
@@ -135,6 +142,7 @@ class MatchedItem: Codable {
 		var container = encoder.container(keyedBy: MatchedItem.Keys.self)
 		try container.encode(action, forKey: .action)
 		try container.encode(favorite, forKey: .favorite)
+		try container.encode(matchedTime, forKey: .matchedTime)
 		try container.encode(title, forKey: .title)
 		if let phoneNumber = self.phoneNumber {
 			try container.encode(phoneNumber, forKey: .phoneNumber)

@@ -55,7 +55,7 @@ class MatchedItemCell: UITableViewCell {
 	@IBAction func favoriteItem(_ sender: Any?)
 	{
 		if let matchedItem = self.item {
-			MatchedItemCollection.shared.setItem(matchedItem, favorite: !matchedItem.favorite)
+			MatchedItemCollection.shared.setFavorite(!matchedItem.favorite, for: matchedItem)
 			updateFavoriteButton()
 		}
 	}

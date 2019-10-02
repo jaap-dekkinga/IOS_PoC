@@ -103,14 +103,8 @@
                                     <constraint firstAttribute="bottom" secondItem="gv2-u2-817" secondAttribute="bottom" constant="20" id="wi5-I5-NqY"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Recent Matches" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JQi-YJ-nDy">
-                                <rect key="frame" x="16" y="188" width="343" height="26.5"/>
-                                <fontDescription key="fontDescription" type="system" weight="black" pointSize="22"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="68" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="QVp-Ry-Xic">
-                                <rect key="frame" x="0.0" y="222.5" width="375" height="444.5"/>
+                                <rect key="frame" x="0.0" y="219" width="375" height="448"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MatchedItemCell" rowHeight="68" id="3jg-oI-V9d" customClass="MatchedItemCell" customModule="TuneURL" customModuleProvider="target">
@@ -171,23 +165,34 @@
                                     <outlet property="delegate" destination="UEu-BU-4Hg" id="krF-VR-lVA"/>
                                 </connections>
                             </tableView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="vdg-jf-8GK">
+                                <rect key="frame" x="16" y="180" width="343" height="32"/>
+                                <segments>
+                                    <segment title="Recent"/>
+                                    <segment title="Favorites"/>
+                                </segments>
+                                <connections>
+                                    <action selector="collectionChanged:" destination="UEu-BU-4Hg" eventType="valueChanged" id="Kd6-CP-0wX"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="0.1450980392" green="0.76078431369999999" blue="0.3803921569" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="vdg-jf-8GK" firstAttribute="top" secondItem="W8f-sf-dcG" secondAttribute="bottom" id="53s-6r-xjo"/>
+                            <constraint firstItem="pWy-4M-CbJ" firstAttribute="trailing" secondItem="vdg-jf-8GK" secondAttribute="trailing" constant="16" id="7T0-IK-gra"/>
                             <constraint firstItem="QVp-Ry-Xic" firstAttribute="trailing" secondItem="pWy-4M-CbJ" secondAttribute="trailing" id="DmT-wR-dEI"/>
-                            <constraint firstItem="JQi-YJ-nDy" firstAttribute="top" secondItem="W8f-sf-dcG" secondAttribute="bottom" constant="8" id="JDj-hs-NSI"/>
-                            <constraint firstItem="pWy-4M-CbJ" firstAttribute="trailing" secondItem="JQi-YJ-nDy" secondAttribute="trailing" constant="16" id="Ly0-eo-mg9"/>
+                            <constraint firstItem="vdg-jf-8GK" firstAttribute="leading" secondItem="pWy-4M-CbJ" secondAttribute="leading" constant="16" id="HYT-UH-Uw6"/>
                             <constraint firstItem="QVp-Ry-Xic" firstAttribute="leading" secondItem="pWy-4M-CbJ" secondAttribute="leading" id="MNi-Al-vuf"/>
-                            <constraint firstItem="QVp-Ry-Xic" firstAttribute="bottom" secondItem="pWy-4M-CbJ" secondAttribute="bottom" id="bZl-3T-qRk"/>
-                            <constraint firstItem="QVp-Ry-Xic" firstAttribute="top" secondItem="JQi-YJ-nDy" secondAttribute="bottom" constant="8" id="jaE-Ed-Twf"/>
+                            <constraint firstItem="QVp-Ry-Xic" firstAttribute="top" secondItem="vdg-jf-8GK" secondAttribute="bottom" constant="8" id="V25-YB-9RH"/>
+                            <constraint firstAttribute="bottom" secondItem="QVp-Ry-Xic" secondAttribute="bottom" id="Y2v-ep-zwc"/>
                             <constraint firstItem="W8f-sf-dcG" firstAttribute="top" secondItem="pWy-4M-CbJ" secondAttribute="top" id="mCx-7g-GcO"/>
                             <constraint firstItem="W8f-sf-dcG" firstAttribute="trailing" secondItem="pWy-4M-CbJ" secondAttribute="trailing" id="mHS-IV-u1p"/>
                             <constraint firstItem="W8f-sf-dcG" firstAttribute="leading" secondItem="egx-iY-fmE" secondAttribute="leading" id="rP6-At-0Vu"/>
-                            <constraint firstItem="JQi-YJ-nDy" firstAttribute="leading" secondItem="pWy-4M-CbJ" secondAttribute="leading" constant="16" id="xnu-Qj-N2Z"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="pWy-4M-CbJ"/>
                     </view>
                     <connections>
+                        <outlet property="collectionSelector" destination="vdg-jf-8GK" id="cXp-Sa-mtG"/>
                         <outlet property="enableButton" destination="gv2-u2-817" id="jDt-35-4h2"/>
                         <outlet property="enableLabel" destination="sMz-Ty-g6z" id="Z0T-Oh-b8h"/>
                         <outlet property="matchTableView" destination="QVp-Ry-Xic" id="5Su-eb-2EO"/>

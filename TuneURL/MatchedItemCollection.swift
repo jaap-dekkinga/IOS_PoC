@@ -18,6 +18,9 @@ class MatchedItemCollection {
 	// static
 	static let shared = MatchedItemCollection()
 
+	// maximum time to keep recent items (24 hours)
+	let recentItemMaxTime = (24.0 * 60.0 * 60.0)
+
 	// public
 	var count: Int {
 		return collectionItems.count
@@ -69,14 +72,48 @@ class MatchedItemCollection {
 	func item(withIndex index: Int) -> MatchedItem?
 	{
 		// safety check
-		if ((index < 0) || (index >= collectionItems.count)) {
+		guard (index >= 0), (index < collectionItems.count) else {
 			return nil
 		}
 
 		return collectionItems[index]
 	}
 
-	func setItem(_ item: MatchedItem, favorite: Bool)
+	// MARK: -
+	// MARK: Favorite Items
+
+	var favoriteCount: Int {
+		var count = 0
+		for item in collectionItems {
+			if item.favorite {
+				count += 1
+			}
+		}
+		return count
+	}
+
+	func favoriteItem(withIndex index: Int) -> MatchedItem?
+	{
+		// safety check
+		guard (index >= 0), (index < collectionItems.count) else {
+			return nil
+		}
+
+		var currentIndex = 0
+
+		for item in collectionItems {
+			if item.favorite {
+				if (currentIndex == index) {
+					return item
+				}
+				currentIndex += 1
+			}
+		}
+
+		return nil
+	}
+
+	func setFavorite(_ favorite: Bool, for item: MatchedItem)
 	{
 		guard item.favorite != favorite else {
 			return
@@ -84,6 +121,59 @@ class MatchedItemCollection {
 
 		item.favorite = favorite
 		saveItems()
+	}
+
+	// MARK: -
+	// MARK: Recent Items
+
+	private func itemIsRecent(_ item: MatchedItem) -> Bool
+	{
+		let timeSinceMatch = abs(item.matchedTime.timeIntervalSinceNow)
+		return (timeSinceMatch <= recentItemMaxTime)
+	}
+
+	private func pruneRecentItems()
+	{
+		var index = collectionItems.count
+
+		while (index > 0) {
+			let item = collectionItems[(index - 1)]
+			if ((item.favorite == false) && (itemIsRecent(item) == false)) {
+				collectionItems.remove(at: (index - 1))
+			}
+			index -= 1
+		}
+	}
+
+	var recentCount: Int {
+		var count = 0
+		for item in collectionItems {
+			if itemIsRecent(item) {
+				count += 1
+			}
+		}
+		return count
+	}
+
+	func recentItem(withIndex index: Int) -> MatchedItem?
+	{
+		// safety check
+		guard (index >= 0), (index < collectionItems.count) else {
+			return nil
+		}
+
+		var currentIndex = 0
+
+		for item in collectionItems {
+			if itemIsRecent(item) {
+				if (currentIndex == index) {
+					return item
+				}
+				currentIndex += 1
+			}
+		}
+
+		return nil
 	}
 
 	// MARK: -
@@ -105,6 +195,9 @@ class MatchedItemCollection {
 
 		// set the items
 		collectionItems = decodedItems
+
+		// prune no longer recent items
+		pruneRecentItems()
 	}
 
 	private func saveItems()

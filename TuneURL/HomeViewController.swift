@@ -13,6 +13,7 @@ import UIKit
 class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
 	// interface
+	@IBOutlet var collectionSelector: UISegmentedControl!
 	@IBOutlet var enableButton: UIButton!
 	@IBOutlet var enableLabel: UILabel!
 	@IBOutlet var matchTableView: UITableView!
@@ -31,6 +32,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+		collectionSelector.selectedSegmentIndex = 0
 		updateListeningInterface()
 	}
 
@@ -63,6 +65,11 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 		}
 
 		matchTableView.insertRows(at: [IndexPath(row: newItemIndex, section: 0)], with: .top)
+	}
+
+	@IBAction func collectionChanged(_ sender: Any?)
+	{
+		matchTableView.reloadData()
 	}
 
 	@IBAction func enableButtonPressed(_ sender: UIButton)
@@ -108,8 +115,20 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
+		// get the matched item
+		var item: MatchedItem?
+		switch collectionSelector.selectedSegmentIndex {
+			case 0:
+				item = itemCollection.recentItem(withIndex: indexPath.row)
+			case 1:
+				item = itemCollection.favoriteItem(withIndex: indexPath.row)
+			default:
+				item = itemCollection.item(withIndex: indexPath.row)
+		}
+
+		// get the item cell
 		let cell = tableView.dequeueReusableCell(withIdentifier: "MatchedItemCell", for: indexPath) as! MatchedItemCell
-		cell.item = itemCollection.item(withIndex: indexPath.row)
+		cell.item = item
 
 		return cell
 	}
@@ -130,7 +149,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		return itemCollection.count
+		switch collectionSelector.selectedSegmentIndex {
+			case 0:
+				return itemCollection.recentCount
+			case 1:
+				return itemCollection.favoriteCount
+			default:
+				return itemCollection.count
+		}
 	}
 
 	func numberOfSections(in tableView: UITableView) -> Int
