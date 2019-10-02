@@ -12,8 +12,11 @@ import UserNotifications
 
 
 protocol NotifyDelegate {
+
 	func notificationSelected(sampleUrl: URL, notificationId: String)
+
 }
+
 
 class Notify: NSObject {
 
@@ -56,16 +59,19 @@ class Notify: NSObject {
 		}
 	}
 
-	func notifySave(_ matchedItem: MatchedItem)
+	func notifyMatch(_ matchedItem: MatchedItem)
 	{
+		// don't send notifcations if the application is active
+		guard (UIApplication.shared.applicationState != .active) else {
+			return
+		}
+
 		// check that notifications are enabled
 		updateEnabledStatus()
 		guard self.isEnabled else {
 			print("Cannot send notification.")
 			return
 		}
-
-		// TODO: don't send notifications when the app is in the foreground
 
 		guard let notificationTitle = matchedItem.notificationTitle else {
 			return

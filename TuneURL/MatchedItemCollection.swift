@@ -76,6 +76,16 @@ class MatchedItemCollection {
 		return collectionItems[index]
 	}
 
+	func setItem(_ item: MatchedItem, favorite: Bool)
+	{
+		guard item.favorite != favorite else {
+			return
+		}
+
+		item.favorite = favorite
+		saveItems()
+	}
+
 	// MARK: -
 	// MARK: Private
 

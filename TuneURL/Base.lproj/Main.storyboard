@@ -120,22 +120,48 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="68"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JWK-tg-L1w">
-                                                    <rect key="frame" x="23" y="22" width="329" height="24"/>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Matched-Item-Web" translatesAutoresizingMaskIntoConstraints="NO" id="S8W-en-sqs">
+                                                    <rect key="frame" x="18" y="18" width="32" height="32"/>
+                                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="S8W-en-sqs" secondAttribute="height" multiplier="1:1" id="osZ-hw-gk9"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Item Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JWK-tg-L1w">
+                                                    <rect key="frame" x="62" y="22" width="251" height="24"/>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c0s-1M-WVq">
+                                                    <rect key="frame" x="325" y="18" width="32" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="c0s-1M-WVq" secondAttribute="height" multiplier="1:1" id="Clh-ME-rE0"/>
+                                                    </constraints>
+                                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <state key="normal" image="Matched-Item-Favorite"/>
+                                                    <connections>
+                                                        <action selector="favoriteItem:" destination="3jg-oI-V9d" eventType="touchUpInside" id="28X-zy-iL9"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="c0s-1M-WVq" secondAttribute="bottom" constant="18" id="0yD-xl-1Rj"/>
+                                                <constraint firstItem="c0s-1M-WVq" firstAttribute="leading" secondItem="JWK-tg-L1w" secondAttribute="trailing" constant="12" id="Boj-pM-RSm"/>
                                                 <constraint firstItem="JWK-tg-L1w" firstAttribute="centerY" secondItem="toI-MG-xMh" secondAttribute="centerY" id="DVR-lO-aUb"/>
-                                                <constraint firstItem="JWK-tg-L1w" firstAttribute="leading" secondItem="toI-MG-xMh" secondAttribute="leadingMargin" constant="8" id="NBM-te-Odi"/>
-                                                <constraint firstItem="JWK-tg-L1w" firstAttribute="trailing" secondItem="toI-MG-xMh" secondAttribute="trailingMargin" constant="-8" id="gaY-dg-yzS"/>
+                                                <constraint firstAttribute="trailing" secondItem="c0s-1M-WVq" secondAttribute="trailing" constant="18" id="DiM-21-10V"/>
+                                                <constraint firstItem="S8W-en-sqs" firstAttribute="top" secondItem="toI-MG-xMh" secondAttribute="top" constant="18" id="Is3-2V-1Wg"/>
+                                                <constraint firstItem="c0s-1M-WVq" firstAttribute="top" secondItem="toI-MG-xMh" secondAttribute="top" constant="18" id="JIV-qd-Gfl"/>
+                                                <constraint firstItem="JWK-tg-L1w" firstAttribute="leading" secondItem="S8W-en-sqs" secondAttribute="trailing" constant="12" id="Kxk-fh-Axr"/>
+                                                <constraint firstItem="S8W-en-sqs" firstAttribute="leading" secondItem="toI-MG-xMh" secondAttribute="leading" constant="18" id="Owh-5B-IOm"/>
+                                                <constraint firstAttribute="bottom" secondItem="S8W-en-sqs" secondAttribute="bottom" constant="18" id="oIz-Qb-7gj"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
+                                            <outlet property="favoriteButton" destination="c0s-1M-WVq" id="snC-QU-r1c"/>
+                                            <outlet property="iconImage" destination="S8W-en-sqs" id="Sep-Ep-2vi"/>
                                             <outlet property="titleLabel" destination="JWK-tg-L1w" id="wBK-CI-Uap"/>
                                         </connections>
                                     </tableViewCell>
@@ -175,6 +201,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Matched-Item-Favorite" width="32" height="32"/>
+        <image name="Matched-Item-Web" width="32" height="32"/>
         <image name="icon-outline-fade" width="940" height="932"/>
     </resources>
 </document>

@@ -13,14 +13,42 @@ import Foundation
 struct PollResponse: Codable {
 
 	struct PollItem: Codable {
+
 		let numberOfYes: Int
 		let numberOfNo: Int
 		let timeStamp: String
 		let name: String
+
+		func prettyDescription() -> String {
+			return "\n"
+				+ "name: " + name + "\n"
+				+ "yes count: " + String(numberOfYes) + "\n"
+				+ "no count: " + String(numberOfNo) + "\n"
+				+ "\n"
+		}
+
 	}
 
 	let value: [PollItem]
 	let statusCode: Int
+
+	// MARK: -
+
+	func prettyDescription(by name: String) -> String
+	{
+		let allbyName = self.value.filter { (item) -> Bool in
+			return item.name == name
+		}
+		let sumYesNo = allbyName.reduce((yes: 0, no: 0)) { (result, item) in
+			return (yes: result.yes + item.numberOfYes, no: result.no + item.numberOfNo)
+		}
+
+		return "\n"
+			+ "name: " + name + "\n"
+			+ "yes count: " + String(sumYesNo.yes) + "\n"
+			+ "no count: " + String(sumYesNo.no) + "\n"
+			+ "\n"
+	}
 
 }
 

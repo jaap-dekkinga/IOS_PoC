@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 	var window: UIWindow?
 
 	// private
-	fileprivate var bgTask = UIBackgroundTaskIdentifier.invalid
+	fileprivate var backgroundTask = UIBackgroundTaskIdentifier.invalid
 	fileprivate static let notify = Notify()
 	fileprivate weak var swipeVC: SwipeCardActionViewController?
 
@@ -97,16 +97,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 
 	private func stopBackgroundTask(_ application: UIApplication)
 	{
-		if bgTask != UIBackgroundTaskIdentifier.invalid {
-			application.endBackgroundTask(bgTask)
-			bgTask = UIBackgroundTaskIdentifier.invalid
+		if (backgroundTask != .invalid) {
+			application.endBackgroundTask(backgroundTask)
+			backgroundTask = .invalid
 		}
 	}
 
 	private func enterBackground(_ application: UIApplication)
 	{
-		bgTask = application.beginBackgroundTask {
-			print("bg task ended")
+		backgroundTask = application.beginBackgroundTask {
 			self.stopBackgroundTask(application)
 		}
 	}
@@ -144,7 +143,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 
 		// audio was successfully matched
 		if let matchedItem = MatchedItemCollection.shared.addItem(with: matchResponse) {
-			AppDelegate.notify.notifySave(matchedItem)
+			AppDelegate.notify.notifyMatch(matchedItem)
 		}
 	}
 

@@ -31,7 +31,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		refreshScreen()
+		updateListeningInterface()
 	}
 
 	override func viewDidAppear(_ animated: Bool)
@@ -55,13 +55,38 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 		super.viewWillDisappear(animated)
 	}
 
+	@objc func collectionAddedItem(_ notification: Notification)
+	{
+		guard let newItemIndex = notification.userInfo?["Item Index"] as? Int else {
+			matchTableView.reloadData()
+			return
+		}
+
+		matchTableView.insertRows(at: [IndexPath(row: newItemIndex, section: 0)], with: .top)
+	}
+
 	@IBAction func enableButtonPressed(_ sender: UIButton)
 	{
 		audioMatcher.enabled.toggle()
-		refreshScreen() //TODO: Move this in feedback loop form VM (delegate)
+		updateListeningInterface()
 	}
 
-	private func refreshScreen()
+	// MARK: -
+	// MARK: Private
+
+	private func buttonGlow(_ button: UIButton, on: Bool)
+	{
+		if on {
+			button.layer.shadowColor = UIColor.cyan.cgColor
+		} else {
+			button.layer.shadowColor = UIColor.clear.cgColor
+		}
+		button.layer.shadowRadius = 10.0
+		button.layer.shadowOpacity = 1.0
+		button.layer.shadowOffset = CGSize.zero
+	}
+
+	private func updateListeningInterface()
 	{
 		if audioMatcher.enabled {
 			self.view.backgroundColor = greenBackOn
@@ -71,28 +96,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 			self.enableLabel.text = "Tap to Listen"
 		}
 		buttonGlow(self.enableButton, on: audioMatcher.enabled)
-	}
-
-	private func buttonGlow(_ button: UIButton, on: Bool)
-	{
-		if on {
-			button.layer.shadowColor = UIColor.cyan.cgColor
-		} else {
-			button.layer.shadowColor = UIColor.clear.cgColor
-		}
-		button.layer.shadowRadius = 10.0;
-		button.layer.shadowOpacity = 1.0;
-		button.layer.shadowOffset = CGSize.zero;
-	}
-
-	@objc func collectionAddedItem(_ notification: Notification)
-	{
-		guard let newItemIndex = notification.userInfo?["Item Index"] as? Int else {
-			matchTableView.reloadData()
-			return
-		}
-
-		matchTableView.insertRows(at: [IndexPath(row: newItemIndex, section: 0)], with: .top)
 	}
 
 	// MARK: -

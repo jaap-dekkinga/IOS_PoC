@@ -20,6 +20,9 @@ class MatchedItem: Codable {
 		case webPage = 3
 	}
 
+	// public
+	var favorite = false
+
 	// public (read-only)
 	public private(set) var action: Action = .none
 	public private(set) var phoneNumber: String?
@@ -27,6 +30,8 @@ class MatchedItem: Codable {
 	public private(set) var title: String = ""
 	public private(set) var url: URL?
 	public private(set) var uuid = UUID().uuidString
+
+	// MARK: -
 
 	var notificationTitle: String? {
 		switch action {
@@ -55,6 +60,7 @@ class MatchedItem: Codable {
 	// private
 	private enum Keys: String, CodingKey {
 		case action = "Action"
+		case favorite = "Favorite"
 		case phoneNumber = "Phone Number"
 		case pollID = "Poll ID"
 		case title = "Title"
@@ -104,6 +110,9 @@ class MatchedItem: Codable {
 		if let decodedAction: Action = try? container.decode(Action.self, forKey: .action) {
 			action = decodedAction
 		}
+		if let decodedFavorite: Bool = try? container.decode(Bool.self, forKey: .favorite) {
+			favorite = decodedFavorite
+		}
 		if let decodedTitle: String = try? container.decode(String.self, forKey: .title) {
 			title = decodedTitle
 		}
@@ -125,6 +134,7 @@ class MatchedItem: Codable {
 	{
 		var container = encoder.container(keyedBy: MatchedItem.Keys.self)
 		try container.encode(action, forKey: .action)
+		try container.encode(favorite, forKey: .favorite)
 		try container.encode(title, forKey: .title)
 		if let phoneNumber = self.phoneNumber {
 			try container.encode(phoneNumber, forKey: .phoneNumber)

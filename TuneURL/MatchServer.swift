@@ -11,11 +11,33 @@ import Alamofire
 import Foundation
 
 
+class MatchServerError {
+
+	let description: String
+	let code: Int
+
+	// MARK: -
+
+	init(description: String, code: Int)
+	{
+		self.description = description
+		self.code = code
+	}
+
+	convenience init(error: NSError)
+	{
+		self.init(description: error.localizedDescription, code: error.code)
+	}
+
+}
+
+// MARK: -
+
 class MatchServer: NSObject {
 
 	enum MatchServerResult {
 		case success(SampleData)
-		case failure(SampleDataError)
+		case failure(MatchServerError)
 	}
 
 	// static
@@ -75,17 +97,18 @@ class MatchServer: NSObject {
 						// check for an error
 						if let error = response.error {
 							print("MatchServer: Response error: \(error.localizedDescription)")
-							completion?(.failure(SampleDataError(error: error)))
+							let nsError = error as NSError
+							completion?(.failure(MatchServerError(error: nsError)))
 							return
 						}
 
 						// parse the response json
-						guard let jsonRoot = response.result.value as? [String: Any],
-								let mainDict = jsonRoot["data"] as? [String: Any],
+						guard let jsonRoot = response.result.value as? [String : Any],
+								let mainDict = jsonRoot["data"] as? [String : Any],
 								let matchResponse = SampleData(jsonDict: mainDict) else {
 							// return a parsing error
 							let error = NSError(domain: "App", code: -1, userInfo: nil)
-							completion?(.failure(SampleDataError(error: error)))
+							completion?(.failure(MatchServerError(error: error)))
 							return
 						}
 
@@ -99,7 +122,8 @@ class MatchServer: NSObject {
 
 				case .failure(let error):
 					print("MatchServer: Upload error: \(error.localizedDescription)")
-					completion?(.failure(SampleDataError(error: error)))
+					let nsError = error as NSError
+					completion?(.failure(MatchServerError(error: nsError)))
 			}
 		}
 	}

@@ -10,28 +10,6 @@
 import Foundation
 
 
-class SampleDataError: NSObject, Codable {
-
-	let desc: String
-	let code: Int
-
-	init(desc: String, code: Int)
-	{
-		self.desc = desc
-		self.code = code
-		super.init()
-	}
-
-	convenience init(error: Error)
-	{
-		let nsError = error as NSError
-		self.init(desc: "Sample Data Error", code: nsError.code)
-	}
-
-}
-
-// MARK: -
-
 class SampleData: NSObject, NSCoding, Codable {
 
 	let status: String
@@ -45,7 +23,6 @@ class SampleData: NSObject, NSCoding, Codable {
 	let songName: String
 	let title: String
 	let url: String
-	var pollResponse: PollResponse?
 
 	// MARK: -
 
@@ -104,12 +81,10 @@ class SampleData: NSObject, NSCoding, Codable {
 		coder.encode(songName, forKey: "song_name")
 		coder.encode(title, forKey: "title")
 		coder.encode(url, forKey: "url")
-		coder.encode(pollResponse, forKey: "pollResponse")
 	}
 
 	required convenience init?(coder aDecoder: NSCoder)
 	{
-		let pollResponse = aDecoder.decodeObject(forKey: "pollResponse") as? PollResponse
 		let confidence = aDecoder.decodeInteger(forKey: "confidence")
 		guard let status = aDecoder.decodeObject(forKey: "status") as? String,
 			let desc = aDecoder.decodeObject(forKey: "description") as? String,
@@ -125,7 +100,6 @@ class SampleData: NSObject, NSCoding, Codable {
 		}
 
 		self.init(status: status, confidence: confidence, desc: desc, sha1: sha1, matchTime: String(matchTime), offset: String(offset), offsetSeconds: String(offsetSeconds), songId: String(songId), songName: songName, title: title, url: url)
-		self.pollResponse = pollResponse
 	}
 
 	// MARK: -
@@ -145,43 +119,6 @@ class SampleData: NSObject, NSCoding, Codable {
 			+ "title: " + title + "\n"
 //			+ "url: " + url + "\n"
 			+ "\n"
-			+ "Poll Response: " + (pollResponse?.prettyDescription(by: title) ?? "missing") + "\n"
-			+ "\n"
-	}
-
-}
-
-// MARK: -
-
-extension PollResponse {
-
-	func prettyDescription(by name: String) -> String
-	{
-		let allbyName = self.value.filter { (item) -> Bool in
-			return item.name == name
-		}
-		let sumYesNo = allbyName.reduce((yes: 0, no: 0)) { (result, item) in
-			return (yes: result.yes + item.numberOfYes, no: result.no + item.numberOfNo)
-		}
-
-		return "\n"
-			+ "name: " + name + "\n"
-			+ "yes count: " + String(sumYesNo.yes) + "\n"
-			+ "no count: " + String(sumYesNo.no) + "\n"
-			+ "\n"
-	}
-
-}
-
-// MARK: -
-
-extension PollResponse.PollItem {
-
-	func prettyDescription() -> String {
-		return "\n"
-			+ "name: " + name + "\n"
-			+ "yes count: " + String(numberOfYes) + "\n"
-			+ "no count: " + String(numberOfNo) + "\n"
 			+ "\n"
 	}
 
