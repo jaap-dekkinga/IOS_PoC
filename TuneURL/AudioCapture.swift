@@ -83,9 +83,7 @@ class AudioCapture: NSObject {
 		NotificationCenter.default.removeObserver(self, name: nil, object: audioEngine)
 
 		// stop the audio engine
-		audioEngine.stop()
-		audioEngine.inputNode.removeTap(onBus: 0)
-		audioEngine.reset()
+		stopAudioEngine()
 
 		// stop the audio buffer
 		audioBuffer.stopRecording()
@@ -182,7 +180,6 @@ class AudioCapture: NSObject {
 		// setup the input node
 		let inputNode = audioEngine.inputNode
 		let inputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: sampleRate, channels: 1, interleaved: false)
-		audioEngine.connect(inputNode, to: audioEngine.outputNode, format: inputFormat)
 
 		// setup the input node to deliver sample buffers
 		inputNode.installTap(onBus: 0, bufferSize: 4096, format: inputFormat, block: {
@@ -214,12 +211,23 @@ class AudioCapture: NSObject {
 		return true
 	}
 
+	private func stopAudioEngine()
+	{
+		// stop the audio engine
+		audioEngine.stop()
+		audioEngine.inputNode.removeTap(onBus: 0)
+		audioEngine.reset()
+	}
+
 	// MARK: -
 	// MARK: AVAudioEngine notifications
 
 	@objc func audioEngineConfigurationChange(_ notification: Notification)
 	{
 		NSLog("AudioCapture: audioEngineConfigurationChange")
+
+		// make sure the audio engine is stopped
+		stopAudioEngine()
 
 		// restart the audio engine
 		if (startAudioEngine() == false) {
