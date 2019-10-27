@@ -64,7 +64,17 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 			return
 		}
 
-		matchTableView.insertRows(at: [IndexPath(row: newItemIndex, section: 0)], with: .top)
+		// add the item to the table view if the table is displaying 'recents'
+		if (collectionSelector.selectedSegmentIndex == 0) {
+			matchTableView.insertRows(at: [IndexPath(row: newItemIndex, section: 0)], with: .top)
+		}
+
+		// open polls when they are matched
+		if let item = itemCollection.item(withIndex: newItemIndex) {
+			if (item.action == .poll) {
+				openItem(item)
+			}
+		}
 	}
 
 	@IBAction func collectionChanged(_ sender: Any?)
@@ -91,6 +101,29 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 		button.layer.shadowRadius = 10.0
 		button.layer.shadowOpacity = 1.0
 		button.layer.shadowOffset = CGSize.zero
+	}
+
+	private func openItem(_ item: MatchedItem, wasUserInitiated: Bool = false)
+	{
+		switch (item.action) {
+			case .phoneNumber:
+				// open the phone number
+				if let phoneURL = item.phoneURL {
+					UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+				}
+			case .poll:
+				// open the poll
+				if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+					appDelegate.openPoll(with: item, wasUserInitiated: wasUserInitiated)
+				}
+			case .webPage:
+				// open the web page
+				if let itemURL = item.url {
+					UIApplication.shared.open(itemURL, options: [:], completionHandler: nil)
+				}
+			default:
+				break
+		}
 	}
 
 	private func updateListeningInterface()
@@ -182,25 +215,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 			return
 		}
 
-		switch (item.action) {
-			case .phoneNumber:
-				// open the phone number
-				if let phoneURL = item.phoneURL {
-					UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
-				}
-			case .poll:
-				// open the poll
-				if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-					appDelegate.openPoll(with: item)
-				}
-			case .webPage:
-				// open the web page
-				if let itemURL = item.url {
-					UIApplication.shared.open(itemURL, options: [:], completionHandler: nil)
-				}
-			default:
-				break
-		}
+		// open the item
+		openItem(item, wasUserInitiated: true)
 	}
 
 }

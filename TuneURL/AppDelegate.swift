@@ -8,6 +8,7 @@
 
 
 import UIKit
+import Speech
 
 
 @UIApplicationMain
@@ -27,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 	// private
 	fileprivate var backgroundTask = UIBackgroundTaskIdentifier.invalid
 	fileprivate static let notify = Notify()
-	fileprivate weak var swipeVC: SwipeCardActionViewController?
+	fileprivate weak var pollViewController: PollViewController?
 
 	// MARK: -
 
@@ -41,6 +42,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 
 		DispatchQueue.main.async {
 			self.enterForeground(application)
+		}
+
+		// request speech recognition permission on launch
+		SFSpeechRecognizer.requestAuthorization {
+			authStatus in
 		}
 
 		return true
@@ -124,27 +130,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 
 	// MARK: -
 
-	func openPoll(with item: MatchedItem)
-	{
-		if let cleanSwipeVC = self.swipeVC {
-			cleanSwipeVC.dismiss(animated: false, completion: nil)
-		}
-
-		let swipeCardActionViewController = SwipeCardActionViewController.create(with: item)
-		self.window?.rootViewController?.present(swipeCardActionViewController, animated: true, completion: {
-			self.swipeVC = swipeCardActionViewController
-		})
-	}
-
 	func audioMatched(_ matchResponse: SampleData)
 	{
-		// TODO: check the match response to make sure there is a valid match
-		// with decent confidence.
+		// ignore matches with extremely low confidence
+		guard (matchResponse.confidence > 1) else {
+			return
+		}
 
 		// audio was successfully matched
 		if let matchedItem = MatchedItemCollection.shared.addItem(with: matchResponse) {
 			AppDelegate.notify.notifyMatch(matchedItem)
 		}
+	}
+
+	func openPoll(with item: MatchedItem, wasUserInitiated: Bool)
+	{
+		// dismiss any previous view controller
+		pollViewController?.dismiss(animated: false, completion: nil)
+		pollViewController = nil
+
+		// open the poll view controller
+		let viewController = PollViewController.create(with: item, wasUserInitiated: wasUserInitiated)
+		self.window?.rootViewController?.present(viewController, animated: true)
+		pollViewController = viewController
 	}
 
 }

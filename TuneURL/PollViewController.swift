@@ -1,5 +1,5 @@
 //
-//  SwipeCardActionViewController.swift
+//  PollViewController.swift
 //  TuneURL
 //
 //  Created by Aleksandar Mihailovski on 6/13/18.
@@ -8,35 +8,45 @@
 
 
 import DMSwipeCards
+import Speech
 import UIKit
 
 
-class SwipeCardActionViewController: UIViewController, DMSwipeCardsViewDelegate {
+class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeCardsViewDelegate {
 
+	// private
+	private var matchedItem: MatchedItem?
+	private let pollManager = PollManager()
 	private var swipeView: DMSwipeCardsView<String>!
+	private var voted = false
 
-	fileprivate let notificationCenter = NotificationCenter.default
+	private let greenYes = UIColor(red: (35.0 / 255.0), green: (188.0 / 255.0), blue: (73.0 / 255.0), alpha: 1.0)
+	private let redNo = UIColor(red: (240.0 / 255.0), green: (83.0 / 255.0), blue: (73.0 / 255.0), alpha: 1.0)
 
-	fileprivate var matchedItem: MatchedItem?
-	fileprivate let pollManager = PollManager()
-
-	fileprivate let greenYes = UIColor(red: (35.0 / 255.0), green: (188.0 / 255.0), blue: (73.0 / 255.0), alpha: 1.0)
-	fileprivate let redNo = UIColor(red: (240.0 / 255.0), green: (83.0 / 255.0), blue: (73.0 / 255.0), alpha: 1.0)
+	// speech recognition
+    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
+	private var recognitionTask: SFSpeechRecognitionTask?
+	private var speechRecognizer: SFSpeechRecognizer?
+	private var useSpeechRecognition = false
 
 	// MARK: -
 
-	class func create(with item: MatchedItem) -> SwipeCardActionViewController
+	class func create(with item: MatchedItem, wasUserInitiated: Bool) -> PollViewController
 	{
-		let vc = SwipeCardActionViewController(nibName: nil, bundle: nil)
-		vc.matchedItem = item
-		return vc
+		let viewController = PollViewController(nibName: nil, bundle: nil)
+		viewController.matchedItem = item
+		viewController.useSpeechRecognition = (wasUserInitiated == false)
+		return viewController
 	}
 
 	// MARK: -
+	// MARK: UIViewController
 
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+
+		let notificationCenter = NotificationCenter.default
 		notificationCenter.addObserver(self, selector: #selector(applicationWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
 
 		self.view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
@@ -123,9 +133,33 @@ class SwipeCardActionViewController: UIViewController, DMSwipeCardsViewDelegate 
 		addCard()
 	}
 
+	override func viewDidAppear(_ animated: Bool)
+	{
+		super.viewDidAppear(animated)
+
+		if (useSpeechRecognition) {
+			// request speech recognition permission
+			if (SFSpeechRecognizer.authorizationStatus() == .authorized) {
+				// start speech recognition
+				DispatchQueue.main.async {
+					_ = try? self.startSpeechRecognition()
+				}
+			}
+		}
+	}
+
+	override func viewWillDisappear(_ animated: Bool)
+	{
+		// stop speech recognition
+		stopSpeechRecognition()
+
+		super.viewWillDisappear(animated)
+	}
+
 	@objc func applicationWillResignActive()
 	{
-		self.notificationCenter.removeObserver(self)
+		let notificationCenter = NotificationCenter.default
+		notificationCenter.removeObserver(self)
 		self.dismiss(animated: false, completion: nil)
 	}
 
@@ -158,31 +192,143 @@ class SwipeCardActionViewController: UIViewController, DMSwipeCardsViewDelegate 
 	}
 
 	// MARK: -
+	// MARK: Speech recognition
+
+	func audioCaptureBuffer(buffer: AVAudioPCMBuffer)
+	{
+		self.recognitionRequest?.append(buffer)
+	}
+
+	private func speechRecognized(_ text: String)
+	{
+		// safety check
+		guard voted == false else {
+			return
+		}
+
+		// search the text for the speech commands
+		let searchText = text.lowercased()
+		if searchText.contains("vote yes") {
+			// count a 'yes' vote
+			DispatchQueue.main.async {
+				self.swipedRight(self)
+				self.dismiss(animated: true, completion: nil)
+			}
+			voted = true
+		} else if searchText.contains("vote no") {
+			// count a 'no' vote
+			DispatchQueue.main.async {
+				self.swipedLeft(self)
+				self.dismiss(animated: true, completion: nil)
+			}
+			voted = true
+		}
+	}
+
+	private func startSpeechRecognition() throws
+	{
+		// safety check
+		guard (speechRecognizer == nil), (recognitionTask == nil) else {
+			NSLog("PollViewController: Error starting speech recognition.")
+			return
+		}
+
+		// setup the speech recognizer
+		guard let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US")) else {
+			NSLog("PollViewController: Error creating speech recognizer.")
+			return
+		}
+		self.speechRecognizer = speechRecognizer
+
+		// setup the speech recognition request
+		let recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+		recognitionRequest.shouldReportPartialResults = true
+		self.recognitionRequest = recognitionRequest
+
+		// keep speech recognition data on device
+		if #available(iOS 13, *) {
+			recognitionRequest.requiresOnDeviceRecognition = true
+		}
+
+		// setup the speech recognition task
+		recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest) {
+			result, error in
+
+			var isFinal = false
+
+			if let result = result {
+				// Update the text view with the results.
+				isFinal = result.isFinal
+				self.speechRecognized(result.bestTranscription.formattedString)
+			}
+
+			if (error != nil) || (isFinal == true) {
+				// stop speech recognition on any error
+				self.stopSpeechRecognition()
+			}
+		}
+
+		// start receiving audio buffers from the audio capture
+		if let audioCapture = AppDelegate.audioMatcher.audioCapture {
+			audioCapture.speechDelegate = self
+		}
+	}
+
+	private func stopSpeechRecognition()
+	{
+		// stop receiving audio buffers from the audio capture
+		if let audioCapture = AppDelegate.audioMatcher.audioCapture {
+			audioCapture.speechDelegate = nil
+		}
+
+		// stop speech recognition
+        recognitionTask?.cancel()
+		recognitionTask = nil
+		recognitionRequest = nil
+		speechRecognizer = nil
+	}
+
+	// MARK: -
 	// MARK: DMSwipeCardsViewDelegate
 
 	func swipedLeft(_ object: Any)
 	{
-		guard let item = matchedItem else {
-			NSLog("SwipeCardActionViewController: Error with matched item on swipe.")
+		// safety check
+		guard (voted == false) else {
 			return
 		}
 
+		// get the matched item
+		guard let item = matchedItem else {
+			NSLog("PollViewController: Error with matched item on swipe.")
+			return
+		}
+
+		// cast the vote
 		pollManager.castVote(userResponse: false, for: item)
+		voted = true
 	}
 
 	func swipedRight(_ object: Any)
 	{
-		guard let item = matchedItem else {
-			NSLog("SwipeCardActionViewController: Error with matched item on swipe.")
+		// safety check
+		guard (voted == false) else {
 			return
 		}
 
+		// get the matched item
+		guard let item = matchedItem else {
+			NSLog("PollViewController: Error with matched item on swipe.")
+			return
+		}
+
+		// cast the vote
 		pollManager.castVote(userResponse: true, for: item)
+		voted = true
 	}
 
 	func cardTapped(_ object: Any)
 	{
-		print("Tapped on: \(object)")
 	}
 
 	func reachedEndOfStack()

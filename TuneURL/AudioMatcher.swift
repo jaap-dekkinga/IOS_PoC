@@ -24,12 +24,12 @@ class AudioMatcher: NSObject {
 	var delegate: AudioMatcherDelegate?
 
 	// public (read-only)
+	public private(set) var audioCapture: AudioCapture?
 	public private(set) var isRunning = false
 	public private(set) var triggerFingerprint = [UInt8]()
 
 	// private
 	private let audioBuffer: AudioBuffer
-	private var audioCapture: AudioCapture?
 
 	// MARK: -
 

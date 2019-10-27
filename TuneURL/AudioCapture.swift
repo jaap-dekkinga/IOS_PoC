@@ -17,9 +17,18 @@ protocol AudioCaptureDelegate {
 
 }
 
+protocol AudioCaptureSpeechDelegate {
+
+	func audioCaptureBuffer(buffer: AVAudioPCMBuffer)
+
+}
+
 // MARK: -
 
 class AudioCapture: NSObject {
+
+	// public
+	var speechDelegate: AudioCaptureSpeechDelegate?
 
 	// private
 	private let audioBuffer: AudioBuffer
@@ -195,6 +204,8 @@ class AudioCapture: NSObject {
 					self.checkForTriggerSound()
 				}
 			}
+			// pass the buffer to speech recognition
+			self.speechDelegate?.audioCaptureBuffer(buffer: buffer)
 		})
 
 		audioEngine.mainMixerNode.outputVolume = 0.0
