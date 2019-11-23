@@ -18,6 +18,7 @@ class MatchedItem: Codable {
 		case phoneNumber = 1
 		case poll = 2
 		case webPage = 3
+		case coupon = 4
 	}
 
 	// public
@@ -36,6 +37,8 @@ class MatchedItem: Codable {
 
 	var notificationTitle: String? {
 		switch action {
+			case .coupon:
+				return "You've received a coupon!"
 			case .phoneNumber:
 				if let phoneNumberString = phoneNumber {
 					return ("Save phone number " + phoneNumberString + "?")
@@ -78,6 +81,8 @@ class MatchedItem: Codable {
 
 		// parse the sample data description
 		switch (sampleData.desc.lowercased()) {
+			case "coupon":
+				action = .coupon
 			case "phone":
 				action = .phoneNumber
 			case "poll":

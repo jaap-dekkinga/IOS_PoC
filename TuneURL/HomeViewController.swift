@@ -116,8 +116,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 				if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
 					appDelegate.openPoll(with: item, wasUserInitiated: wasUserInitiated)
 				}
-			case .webPage:
-				// open the web page
+			case .coupon, .webPage:
+				// open the url
 				if let itemURL = item.url {
 					UIApplication.shared.open(itemURL, options: [:], completionHandler: nil)
 				}

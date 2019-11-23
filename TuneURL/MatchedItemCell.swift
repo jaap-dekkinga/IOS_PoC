@@ -31,6 +31,8 @@ class MatchedItemCell: UITableViewCell {
 			// update the icon image
 			var image: UIImage?
 			switch matchedItem.action {
+				case .coupon:
+					image = UIImage(named: "Matched-Item-Coupon")
 				case .phoneNumber:
 					image = UIImage(named: "Matched-Item-Phone")
 				case .poll:

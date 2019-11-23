@@ -208,14 +208,14 @@ class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeC
 
 		// search the text for the speech commands
 		let searchText = text.lowercased()
-		if searchText.contains("vote yes") {
+		if searchText.contains("yes") {
 			// count a 'yes' vote
 			DispatchQueue.main.async {
 				self.swipedRight(self)
 				self.dismiss(animated: true, completion: nil)
 			}
 			voted = true
-		} else if searchText.contains("vote no") {
+		} else if searchText.contains("no") {
 			// count a 'no' vote
 			DispatchQueue.main.async {
 				self.swipedLeft(self)

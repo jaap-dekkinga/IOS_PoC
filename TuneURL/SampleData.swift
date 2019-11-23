@@ -41,7 +41,7 @@ class SampleData: NSObject, NSCoding, Codable {
 		self.url = url
 	}
 
-	convenience init?(jsonDict: [String: Any])
+	convenience init?(jsonDict: [String : Any])
 	{
 		let status = jsonDict["status"] as? String ?? "n/a"
 		let confidence = jsonDict["confidence"] as? Int ?? 0
