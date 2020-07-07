@@ -32,11 +32,14 @@ class AudioCapture: NSObject {
 
 	// private
 	private let audioBuffer: AudioBuffer
+	private var audioConverter: AVAudioConverter?
 	private let audioEngine = AVAudioEngine()
 	private let audioSession = AVAudioSession.sharedInstance()
+	private let bufferFormat: AVAudioFormat
 	private var delegate: AudioCaptureDelegate?
 	private let sampleRate: Double
 	private let triggerWindowDuration = 4.0
+	private var useBufferConversion = false
 
 	// computed
 	var isRunning: Bool {
@@ -51,6 +54,12 @@ class AudioCapture: NSObject {
 		audioBuffer = buffer
 		sampleRate = rate
 		self.delegate = delegate
+
+		// setup the audio buffer format
+		guard let format = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: sampleRate, channels: 1, interleaved: false) else {
+			fatalError("Error creating audio buffer format.")
+		}
+		bufferFormat = format
 	}
 
 	deinit
@@ -174,11 +183,47 @@ class AudioCapture: NSObject {
 		}
 	}
 
+	private func convertAudioBuffer(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer?
+	{
+		// setup the converted audio buffer
+		guard let converter = audioConverter,
+			let convertedBuffer = AVAudioPCMBuffer(pcmFormat: bufferFormat, frameCapacity: AVAudioFrameCount(bufferFormat.sampleRate) * buffer.frameLength / AVAudioFrameCount(buffer.format.sampleRate)) else {
+			return nil
+		}
+
+		// process the buffer with the audio converter
+		var error: NSError?
+		var newBufferAvailable = true
+		converter.convert(to: convertedBuffer, error: &error) {
+			inNumPackets, outStatus in
+
+			if newBufferAvailable {
+				outStatus.pointee = .haveData
+				newBufferAvailable = false
+				return buffer
+			} else {
+				outStatus.pointee = .noDataNow
+				return nil
+			}
+		}
+
+		if (convertedBuffer.frameLength == 0) {
+			return nil
+		}
+
+		return convertedBuffer
+	}
+
 	private func setupAudioSession()
 	{
 		do {
 			try audioSession.setCategory(.playAndRecord, mode: .default)
 			try audioSession.setActive(true)
+			try audioSession.setPreferredSampleRate(44100.0)
+			try audioSession.setPreferredInputNumberOfChannels(1)
+			if #available(iOS 13.0, *) {
+				try audioSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
+			}
 		} catch {
 			NSLog("AudioCapture: Error setting up audio session. (\(error.localizedDescription))")
 		}
@@ -188,24 +233,47 @@ class AudioCapture: NSObject {
 	{
 		// setup the input node
 		let inputNode = audioEngine.inputNode
-		let inputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: sampleRate, channels: 1, interleaved: false)
+		let inputFormat = inputNode.inputFormat(forBus: 0)
+
+		// check if we need the buffer conversion
+		useBufferConversion = (inputFormat.isEqual(bufferFormat) == false)
+
+		// setup audio conversion
+		if useBufferConversion {
+			guard let converter = AVAudioConverter(from: inputFormat, to: bufferFormat) else {
+				return false
+			}
+			audioConverter = converter
+		}
 
 		// setup the input node to deliver sample buffers
 		inputNode.installTap(onBus: 0, bufferSize: 4096, format: inputFormat, block: {
-			(buffer: AVAudioPCMBuffer!, time: AVAudioTime!) -> Void in
-			// add the audio to the audio buffer
-			self.audioBuffer.appendSampleBuffer(buffer)
-			// check if we have 5 seconds of data to test
-			if (self.audioBuffer.untestedTime > 5.0) {
-				// reset immediately to prevent next frame from trigger detection
-				self.audioBuffer.resetUntestedSize()
-				DispatchQueue.main.async {
-					// run detection
-					self.checkForTriggerSound()
+			(sourceBuffer: AVAudioPCMBuffer!, time: AVAudioTime!) in
+
+			var buffer: AVAudioPCMBuffer?
+
+			if self.useBufferConversion {
+				buffer = self.convertAudioBuffer(sourceBuffer)
+			} else {
+				buffer = sourceBuffer
+			}
+
+			if let buffer = buffer {
+				// add the audio to the audio buffer
+				self.audioBuffer.appendSampleBuffer(buffer)
+				// check if we have 5 seconds of data to test
+				if (self.audioBuffer.untestedTime > 5.0) {
+					// reset immediately to prevent next frame from trigger detection
+					self.audioBuffer.resetUntestedSize()
+					DispatchQueue.main.async {
+						// run detection
+						self.checkForTriggerSound()
+					}
 				}
 			}
+
 			// pass the buffer to speech recognition
-			self.speechDelegate?.audioCaptureBuffer(buffer: buffer)
+			self.speechDelegate?.audioCaptureBuffer(buffer: sourceBuffer)
 		})
 
 		audioEngine.mainMixerNode.outputVolume = 0.0
@@ -228,6 +296,9 @@ class AudioCapture: NSObject {
 		audioEngine.stop()
 		audioEngine.inputNode.removeTap(onBus: 0)
 		audioEngine.reset()
+
+		// release any audio converter
+		audioConverter = nil
 	}
 
 	// MARK: -
