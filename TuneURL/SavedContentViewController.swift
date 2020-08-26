@@ -1,30 +1,22 @@
 //
-//  HomeViewController.swift
+//  SavedContentViewController.swift
 //  TuneURL
 //
-//  Created by Aleksandar Mihailovski on 7/11/18.
-//  Copyright © 2018-2019 TuneURL Inc. All rights reserved.
+//  Created by Gerrit Goossen <developer@gerrit.email> on 8/25/20.
+//  Copyright © 2020 TuneURL Inc. All rights reserved.
 //
 
 
 import UIKit
 
 
-class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+final class SavedContentViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
 	// interface
 	@IBOutlet var collectionSelector: UISegmentedControl!
-	@IBOutlet var enableButton: UIButton!
-	@IBOutlet var enableLabel: UILabel!
 	@IBOutlet var matchTableView: UITableView!
-	@IBOutlet var tooltipLabel: UILabel!
-
-	// interface colors
-	private let greenBackOn = UIColor(red: 0.17, green: 0.67, blue: 0.48, alpha: 1.0)
-	private let greenBackOff = UIColor(red: 0.17, green: 0.55, blue: 0.40, alpha: 1.0)
 
 	// private
-	private let audioMatcher = AppDelegate.audioMatcher
 	private let itemCollection = MatchedItemCollection.shared
 
 	// MARK: -
@@ -33,17 +25,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 	{
 		super.viewDidLoad()
 		collectionSelector.selectedSegmentIndex = 0
-		updateListeningInterface()
 	}
 
 	override func viewDidAppear(_ animated: Bool)
 	{
 		super.viewDidAppear(animated)
 
-		UIView.animate(withDuration: 3.0) {
-			self.tooltipLabel.alpha = 0.0
-			self.tooltipLabel.textColor = self.greenBackOff
-		}
+		// reload the collection
+		matchTableView.reloadData()
 
 		// watch for collection changes
 		NotificationCenter.default.addObserver(self, selector: #selector(collectionAddedItem), name: MatchedItemCollectionAddedItemNotification, object: itemCollection)
@@ -82,26 +71,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 		matchTableView.reloadData()
 	}
 
-	@IBAction func enableButtonPressed(_ sender: UIButton)
-	{
-		audioMatcher.enabled.toggle()
-		updateListeningInterface()
-	}
-
 	// MARK: -
 	// MARK: Private
-
-	private func buttonGlow(_ button: UIButton, on: Bool)
-	{
-		if on {
-			button.layer.shadowColor = UIColor.cyan.cgColor
-		} else {
-			button.layer.shadowColor = UIColor.clear.cgColor
-		}
-		button.layer.shadowRadius = 10.0
-		button.layer.shadowOpacity = 1.0
-		button.layer.shadowOffset = CGSize.zero
-	}
 
 	private func openItem(_ item: MatchedItem, wasUserInitiated: Bool = false)
 	{
@@ -124,18 +95,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 			default:
 				break
 		}
-	}
-
-	private func updateListeningInterface()
-	{
-		if audioMatcher.enabled {
-			self.view.backgroundColor = greenBackOn
-			self.enableLabel.text = "Listening"
-		} else {
-			self.view.backgroundColor = greenBackOff
-			self.enableLabel.text = "Tap to Listen"
-		}
-		buttonGlow(self.enableButton, on: audioMatcher.enabled)
 	}
 
 	// MARK: -
