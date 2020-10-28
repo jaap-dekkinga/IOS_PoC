@@ -10,29 +10,25 @@
 import UIKit
 
 
-final class SavedContentViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+final class SavedContentViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
 
 	// interface
-	@IBOutlet var collectionSelector: UISegmentedControl!
-	@IBOutlet var matchTableView: UITableView!
+	@IBOutlet var previousCollectionView: UICollectionView!
+	@IBOutlet var recentCollectionView: UICollectionView!
 
 	// private
 	private let itemCollection = MatchedItemCollection.shared
+	private let maxRecentCount = 5
 
 	// MARK: -
-
-	override func viewDidLoad()
-	{
-		super.viewDidLoad()
-		collectionSelector.selectedSegmentIndex = 0
-	}
 
 	override func viewDidAppear(_ animated: Bool)
 	{
 		super.viewDidAppear(animated)
 
 		// reload the collection
-		matchTableView.reloadData()
+		previousCollectionView.reloadData()
+		recentCollectionView.reloadData()
 
 		// watch for collection changes
 		NotificationCenter.default.addObserver(self, selector: #selector(collectionAddedItem), name: MatchedItemCollectionAddedItemNotification, object: itemCollection)
@@ -49,14 +45,12 @@ final class SavedContentViewController: UIViewController, UITableViewDataSource,
 	@objc func collectionAddedItem(_ notification: Notification)
 	{
 		guard let newItemIndex = notification.userInfo?["Item Index"] as? Int else {
-			matchTableView.reloadData()
+			recentCollectionView.reloadData()
 			return
 		}
 
 		// add the item to the table view if the table is displaying 'recents'
-		if (collectionSelector.selectedSegmentIndex == 0) {
-			matchTableView.insertRows(at: [IndexPath(row: newItemIndex, section: 0)], with: .top)
-		}
+		recentCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
 
 		// open polls when they are matched
 		if let item = itemCollection.item(withIndex: newItemIndex) {
@@ -68,7 +62,8 @@ final class SavedContentViewController: UIViewController, UITableViewDataSource,
 
 	@IBAction func collectionChanged(_ sender: Any?)
 	{
-		matchTableView.reloadData()
+		previousCollectionView.reloadData()
+		recentCollectionView.reloadData()
 	}
 
 	// MARK: -
@@ -98,74 +93,45 @@ final class SavedContentViewController: UIViewController, UITableViewDataSource,
 	}
 
 	// MARK: -
-	// MARK: UITableViewDataSource
+	// MARK: UICollectionViewDataSource
 
-	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool
-	{
-		return true
-	}
-
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
 		// get the matched item
 		var item: MatchedItem?
-		switch collectionSelector.selectedSegmentIndex {
-			case 0:
-				item = itemCollection.recentItem(withIndex: indexPath.row)
-			case 1:
-				item = itemCollection.favoriteItem(withIndex: indexPath.row)
-			default:
-				item = itemCollection.item(withIndex: indexPath.row)
+
+		if (collectionView === recentCollectionView) {
+			item = itemCollection.recentItem(withIndex: indexPath.row)
+		} else {
+			item = itemCollection.item(withIndex: indexPath.row)
 		}
 
 		// get the item cell
-		let cell = tableView.dequeueReusableCell(withIdentifier: "MatchedItemCell", for: indexPath) as! MatchedItemCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MatchedItemCell", for: indexPath) as! MatchedItemCell
 		cell.item = item
 
 		return cell
 	}
 
-	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
 	{
-		if (editingStyle == .delete) {
-			// delete the item from the collection
-			if let cell = matchTableView.cellForRow(at: indexPath) as? MatchedItemCell {
-				if let item = cell.item {
-					if (itemCollection.removeItem(item) == true) {
-						matchTableView.deleteRows(at: [indexPath], with: .left)
-					}
-				}
-			}
+		if (collectionView === recentCollectionView) {
+			return itemCollection.recentCount
+		} else {
+			return itemCollection.count
 		}
-	}
-
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-	{
-		switch collectionSelector.selectedSegmentIndex {
-			case 0:
-				return itemCollection.recentCount
-			case 1:
-				return itemCollection.favoriteCount
-			default:
-				return itemCollection.count
-		}
-	}
-
-	func numberOfSections(in tableView: UITableView) -> Int
-	{
-		return 1
 	}
 
 	// MARK: -
-	// MARK: UITableViewDelegate
+	// MARK: UICollectionViewDelegate
 
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
 	{
-		// deselect the row
-		matchTableView.deselectRow(at: indexPath, animated: true)
+		// deselect the item
+		collectionView.deselectItem(at: indexPath, animated: true)
 
 		// get the selected item cell
-		guard let cell = matchTableView.cellForRow(at: indexPath) as? MatchedItemCell else {
+		guard let cell = collectionView.cellForItem(at: indexPath) as? MatchedItemCell else {
 			return
 		}
 

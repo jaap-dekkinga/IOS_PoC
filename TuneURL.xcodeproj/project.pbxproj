@@ -21,6 +21,9 @@
 		60D361E720CDC17C0079C14C /* PollManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E620CDC17C0079C14C /* PollManager.swift */; };
 		60D361E920D164540079C14C /* PollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E820D164540079C14C /* PollViewController.swift */; };
 		DCC3A21648720C0E8D25B72B /* Pods_TuneURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */; };
+		EC2CA86B24F93B8700443202 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86A24F93B8700443202 /* UIViewExtensions.swift */; };
+		EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86C24F93D8500443202 /* SavedItemCollectionLayout.swift */; };
+		EC2CA86F24F9537600443202 /* RecentItemCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86E24F9537600443202 /* RecentItemCollectionLayout.swift */; };
 		EC2FDA6E2339BABF0011DE7A /* MatchServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2FDA6D2339BABF0011DE7A /* MatchServer.swift */; };
 		EC30068923317E6D0013B8F8 /* MapRankInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067C23317E6D0013B8F8 /* MapRankInteger.swift */; };
 		EC30068A23317E6D0013B8F8 /* ArrayRankFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067D23317E6D0013B8F8 /* ArrayRankFloat.swift */; };
@@ -78,6 +81,9 @@
 		BBCE85622A4AC53FBFA986B1 /* Pods-TuneURL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.debug.xcconfig"; sourceTree = "<group>"; };
 		BDE2CA3B2B257A37E40EE614 /* Pods-TuneURL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.release.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.release.xcconfig"; sourceTree = "<group>"; };
 		D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TuneURL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC2CA86A24F93B8700443202 /* UIViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
+		EC2CA86C24F93D8500443202 /* SavedItemCollectionLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedItemCollectionLayout.swift; sourceTree = "<group>"; };
+		EC2CA86E24F9537600443202 /* RecentItemCollectionLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentItemCollectionLayout.swift; sourceTree = "<group>"; };
 		EC2FDA6D2339BABF0011DE7A /* MatchServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchServer.swift; sourceTree = "<group>"; };
 		EC30067C23317E6D0013B8F8 /* MapRankInteger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapRankInteger.swift; sourceTree = "<group>"; };
 		EC30067D23317E6D0013B8F8 /* ArrayRankFloat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayRankFloat.swift; sourceTree = "<group>"; };
@@ -171,8 +177,11 @@
 				60D361E020CB31470079C14C /* PollData.swift */,
 				60D361E620CDC17C0079C14C /* PollManager.swift */,
 				60D361E820D164540079C14C /* PollViewController.swift */,
+				EC2CA86E24F9537600443202 /* RecentItemCollectionLayout.swift */,
 				6024B74020606C8D0005A984 /* SampleData.swift */,
 				ECB9164224F5C92C0091C76B /* SavedContentViewController.swift */,
+				EC2CA86C24F93D8500443202 /* SavedItemCollectionLayout.swift */,
+				EC2CA86A24F93B8700443202 /* UIViewExtensions.swift */,
 			);
 			path = TuneURL;
 			sourceTree = "<group>";
@@ -426,8 +435,11 @@
 				60D361E120CB31470079C14C /* PollData.swift in Sources */,
 				60D361E720CDC17C0079C14C /* PollManager.swift in Sources */,
 				60D361E920D164540079C14C /* PollViewController.swift in Sources */,
+				EC2CA86F24F9537600443202 /* RecentItemCollectionLayout.swift in Sources */,
 				6024B74120606C8D0005A984 /* SampleData.swift in Sources */,
 				ECB9164324F5C92C0091C76B /* SavedContentViewController.swift in Sources */,
+				EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */,
+				EC2CA86B24F93B8700443202 /* UIViewExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

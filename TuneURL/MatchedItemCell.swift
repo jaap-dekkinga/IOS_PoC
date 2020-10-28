@@ -10,11 +10,11 @@
 import UIKit
 
 
-class MatchedItemCell: UITableViewCell {
+class MatchedItemCell: UICollectionViewCell {
 
 	// interface
-	@IBOutlet weak var favoriteButton: UIButton!
-	@IBOutlet weak var iconImage: UIImageView!
+	@IBOutlet weak var thumbnailImage: UIImageView!
+	@IBOutlet weak var sourceLabel: UILabel!
 	@IBOutlet weak var titleLabel: UILabel!
 
 	// public
@@ -22,13 +22,12 @@ class MatchedItemCell: UITableViewCell {
 		didSet {
 			// check that we have a valid item
 			guard let matchedItem = self.item else {
-				favoriteButton.isHidden = true
-				iconImage.image = nil
+				thumbnailImage.image = nil
 				titleLabel.text = ""
 				return
 			}
 
-			// update the icon image
+			// update the thumbnail image
 			var image: UIImage?
 			switch matchedItem.action {
 				case .coupon:
@@ -42,36 +41,10 @@ class MatchedItemCell: UITableViewCell {
 				default:
 					break
 			}
-			iconImage.image = image
+			thumbnailImage.image = image
 
 			// update the item title
 			titleLabel.text = matchedItem.title
-
-			// update the favorite button
-			updateFavoriteButton()
-		}
-	}
-
-	// MARK: -
-
-	@IBAction func favoriteItem(_ sender: Any?)
-	{
-		if let matchedItem = self.item {
-			MatchedItemCollection.shared.setFavorite(!matchedItem.favorite, for: matchedItem)
-			updateFavoriteButton()
-		}
-	}
-
-	// MARK: -
-
-	private func updateFavoriteButton()
-	{
-		if let matchedItem = self.item {
-			let favoriteImageName = (matchedItem.favorite) ? "Matched-Item-Favorite" : "Matched-Item-Favorite-Empty"
-			favoriteButton.setImage(UIImage(named: favoriteImageName), for: .normal)
-			favoriteButton.isHidden = false
-		} else {
-			favoriteButton.isHidden = true
 		}
 	}
 
