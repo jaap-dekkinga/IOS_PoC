@@ -50,8 +50,8 @@ class FingerprintSimilarityComputer {
 
 		// get the pairs
 		let pairManager = PairManager()
-		var this_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint1)
-		var compareWave_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint2)
+        let this_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint1)
+        let compareWave_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint2)
 
 /*
 // TEMP: dump for comparison testing

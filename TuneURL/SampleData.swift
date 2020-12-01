@@ -19,14 +19,14 @@ class SampleData: NSObject, NSCoding, Codable {
 	let matchTime: String
 	let offset: String
 	let offsetSeconds: String
-	let songId: String
+	let songId: Int
 	let songName: String
 	let title: String
 	let url: String
 
 	// MARK: -
 
-	init(status: String, confidence: Int, desc: String, sha1: String, matchTime: String, offset: String, offsetSeconds: String, songId: String, songName: String, title: String, url: String)
+	init(status: String, confidence: Int, desc: String, sha1: String, matchTime: String, offset: String, offsetSeconds: String, songId: Int, songName: String, title: String, url: String)
 	{
 		self.status = status
 		self.confidence = confidence
@@ -49,7 +49,7 @@ class SampleData: NSObject, NSCoding, Codable {
 		let matchTime = jsonDict["match_time"] as? Double ?? 0.0
 		let offset = jsonDict["offset"] as? Int ?? 0
 		let offsetSeconds = jsonDict["offset_seconds"] as? Double ?? 0.0
-		let songId = jsonDict["song_id"] as? Int ?? 0
+		let songId = jsonDict["songId"] as? Int ?? 0
 		let songName = jsonDict["song_name"] as? String ?? "n/a"
 		let desc = jsonDict["description"] as? String ?? "n/a"
 		let title = jsonDict["title"] as? String ?? "n/a"
@@ -62,7 +62,7 @@ class SampleData: NSObject, NSCoding, Codable {
 				matchTime: String(matchTime),
 				offset: String(offset),
 				offsetSeconds: String(offsetSeconds),
-				songId: String(songId),
+				songId: songId,
 				songName: songName,
 				title: title,
 				url: url)
@@ -77,7 +77,7 @@ class SampleData: NSObject, NSCoding, Codable {
 		coder.encode(matchTime, forKey: "match_time")
 		coder.encode(offset, forKey: "offset")
 		coder.encode(offsetSeconds, forKey: "offset_seconds")
-		coder.encode(songId, forKey: "song_id")
+		coder.encode(songId, forKey: "songId")
 		coder.encode(songName, forKey: "song_name")
 		coder.encode(title, forKey: "title")
 		coder.encode(url, forKey: "url")
@@ -92,14 +92,14 @@ class SampleData: NSObject, NSCoding, Codable {
 			let matchTime = aDecoder.decodeObject(forKey: "match_time") as? String,
 			let offset = aDecoder.decodeObject(forKey: "offset") as? String,
 			let offsetSeconds = aDecoder.decodeObject(forKey: "offset_seconds") as? String,
-			let songId = aDecoder.decodeObject(forKey: "song_id") as? String,
+			let songId = aDecoder.decodeObject(forKey: "songId") as? Int,
 			let songName = aDecoder.decodeObject(forKey: "song_name") as? String,
 			let title = aDecoder.decodeObject(forKey: "title") as? String,
 			let url = aDecoder.decodeObject(forKey: "url") as? String else {
 				return nil
 		}
 
-		self.init(status: status, confidence: confidence, desc: desc, sha1: sha1, matchTime: String(matchTime), offset: String(offset), offsetSeconds: String(offsetSeconds), songId: String(songId), songName: songName, title: title, url: url)
+		self.init(status: status, confidence: confidence, desc: desc, sha1: sha1, matchTime: String(matchTime), offset: String(offset), offsetSeconds: String(offsetSeconds), songId: Int(songId), songName: songName, title: title, url: url)
 	}
 
 	// MARK: -
@@ -114,7 +114,7 @@ class SampleData: NSObject, NSCoding, Codable {
 //			+ "match time: " + matchTime + "\n"
 //			+ "offset: " + offset + "\n"
 //			+ "offset (secs): " + offsetSeconds + "\n"
-			+ "song id: " + songId + "\n"
+			+ "song id: " + String(songId) + "\n"
 			+ "song name: " + songName + "\n"
 			+ "title: " + title + "\n"
 //			+ "url: " + url + "\n"

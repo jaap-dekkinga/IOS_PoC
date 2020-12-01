@@ -26,6 +26,7 @@ class MatchedItem: Codable {
 
 	// public (read-only)
 	public private(set) var action: Action = .none
+    public private(set) var songId: Int?
 	public private(set) var matchedTime = Date()
 	public private(set) var phoneNumber: String?
 	public private(set) var pollID: String?
@@ -65,6 +66,7 @@ class MatchedItem: Codable {
 	private enum Keys: String, CodingKey {
 		case action = "Action"
 		case favorite = "Favorite"
+        case songId = "Song Id"
 		case matchedTime = "Matched Time"
 		case phoneNumber = "Phone Number"
 		case pollID = "Poll ID"
@@ -92,8 +94,10 @@ class MatchedItem: Codable {
 			default:
 				action = .none
 		}
-
-		title = sampleData.songName
+        
+        uuid = UUID().uuidString
+        title = sampleData.songName
+        songId = sampleData.songId
 		if (action == .phoneNumber) {
 			phoneNumber = sampleData.title
 		}
@@ -137,9 +141,12 @@ class MatchedItem: Codable {
 		if let decodedURL: URL = try? container.decode(URL.self, forKey: .url) {
 			url = decodedURL
 		}
-		if let decodedUUID: String = try? container.decode(String.self, forKey: .uuid) {
-			uuid = decodedUUID
-		}
+        if let decodedUUID: String = try? container.decode(String.self, forKey: .uuid) {
+            uuid = decodedUUID
+        }
+        if let decodedsongId: Int = try? container.decode(Int.self, forKey: .songId) {
+            songId = decodedsongId
+        }
 	}
 
 	func encode(to encoder: Encoder) throws
@@ -148,7 +155,8 @@ class MatchedItem: Codable {
 		try container.encode(action, forKey: .action)
 		try container.encode(favorite, forKey: .favorite)
 		try container.encode(matchedTime, forKey: .matchedTime)
-		try container.encode(title, forKey: .title)
+        try container.encode(title, forKey: .title)
+        try container.encode(songId, forKey: .songId)
 		if let phoneNumber = self.phoneNumber {
 			try container.encode(phoneNumber, forKey: .phoneNumber)
 		}

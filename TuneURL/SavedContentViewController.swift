@@ -19,6 +19,10 @@ final class SavedContentViewController: UIViewController, UICollectionViewDataSo
 	// private
 	private let itemCollection = MatchedItemCollection.shared
 	private let maxRecentCount = 5
+    
+    //reporting
+    private let reportingManager = ReportingManager ()
+
 
 	// MARK: -
 
@@ -71,6 +75,8 @@ final class SavedContentViewController: UIViewController, UICollectionViewDataSo
 
 	private func openItem(_ item: MatchedItem, wasUserInitiated: Bool = false)
 	{
+        //reporting
+        reportingManager.captureUserAction(for: item, InterestAction: "interested")
 		switch (item.action) {
 			case .phoneNumber:
 				// open the phone number

@@ -56,7 +56,7 @@ class FingerprintManager {
 		let spectrogramData = spectrogram.getNormalizedSpectrogramData()
 
 		// get the robust point list
-		var pointsLists = getRobustPointList(spectrogramData)
+        let pointsLists = getRobustPointList(spectrogramData)
 		let numFrames = pointsLists.count
 
 		// prepare fingerprint bytes

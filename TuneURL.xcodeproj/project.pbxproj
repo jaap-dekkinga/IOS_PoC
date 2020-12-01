@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D4ED16C25719A0F00EDC277 /* ReportingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16B25719A0F00EDC277 /* ReportingData.swift */; };
+		4D4ED16E2573D59800EDC277 /* ReportingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16D2573D59800EDC277 /* ReportingManager.swift */; };
 		600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EB7205EB2B500F96F7A /* Notify.swift */; };
 		600A6EBE205EBEC500F96F7A /* AudioMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */; };
 		601E0C1420FF81A200AD535E /* BoolExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601E0C1320FF81A200AD535E /* BoolExtension.swift */; };
@@ -61,6 +63,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4D4ED16B25719A0F00EDC277 /* ReportingData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportingData.swift; sourceTree = "<group>"; };
+		4D4ED16D2573D59800EDC277 /* ReportingManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportingManager.swift; sourceTree = "<group>"; };
 		600A6EB7205EB2B500F96F7A /* Notify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notify.swift; sourceTree = "<group>"; };
 		600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioMatcher.swift; sourceTree = "<group>"; };
 		601E0C1320FF81A200AD535E /* BoolExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoolExtension.swift; sourceTree = "<group>"; };
@@ -175,7 +179,9 @@
 				EC2FDA6D2339BABF0011DE7A /* MatchServer.swift */,
 				600A6EB7205EB2B500F96F7A /* Notify.swift */,
 				60D361E020CB31470079C14C /* PollData.swift */,
+				4D4ED16B25719A0F00EDC277 /* ReportingData.swift */,
 				60D361E620CDC17C0079C14C /* PollManager.swift */,
+				4D4ED16D2573D59800EDC277 /* ReportingManager.swift */,
 				60D361E820D164540079C14C /* PollViewController.swift */,
 				EC2CA86E24F9537600443202 /* RecentItemCollectionLayout.swift */,
 				6024B74020606C8D0005A984 /* SampleData.swift */,
@@ -280,7 +286,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "TuneURL Inc.";
 				TargetAttributes = {
 					60523639201FE51900B65A72 = {
@@ -416,6 +422,7 @@
 				EC30068923317E6D0013B8F8 /* MapRankInteger.swift in Sources */,
 				EC30069023317E6D0013B8F8 /* PairManager.swift in Sources */,
 				EC30068D23317E6D0013B8F8 /* QuickSortInteger.swift in Sources */,
+				4D4ED16C25719A0F00EDC277 /* ReportingData.swift in Sources */,
 				EC30069123317E6D0013B8F8 /* RobustIntensityProcessor.swift in Sources */,
 				EC30068F23317E6D0013B8F8 /* Spectrogram.swift in Sources */,
 				EC30068B23317E6D0013B8F8 /* WindowFunction.swift in Sources */,
@@ -439,6 +446,7 @@
 				6024B74120606C8D0005A984 /* SampleData.swift in Sources */,
 				ECB9164324F5C92C0091C76B /* SavedContentViewController.swift in Sources */,
 				EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */,
+				4D4ED16E2573D59800EDC277 /* ReportingManager.swift in Sources */,
 				EC2CA86B24F93B8700443202 /* UIViewExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -506,6 +514,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -532,8 +541,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MARKETING_VERSION = 2.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 2.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -568,6 +577,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -588,8 +598,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MARKETING_VERSION = 2.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 2.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -605,10 +615,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = J4H5ML29CZ;
+				DEVELOPMENT_TEAM = N2MSK4V8F9;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = TuneURL/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuneurl.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -623,10 +633,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = J4H5ML29CZ;
+				DEVELOPMENT_TEAM = N2MSK4V8F9;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = TuneURL/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuneurl.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;

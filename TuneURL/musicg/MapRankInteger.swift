@@ -69,7 +69,7 @@ class MapRankInteger {
 			}
 
 			// sort the value list
-			var sortedValueList = valueList.sorted()
+            let sortedValueList = valueList.sorted()
 
 			// get the list of keys
 			var resultCount = 0

@@ -136,7 +136,7 @@ class AudioMatcher: NSObject {
 					// notfiy the delegate on a successful match
 					if let matchResponse = response {
 						self.delegate?.audioMatched(matchResponse)
-					}
+                        }
 
 #if !DEBUG
 					// delete the recording

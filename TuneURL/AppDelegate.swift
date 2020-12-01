@@ -30,6 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 	fileprivate static let notify = Notify()
 	fileprivate weak var pollViewController: PollViewController?
 
+    // reporting init
+    private var matchedItem: MatchedItem?
+    private let reportingManager = ReportingManager ()
+
 	// MARK: -
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
@@ -140,6 +144,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 		// audio was successfully matched
 		if let matchedItem = MatchedItemCollection.shared.addItem(with: matchResponse) {
 			AppDelegate.notify.notifyMatch(matchedItem)
+            reportingManager.captureUserAction(for: matchedItem, InterestAction: "heard")
+
 		}
 	}
 
