@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 
 	// static
 	static let audioMatcher = AudioMatcher()
+    private let itemCollection = MatchedItemCollection.shared
 
 	static var recordingFolderURL: URL {
 		let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -52,6 +53,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 		SFSpeechRecognizer.requestAuthorization {
 			authStatus in
 		}
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(collectionAddedItem), name: MatchedItemCollectionAddedItemNotification, object: itemCollection)
 
 		return true
 	}
@@ -123,6 +126,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 	private func enterForeground(_ application: UIApplication)
 	{
 		stopBackgroundTask(application)
+        
+        // watch for collection changes
+        
 	}
 
 	private func becomeActive(_ application: UIApplication)
@@ -160,6 +166,52 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 		self.window?.rootViewController?.present(viewController, animated: true)
 		pollViewController = viewController
 	}
+    
+    @objc func collectionAddedItem(_ notification: Notification)
+    {
+        guard let newItemIndex = notification.userInfo?["Item Index"] as? Int else {
+            //recentCollectionView.reloadData()
+            return
+        }
+
+        // add the item to the table view if the table is displaying 'recents'
+        //recentCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
+
+        // open polls when they are matched
+        if let item = itemCollection.item(withIndex: newItemIndex) {
+            if (item.action == .poll) {
+                openItem(item)
+            }
+        }
+    }
+
+    // MARK: -
+    // MARK: Private
+
+    private func openItem(_ item: MatchedItem, wasUserInitiated: Bool = false)
+    {
+        //reporting
+        reportingManager.captureUserAction(for: item, InterestAction: "interested")
+        switch (item.action) {
+            case .phoneNumber:
+                // open the phone number
+                if let phoneURL = item.phoneURL {
+                    UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+                }
+            case .poll:
+                // open the poll
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                    appDelegate.openPoll(with: item, wasUserInitiated: wasUserInitiated)
+                }
+            case .coupon, .webPage:
+                // open the url
+                if let itemURL = item.url {
+                    UIApplication.shared.open(itemURL, options: [:], completionHandler: nil)
+                }
+            default:
+                break
+        }
+    }
 
 }
 

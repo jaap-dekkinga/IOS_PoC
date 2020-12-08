@@ -57,11 +57,11 @@ final class SavedContentViewController: UIViewController, UICollectionViewDataSo
 		recentCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
 
 		// open polls when they are matched
-		if let item = itemCollection.item(withIndex: newItemIndex) {
-			if (item.action == .poll) {
-				openItem(item)
-			}
-		}
+//		if let item = itemCollection.item(withIndex: newItemIndex) {
+//			if (item.action == .poll) {
+//				openItem(item)
+//			}
+//		}
 	}
 
 	@IBAction func collectionChanged(_ sender: Any?)

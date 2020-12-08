@@ -49,7 +49,7 @@ class SampleData: NSObject, NSCoding, Codable {
 		let matchTime = jsonDict["match_time"] as? Double ?? 0.0
 		let offset = jsonDict["offset"] as? Int ?? 0
 		let offsetSeconds = jsonDict["offset_seconds"] as? Double ?? 0.0
-		let songId = jsonDict["songId"] as? Int ?? 0
+		let songId = jsonDict["song_id"] as? Int ?? 0
 		let songName = jsonDict["song_name"] as? String ?? "n/a"
 		let desc = jsonDict["description"] as? String ?? "n/a"
 		let title = jsonDict["title"] as? String ?? "n/a"
@@ -77,7 +77,7 @@ class SampleData: NSObject, NSCoding, Codable {
 		coder.encode(matchTime, forKey: "match_time")
 		coder.encode(offset, forKey: "offset")
 		coder.encode(offsetSeconds, forKey: "offset_seconds")
-		coder.encode(songId, forKey: "songId")
+		coder.encode(songId, forKey: "song_id")
 		coder.encode(songName, forKey: "song_name")
 		coder.encode(title, forKey: "title")
 		coder.encode(url, forKey: "url")
@@ -92,7 +92,7 @@ class SampleData: NSObject, NSCoding, Codable {
 			let matchTime = aDecoder.decodeObject(forKey: "match_time") as? String,
 			let offset = aDecoder.decodeObject(forKey: "offset") as? String,
 			let offsetSeconds = aDecoder.decodeObject(forKey: "offset_seconds") as? String,
-			let songId = aDecoder.decodeObject(forKey: "songId") as? Int,
+			let songId = aDecoder.decodeObject(forKey: "song_id") as? Int,
 			let songName = aDecoder.decodeObject(forKey: "song_name") as? String,
 			let title = aDecoder.decodeObject(forKey: "title") as? String,
 			let url = aDecoder.decodeObject(forKey: "url") as? String else {
