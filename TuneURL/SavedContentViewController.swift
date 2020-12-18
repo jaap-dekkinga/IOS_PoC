@@ -88,7 +88,7 @@ final class SavedContentViewController: UIViewController, UICollectionViewDataSo
 				if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
 					appDelegate.openPoll(with: item, wasUserInitiated: wasUserInitiated)
 				}
-			case .coupon, .webPage:
+            case .coupon, .saveWebPage, .openWebPage:
 				// open the url
 				if let itemURL = item.url {
 					UIApplication.shared.open(itemURL, options: [:], completionHandler: nil)

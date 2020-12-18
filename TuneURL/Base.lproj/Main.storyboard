@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="NnS-z7-c8J">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="NnS-z7-c8J">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -52,7 +53,8 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="aFy-23-MFJ"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="eF4-q2-bZ5" secondAttribute="trailing" id="2Ph-3Z-eZz"/>
                             <constraint firstItem="svI-sP-5yF" firstAttribute="top" secondItem="EdE-6h-szz" secondAttribute="bottom" id="3yz-W6-LHR"/>
@@ -66,7 +68,6 @@
                             <constraint firstAttribute="bottom" secondItem="svI-sP-5yF" secondAttribute="bottom" id="evS-Hg-l2n"/>
                             <constraint firstAttribute="trailing" secondItem="svI-sP-5yF" secondAttribute="trailing" id="wSg-X7-TGh"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="aFy-23-MFJ"/>
                     </view>
                     <connections>
                         <outlet property="enableSwitch" destination="RjS-sp-DHF" id="H4N-e1-rdb"/>
@@ -248,6 +249,7 @@
                                 </connections>
                             </collectionView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="pWy-4M-CbJ"/>
                         <constraints>
                             <constraint firstItem="sfK-yv-EtR" firstAttribute="height" secondItem="Tpg-Vt-VeK" secondAttribute="height" multiplier="1.29386" id="0eq-MK-Lr7"/>
                             <constraint firstItem="pWy-4M-CbJ" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Gda-yQ-rBK" secondAttribute="trailing" constant="16" id="49U-KC-UQK"/>
@@ -270,7 +272,6 @@
                             <constraint firstAttribute="bottom" secondItem="hSn-RL-MiY" secondAttribute="bottom" id="ub3-MV-CZT"/>
                             <constraint firstItem="pWy-4M-CbJ" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="uKv-Qb-pOu" secondAttribute="trailing" constant="16" id="vM8-98-wvZ"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="pWy-4M-CbJ"/>
                     </view>
                     <connections>
                         <outlet property="previousCollectionView" destination="sfK-yv-EtR" id="SRZ-pc-Qu8"/>
@@ -287,5 +288,8 @@
         <image name="Listen-Background" width="100" height="1000"/>
         <image name="Logo" width="940" height="932"/>
         <image name="Saved-Content-Background" width="100" height="1000"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

@@ -10,11 +10,10 @@
 import Alamofire
 import Foundation
 
-
 class ReportingManager: NSObject {
 
 	// Reporting server configuration
-	private let serverHost = "65neejq3c9.execute-api.us-east-2.amazonaws.com"
+	private let serverHost = "65neejq3c9.execute-api.us-east-2.amazonaws.com/"
 	private let serverPath = "interests"
 
 	// MARK: -
@@ -25,13 +24,15 @@ class ReportingManager: NSObject {
         let matchedTime = matchedItem.matchedTime
         let uuid = matchedItem.uuid
         let songId = matchedItem.songId
+        let songIdString = "\(songId!)"
+        
 		// create the reporting data
-        let reportingData = ReportingData (UserId: InterestAction, TuneURL_ID: songId!, Interest_action: uuid, timestamp: matchedTime)
+        let reportingData = ReportingData (UserId: uuid, TuneURL_ID: songIdString, Interest_action: InterestAction, timestamp: matchedTime)
 
 		// post the reporting record
 		self.postReporting(reportingData: reportingData, completion: {
 			(reportingResponse: ReportingResponse?) in
-
+            print(reportingResponse as Any)
 			// TODO: mark the item as having been voted on
 			// TODO: act on the server response?
 
@@ -49,23 +50,30 @@ class ReportingManager: NSObject {
 		guard let serverURL = URL(string: ("https://" + serverHost + serverPath)) else {
 			return
 		}
+                   
+        let url = serverURL
+        var request2 = URLRequest(url: url)
+        request2.httpMethod = "POST"
+        request2.addValue("application/json", forHTTPHeaderField: "Content-Type")
+                
+        let userId = reportingData.UserId.replacingOccurrences(of: "-", with: "")
 
-		// perform the vote post request
-		Alamofire.request(serverURL, method: .post, parameters: reportingData.parameters, encoding: JSONEncoding.default).response {
-			(response) in
+        request2.httpBody = "[\n{\n\"UserID\":\"\(userId)\",\n\"Date\":\"\(reportingData.timestampString)\",\n\"TuneURL_ID\":\"\(reportingData.TuneURL_ID)\",\n\"Interest_action\":\"\(reportingData.Interest_action)\"\n }\n]"
+                .data(using: .utf8)
 
-			// get the response data
-			guard let response2Data = response.data else {
-				completion(nil)
-				return
-			}
+        let task = URLSession.shared.dataTask(with: request2) { data, response, error in
+            if let response = response {
+                debugPrint("HTTP Response: ", response)
 
-			// parse the json response
-            let reportingResponse = try?  JSONDecoder().decode(ReportingResponse.self, from: response2Data)
+                if let data = data, let body = String(data: data, encoding: .utf8) {
+                    print("Body: ", body)
+                }
+            } else {
+                print(error ?? "Unknown error")
+            }
+        }
 
-			// call the completion handler
-			completion(reportingResponse)
-		}
+        task.resume()
+        
 	}
-
 }

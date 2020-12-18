@@ -36,7 +36,7 @@ class MatchedItemCell: UICollectionViewCell {
 					image = UIImage(named: "Matched-Item-Phone")
 				case .poll:
 					image = UIImage(named: "Matched-Item-Poll")
-				case .webPage:
+            case .saveWebPage, .openWebPage:
 					image = UIImage(named: "Matched-Item-Web")
 				default:
 					break

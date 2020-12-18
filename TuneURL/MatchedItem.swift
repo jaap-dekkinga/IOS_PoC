@@ -17,8 +17,9 @@ class MatchedItem: Codable {
 		case none = 0
 		case phoneNumber = 1
 		case poll = 2
-		case webPage = 3
-		case coupon = 4
+		case openWebPage = 3
+        case saveWebPage = 4
+		case coupon = 5
 	}
 
 	// public
@@ -48,8 +49,10 @@ class MatchedItem: Codable {
 				}
 			case .poll:
 				return "Vote in the TuneURL Poll!"
-			case .webPage:
+			case .saveWebPage:
 				return "Save Web Page?"
+            case .openWebPage:
+                return "Open Web Page?"
 			default:
 				return nil
 		}
@@ -89,8 +92,10 @@ class MatchedItem: Codable {
 				action = .phoneNumber
 			case "poll":
 				action = .poll
-			case "open_page", "save_page":
-				action = .webPage
+			case "open_page":
+				action = .openWebPage
+            case "save_page":
+                action = .saveWebPage
 			default:
 				action = .none
 		}

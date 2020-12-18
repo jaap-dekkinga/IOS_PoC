@@ -9,6 +9,6 @@ install! 'cocoapods',
          :incremental_installation => true
 
 target :TuneURL do
-    pod 'Alamofire'
+    pod 'Alamofire', '~> 4.9.0'
     pod 'DMSwipeCards'
 end

@@ -7,24 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2801B77557AA9765B40625753F26442B /* DMSwipeCards-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = AF66F59DCC6D75A24A94642E89B2A89C /* DMSwipeCards-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2801B77557AA9765B40625753F26442B /* DMSwipeCards-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CBA58148AE0BCFE40339E69A94CCE646 /* DMSwipeCards-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C5FCB541F9A21704F201288FCF8FC0A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7F7BC8094C8AE230A24E15614546994 /* Foundation.framework */; };
-		7B01D7C31F6E36136AFB39D3BCFC4EF3 /* DMSwipeCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689186E2CF3E2B6B635A8EE0C477FB5E /* DMSwipeCardsView.swift */; };
-		C8E6FF8A08D1CDFFAED516788293AE17 /* DMSwipeCards-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B3128A858D03E8C11AA96CDA734F62DD /* DMSwipeCards-dummy.m */; };
-		E03B28833DC0D7A0D9430412F3CD1FC8 /* DMSwipeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC25AC6A2DF1416B30CAF21264BDC6B /* DMSwipeCard.swift */; };
+		7B01D7C31F6E36136AFB39D3BCFC4EF3 /* DMSwipeCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFFA68564118D9483A087DFCD0ECF23 /* DMSwipeCardsView.swift */; };
+		C8E6FF8A08D1CDFFAED516788293AE17 /* DMSwipeCards-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9D0A75158EE533D5E3BB595D98BA6 /* DMSwipeCards-dummy.m */; };
+		E03B28833DC0D7A0D9430412F3CD1FC8 /* DMSwipeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B832A632CC2BADBE8F95DD1E6844EC /* DMSwipeCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		03C0181C7D47B619DAD1AE79C11BD529 /* DMSwipeCards.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = DMSwipeCards.xcconfig; sourceTree = "<group>"; };
-		04507C2F9ED7E2ECD7B7B2A883A60638 /* DMSwipeCards.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DMSwipeCards.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3FC25AC6A2DF1416B30CAF21264BDC6B /* DMSwipeCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DMSwipeCard.swift; path = DMSwipeCards/Classes/DMSwipeCard.swift; sourceTree = "<group>"; };
-		689186E2CF3E2B6B635A8EE0C477FB5E /* DMSwipeCardsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DMSwipeCardsView.swift; path = DMSwipeCards/Classes/DMSwipeCardsView.swift; sourceTree = "<group>"; };
-		83960132117D3488B71AB161110328AA /* DMSwipeCards-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "DMSwipeCards-prefix.pch"; sourceTree = "<group>"; };
-		8A2D1E385A1512C4705548ABDCD214E8 /* DMSwipeCards-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "DMSwipeCards-Info.plist"; sourceTree = "<group>"; };
-		AF66F59DCC6D75A24A94642E89B2A89C /* DMSwipeCards-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "DMSwipeCards-umbrella.h"; sourceTree = "<group>"; };
-		B3128A858D03E8C11AA96CDA734F62DD /* DMSwipeCards-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "DMSwipeCards-dummy.m"; sourceTree = "<group>"; };
+		04507C2F9ED7E2ECD7B7B2A883A60638 /* DMSwipeCards.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = DMSwipeCards.framework; path = DMSwipeCards.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1418AE387EC69F966B4CA116E4CC6DED /* DMSwipeCards.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = DMSwipeCards.release.xcconfig; sourceTree = "<group>"; };
+		1EFFA68564118D9483A087DFCD0ECF23 /* DMSwipeCardsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DMSwipeCardsView.swift; path = DMSwipeCards/Classes/DMSwipeCardsView.swift; sourceTree = "<group>"; };
+		3BC9D0A75158EE533D5E3BB595D98BA6 /* DMSwipeCards-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "DMSwipeCards-dummy.m"; sourceTree = "<group>"; };
+		40B832A632CC2BADBE8F95DD1E6844EC /* DMSwipeCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DMSwipeCard.swift; path = DMSwipeCards/Classes/DMSwipeCard.swift; sourceTree = "<group>"; };
+		4DFE870A75B70BC1D3634AC85A7C9A78 /* DMSwipeCards.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = DMSwipeCards.debug.xcconfig; sourceTree = "<group>"; };
+		62B2CA835510196192CEA195D98B9BC6 /* DMSwipeCards-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "DMSwipeCards-Info.plist"; sourceTree = "<group>"; };
+		7FE3FAA4C7C58185C6745261A446F53D /* DMSwipeCards.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = DMSwipeCards.modulemap; sourceTree = "<group>"; };
 		C7F7BC8094C8AE230A24E15614546994 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		FC885778BCC3198E19CEA707F4FA3800 /* DMSwipeCards.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = DMSwipeCards.modulemap; sourceTree = "<group>"; };
+		C83AA22CD88F963799825C83B053F369 /* DMSwipeCards-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "DMSwipeCards-prefix.pch"; sourceTree = "<group>"; };
+		CBA58148AE0BCFE40339E69A94CCE646 /* DMSwipeCards-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "DMSwipeCards-umbrella.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,13 +56,39 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		97E2792178350F337832904563CBD88E /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				7FE3FAA4C7C58185C6745261A446F53D /* DMSwipeCards.modulemap */,
+				3BC9D0A75158EE533D5E3BB595D98BA6 /* DMSwipeCards-dummy.m */,
+				62B2CA835510196192CEA195D98B9BC6 /* DMSwipeCards-Info.plist */,
+				C83AA22CD88F963799825C83B053F369 /* DMSwipeCards-prefix.pch */,
+				CBA58148AE0BCFE40339E69A94CCE646 /* DMSwipeCards-umbrella.h */,
+				4DFE870A75B70BC1D3634AC85A7C9A78 /* DMSwipeCards.debug.xcconfig */,
+				1418AE387EC69F966B4CA116E4CC6DED /* DMSwipeCards.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/DMSwipeCards";
+			sourceTree = "<group>";
+		};
 		A6BB969748D37A650FF5AC4FB3E01142 = {
 			isa = PBXGroup;
 			children = (
-				FD3FF70A04A21E9CC4DFADBEF9E7EFCF /* DMSwipeCards */,
+				B3B2401C37B763D07CAFE92FB803BA2D /* DMSwipeCards */,
 				137BF487ADC228F58FD27196F1EDA6F8 /* Frameworks */,
 				84AB9991DE155121D304F757875B47E2 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		B3B2401C37B763D07CAFE92FB803BA2D /* DMSwipeCards */ = {
+			isa = PBXGroup;
+			children = (
+				40B832A632CC2BADBE8F95DD1E6844EC /* DMSwipeCard.swift */,
+				1EFFA68564118D9483A087DFCD0ECF23 /* DMSwipeCardsView.swift */,
+				97E2792178350F337832904563CBD88E /* Support Files */,
+			);
+			name = DMSwipeCards;
+			path = DMSwipeCards;
 			sourceTree = "<group>";
 		};
 		C7E28F657DD44DA528DA60F3B9246916 /* iOS */ = {
@@ -70,30 +97,6 @@
 				C7F7BC8094C8AE230A24E15614546994 /* Foundation.framework */,
 			);
 			name = iOS;
-			sourceTree = "<group>";
-		};
-		C95A9AE29D69D044BC0BEE1CA63359A7 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				FC885778BCC3198E19CEA707F4FA3800 /* DMSwipeCards.modulemap */,
-				03C0181C7D47B619DAD1AE79C11BD529 /* DMSwipeCards.xcconfig */,
-				B3128A858D03E8C11AA96CDA734F62DD /* DMSwipeCards-dummy.m */,
-				8A2D1E385A1512C4705548ABDCD214E8 /* DMSwipeCards-Info.plist */,
-				83960132117D3488B71AB161110328AA /* DMSwipeCards-prefix.pch */,
-				AF66F59DCC6D75A24A94642E89B2A89C /* DMSwipeCards-umbrella.h */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/DMSwipeCards";
-			sourceTree = "<group>";
-		};
-		FD3FF70A04A21E9CC4DFADBEF9E7EFCF /* DMSwipeCards */ = {
-			isa = PBXGroup;
-			children = (
-				3FC25AC6A2DF1416B30CAF21264BDC6B /* DMSwipeCard.swift */,
-				689186E2CF3E2B6B635A8EE0C477FB5E /* DMSwipeCardsView.swift */,
-				C95A9AE29D69D044BC0BEE1CA63359A7 /* Support Files */,
-			);
-			path = DMSwipeCards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,7 +138,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1220;
+				LastUpgradeCheck = 1100;
 			};
 			buildConfigurationList = 526B0BDF777F3DFB6303B89D96BD2A10 /* Build configuration list for PBXProject "DMSwipeCards" */;
 			compatibilityVersion = "Xcode 8.0";
@@ -179,9 +182,9 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		59BBD81543826F0371D365F834B74230 /* Debug */ = {
+		3B685BE7832451E2DE8B58CAC570A7B6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 03C0181C7D47B619DAD1AE79C11BD529 /* DMSwipeCards.xcconfig */;
+			baseConfigurationReference = 1418AE387EC69F966B4CA116E4CC6DED /* DMSwipeCards.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -195,38 +198,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/DMSwipeCards/DMSwipeCards-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/DMSwipeCards/DMSwipeCards-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/DMSwipeCards/DMSwipeCards.modulemap";
-				PRODUCT_MODULE_NAME = DMSwipeCards;
-				PRODUCT_NAME = DMSwipeCards;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		63E2714DFBC9063BDD1F327EB691F890 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 03C0181C7D47B619DAD1AE79C11BD529 /* DMSwipeCards.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/DMSwipeCards/DMSwipeCards-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/DMSwipeCards/DMSwipeCards-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/DMSwipeCards/DMSwipeCards.modulemap";
 				PRODUCT_MODULE_NAME = DMSwipeCards;
@@ -268,7 +240,6 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -291,12 +262,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
@@ -328,7 +300,6 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -354,7 +325,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -367,14 +338,45 @@
 			};
 			name = Debug;
 		};
+		F7762744FCB369C3E073FB58BA503EA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4DFE870A75B70BC1D3634AC85A7C9A78 /* DMSwipeCards.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/DMSwipeCards/DMSwipeCards-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/DMSwipeCards/DMSwipeCards-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/DMSwipeCards/DMSwipeCards.modulemap";
+				PRODUCT_MODULE_NAME = DMSwipeCards;
+				PRODUCT_NAME = DMSwipeCards;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
 		42C4C1B91ECFBA1E139BAB1E37A6AA27 /* Build configuration list for PBXNativeTarget "DMSwipeCards" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				59BBD81543826F0371D365F834B74230 /* Debug */,
-				63E2714DFBC9063BDD1F327EB691F890 /* Release */,
+				F7762744FCB369C3E073FB58BA503EA0 /* Debug */,
+				3B685BE7832451E2DE8B58CAC570A7B6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

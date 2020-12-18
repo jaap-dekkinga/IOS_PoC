@@ -22,6 +22,7 @@
 		60D361E320CB40380079C14C /* EncodableExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E220CB40380079C14C /* EncodableExtension.swift */; };
 		60D361E720CDC17C0079C14C /* PollManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E620CDC17C0079C14C /* PollManager.swift */; };
 		60D361E920D164540079C14C /* PollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E820D164540079C14C /* PollViewController.swift */; };
+		6D9F1B12258188BC004C4E29 /* InterestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9F1B11258188BC004C4E29 /* InterestViewController.swift */; };
 		DCC3A21648720C0E8D25B72B /* Pods_TuneURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */; };
 		EC2CA86B24F93B8700443202 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86A24F93B8700443202 /* UIViewExtensions.swift */; };
 		EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86C24F93D8500443202 /* SavedItemCollectionLayout.swift */; };
@@ -82,6 +83,7 @@
 		60D361E220CB40380079C14C /* EncodableExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EncodableExtension.swift; sourceTree = "<group>"; };
 		60D361E620CDC17C0079C14C /* PollManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollManager.swift; sourceTree = "<group>"; };
 		60D361E820D164540079C14C /* PollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollViewController.swift; sourceTree = "<group>"; };
+		6D9F1B11258188BC004C4E29 /* InterestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestViewController.swift; sourceTree = "<group>"; };
 		BBCE85622A4AC53FBFA986B1 /* Pods-TuneURL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.debug.xcconfig"; sourceTree = "<group>"; };
 		BDE2CA3B2B257A37E40EE614 /* Pods-TuneURL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.release.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.release.xcconfig"; sourceTree = "<group>"; };
 		D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TuneURL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -172,6 +174,7 @@
 				ECB9166824F5D2170091C76B /* BasePageViewController.swift */,
 				601E0C1320FF81A200AD535E /* BoolExtension.swift */,
 				60D361E220CB40380079C14C /* EncodableExtension.swift */,
+				6D9F1B11258188BC004C4E29 /* InterestViewController.swift */,
 				ECB9166624F5CED10091C76B /* ListenViewController.swift */,
 				EC4F01332337CF0600E6FB77 /* MatchedItem.swift */,
 				EC4F01352337D03000E6FB77 /* MatchedItemCell.swift */,
@@ -443,6 +446,7 @@
 				60D361E720CDC17C0079C14C /* PollManager.swift in Sources */,
 				60D361E920D164540079C14C /* PollViewController.swift in Sources */,
 				EC2CA86F24F9537600443202 /* RecentItemCollectionLayout.swift in Sources */,
+				6D9F1B12258188BC004C4E29 /* InterestViewController.swift in Sources */,
 				6024B74120606C8D0005A984 /* SampleData.swift in Sources */,
 				ECB9164324F5C92C0091C76B /* SavedContentViewController.swift in Sources */,
 				EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */,

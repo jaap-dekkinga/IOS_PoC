@@ -30,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 	fileprivate var backgroundTask = UIBackgroundTaskIdentifier.invalid
 	fileprivate static let notify = Notify()
 	fileprivate weak var pollViewController: PollViewController?
+    fileprivate weak var interestViewController: InterestViewController?
 
     // reporting init
     private var matchedItem: MatchedItem?
@@ -155,6 +156,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 		}
 	}
 
+    @objc func collectionAddedItem(_ notification: Notification)
+    {
+        guard let newItemIndex = notification.userInfo?["Item Index"] as? Int else {
+            //recentCollectionView.reloadData()
+            return
+        }
+
+        // add the item to the table view if the table is displaying 'recents'
+        //recentCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
+
+        // open polls when they are matched, ask if interested for everything else
+        if let item = itemCollection.item(withIndex: newItemIndex) {
+            if (item.action == .poll) { // Open right away
+                openPoll(with: item, wasUserInitiated: false)
+            } else { // Ask if interested
+                // dismiss any previous view controller
+                interestViewController?.dismiss(animated: false, completion: nil)
+                interestViewController = nil
+
+                // open the poll view controller
+                let viewController = InterestViewController.create(with: item, wasUserInitiated: false)
+                self.window?.rootViewController?.present(viewController, animated: true)
+                interestViewController = viewController
+            }
+        }  
+    }
+
+    
+    
 	func openPoll(with item: MatchedItem, wasUserInitiated: Bool)
 	{
 		// dismiss any previous view controller
@@ -166,52 +196,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 		self.window?.rootViewController?.present(viewController, animated: true)
 		pollViewController = viewController
 	}
-    
-    @objc func collectionAddedItem(_ notification: Notification)
-    {
-        guard let newItemIndex = notification.userInfo?["Item Index"] as? Int else {
-            //recentCollectionView.reloadData()
-            return
-        }
-
-        // add the item to the table view if the table is displaying 'recents'
-        //recentCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
-
-        // open polls when they are matched
-        if let item = itemCollection.item(withIndex: newItemIndex) {
-            if (item.action == .poll) {
-                openItem(item)
-            }
-        }
-    }
-
-    // MARK: -
-    // MARK: Private
-
-    private func openItem(_ item: MatchedItem, wasUserInitiated: Bool = false)
-    {
-        //reporting
-        reportingManager.captureUserAction(for: item, InterestAction: "interested")
-        switch (item.action) {
-            case .phoneNumber:
-                // open the phone number
-                if let phoneURL = item.phoneURL {
-                    UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
-                }
-            case .poll:
-                // open the poll
-                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                    appDelegate.openPoll(with: item, wasUserInitiated: wasUserInitiated)
-                }
-            case .coupon, .webPage:
-                // open the url
-                if let itemURL = item.url {
-                    UIApplication.shared.open(itemURL, options: [:], completionHandler: nil)
-                }
-            default:
-                break
-        }
-    }
 
 }
 

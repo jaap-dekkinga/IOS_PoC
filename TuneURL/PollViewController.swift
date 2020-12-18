@@ -169,7 +169,7 @@ class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeC
 
 	private func addCard()
 	{
-		self.swipeView.addCards(["Swipe to make your choice"], onTop: true)
+		self.swipeView.addCards(["Swipe left or right"], onTop: true)
 	}
 
 	private func addDoneView()
