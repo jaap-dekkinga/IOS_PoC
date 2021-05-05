@@ -22,17 +22,17 @@ class AudioUtility {
 	static func changeSampleRate(sampleRate: Double, buffer1: [Int16]) -> [Int16]?
 	{
 		guard let inputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: 44100.0, channels: 1, interleaved: false) else {
-			print("FingerprintManager: Error creating audio format.")
+			print("AudioUtility: Error creating audio format.")
 			return nil
 		}
 
 		guard let outputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: sampleRate, channels: 1, interleaved: false) else {
-			print("FingerprintManager: Error creating audio format.")
+			print("AudioUtility: Error creating audio format.")
 			return nil
 		}
 
 		guard let converter = AVAudioConverter(from: inputFormat, to: outputFormat) else {
-			print("FingerprintManager: Error creating audio converter.")
+			print("AudioUtility: Error creating audio converter.")
 			return nil
 		}
 
@@ -41,7 +41,7 @@ class AudioUtility {
 		let sampleRateConversionRatio: Double = (sampleRate / 44100.0)
 		let outputBufferSize = AVAudioFrameCount((Double(buffer1.count) * sampleRateConversionRatio))
 		guard let outputBuffer = AVAudioPCMBuffer(pcmFormat: outputFormat, frameCapacity: outputBufferSize) else {
-			print("FingerprintManager: Error creating input audio buffer.")
+			print("AudioUtility: Error creating input audio buffer.")
 			return nil
 		}
 
@@ -62,7 +62,7 @@ class AudioUtility {
 
 			// create the buffer
 			guard let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: AVAudioFrameCount(copySampleCount)) else {
-				print("FingerprintManager: Error creating input audio buffer.")
+				print("AudioUtility: Error creating input audio buffer.")
 				status.pointee = .endOfStream
 				return nil
 			}
@@ -90,12 +90,12 @@ class AudioUtility {
 
 		// check for errors
 		if (result == .error) {
-			print("FingerprintManager: Error converting audio sample rate.")
+			print("AudioUtility: Error converting audio sample rate.")
 			return nil
 		}
 
 		if (error != nil) {
-			print("FingerprintManager: Error converting audio sample rate. (\(error!.localizedDescription))")
+			print("AudioUtility: Error converting audio sample rate. (\(error!.localizedDescription))")
 			return nil
 		}
 

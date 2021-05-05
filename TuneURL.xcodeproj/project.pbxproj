@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -51,6 +51,49 @@
 		ECB9164324F5C92C0091C76B /* SavedContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB9164224F5C92C0091C76B /* SavedContentViewController.swift */; };
 		ECB9166724F5CED10091C76B /* ListenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB9166624F5CED10091C76B /* ListenViewController.swift */; };
 		ECB9166924F5D2170091C76B /* BasePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB9166824F5D2170091C76B /* BasePageViewController.swift */; };
+		ECCAB97626419ACE00E48DC5 /* ArrayCoord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB97426419ACE00E48DC5 /* ArrayCoord.cpp */; };
+		ECCAB97926419AED00E48DC5 /* ArrayRankFloat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB97726419AED00E48DC5 /* ArrayRankFloat.cpp */; };
+		ECCAB98126419B0500E48DC5 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB98026419B0500E48DC5 /* main.swift */; };
+		ECCAB98A26419BDC00E48DC5 /* FingerprintProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C3BD2333A43500D8E57C /* FingerprintProperties.swift */; };
+		ECCAB98B26419BDC00E48DC5 /* MapRankInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067C23317E6D0013B8F8 /* MapRankInteger.swift */; };
+		ECCAB98C26419BDC00E48DC5 /* RobustIntensityProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068423317E6D0013B8F8 /* RobustIntensityProcessor.swift */; };
+		ECCAB98D26419BDC00E48DC5 /* WindowFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067E23317E6D0013B8F8 /* WindowFunction.swift */; };
+		ECCAB98E26419BDC00E48DC5 /* PairManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068323317E6D0013B8F8 /* PairManager.swift */; };
+		ECCAB98F26419BDC00E48DC5 /* ArrayRankFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067D23317E6D0013B8F8 /* ArrayRankFloat.swift */; };
+		ECCAB99026419BDC00E48DC5 /* FingerprintSimilarity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068623317E6D0013B8F8 /* FingerprintSimilarity.swift */; };
+		ECCAB99126419BDC00E48DC5 /* FingerprintSimilarityComputer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068723317E6D0013B8F8 /* FingerprintSimilarityComputer.swift */; };
+		ECCAB99226419BDC00E48DC5 /* ArrayCoord.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068123317E6D0013B8F8 /* ArrayCoord.swift */; };
+		ECCAB99326419BDC00E48DC5 /* QuickSortInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068023317E6D0013B8F8 /* QuickSortInteger.swift */; };
+		ECCAB99426419BDC00E48DC5 /* FingerprintManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068523317E6D0013B8F8 /* FingerprintManager.swift */; };
+		ECCAB99526419BDC00E48DC5 /* FastFourierTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068823317E6D0013B8F8 /* FastFourierTransform.swift */; };
+		ECCAB99626419BDC00E48DC5 /* Spectrogram.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30068223317E6D0013B8F8 /* Spectrogram.swift */; };
+		ECCAB99726419BDF00E48DC5 /* AudioUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067F23317E6D0013B8F8 /* AudioUtility.swift */; };
+		ECCAB99826419C1400E48DC5 /* ArrayRankFloat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB97726419AED00E48DC5 /* ArrayRankFloat.cpp */; };
+		ECCAB99926419C1400E48DC5 /* ArrayCoord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB97426419ACE00E48DC5 /* ArrayCoord.cpp */; };
+		ECCAB99C26419C4C00E48DC5 /* WindowFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB99A26419C4C00E48DC5 /* WindowFunction.cpp */; };
+		ECCAB99D26419C4C00E48DC5 /* WindowFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB99A26419C4C00E48DC5 /* WindowFunction.cpp */; };
+		ECCAB9A026419F2B00E48DC5 /* FingerprintProperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB99E26419F2B00E48DC5 /* FingerprintProperties.cpp */; };
+		ECCAB9A126419F2B00E48DC5 /* FingerprintProperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB99E26419F2B00E48DC5 /* FingerprintProperties.cpp */; };
+		ECCAB9A42641A23900E48DC5 /* RobustIntensityProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9A22641A23900E48DC5 /* RobustIntensityProcessor.cpp */; };
+		ECCAB9A52641A23900E48DC5 /* RobustIntensityProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9A22641A23900E48DC5 /* RobustIntensityProcessor.cpp */; };
+		ECCAB9A82641A9A200E48DC5 /* QuickSortInteger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9A62641A9A200E48DC5 /* QuickSortInteger.cpp */; };
+		ECCAB9A92641A9A200E48DC5 /* QuickSortInteger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9A62641A9A200E48DC5 /* QuickSortInteger.cpp */; };
+		ECCAB9AC2641ABDD00E48DC5 /* MapRankInteger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9AA2641ABDD00E48DC5 /* MapRankInteger.cpp */; };
+		ECCAB9AD2641ABDD00E48DC5 /* MapRankInteger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9AA2641ABDD00E48DC5 /* MapRankInteger.cpp */; };
+		ECCAB9B02641C0B200E48DC5 /* FingerprintSimilarityComputer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9AE2641C0B200E48DC5 /* FingerprintSimilarityComputer.cpp */; };
+		ECCAB9B12641C0B200E48DC5 /* FingerprintSimilarityComputer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9AE2641C0B200E48DC5 /* FingerprintSimilarityComputer.cpp */; };
+		ECCAB9B42641C1AD00E48DC5 /* FingerprintSimilarity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9B22641C1AD00E48DC5 /* FingerprintSimilarity.cpp */; };
+		ECCAB9B52641C1AD00E48DC5 /* FingerprintSimilarity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9B22641C1AD00E48DC5 /* FingerprintSimilarity.cpp */; };
+		ECCAB9B82641C42200E48DC5 /* Spectrogram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9B62641C42200E48DC5 /* Spectrogram.cpp */; };
+		ECCAB9B92641C42200E48DC5 /* Spectrogram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9B62641C42200E48DC5 /* Spectrogram.cpp */; };
+		ECCAB9BC2641C9B600E48DC5 /* FastFourierTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9BA2641C9B600E48DC5 /* FastFourierTransform.cpp */; };
+		ECCAB9BD2641C9B600E48DC5 /* FastFourierTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9BA2641C9B600E48DC5 /* FastFourierTransform.cpp */; };
+		ECCAB9C02641D8B600E48DC5 /* PairManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9BE2641D8B600E48DC5 /* PairManager.cpp */; };
+		ECCAB9C12641D8B600E48DC5 /* PairManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9BE2641D8B600E48DC5 /* PairManager.cpp */; };
+		ECCAB9C42641DF7100E48DC5 /* FingerprintManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9C22641DF7100E48DC5 /* FingerprintManager.cpp */; };
+		ECCAB9C52641DF7100E48DC5 /* FingerprintManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9C22641DF7100E48DC5 /* FingerprintManager.cpp */; };
+		ECCAB9C82641E85300E48DC5 /* Fingerprint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9C62641E85300E48DC5 /* Fingerprint.cpp */; };
+		ECCAB9C92641E85300E48DC5 /* Fingerprint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECCAB9C62641E85300E48DC5 /* Fingerprint.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +105,18 @@
 			remoteInfo = AudioTriggerPOC;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		ECCAB97C26419B0500E48DC5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4D4ED16B25719A0F00EDC277 /* ReportingData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportingData.swift; sourceTree = "<group>"; };
@@ -83,7 +138,7 @@
 		60D361E220CB40380079C14C /* EncodableExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EncodableExtension.swift; sourceTree = "<group>"; };
 		60D361E620CDC17C0079C14C /* PollManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollManager.swift; sourceTree = "<group>"; };
 		60D361E820D164540079C14C /* PollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollViewController.swift; sourceTree = "<group>"; };
-		6D9F1B11258188BC004C4E29 /* InterestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestViewController.swift; sourceTree = "<group>"; };
+		6D9F1B11258188BC004C4E29 /* InterestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterestViewController.swift; sourceTree = "<group>"; };
 		BBCE85622A4AC53FBFA986B1 /* Pods-TuneURL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.debug.xcconfig"; sourceTree = "<group>"; };
 		BDE2CA3B2B257A37E40EE614 /* Pods-TuneURL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.release.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.release.xcconfig"; sourceTree = "<group>"; };
 		D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TuneURL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +170,38 @@
 		ECB9166624F5CED10091C76B /* ListenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListenViewController.swift; sourceTree = "<group>"; };
 		ECB9166824F5D2170091C76B /* BasePageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasePageViewController.swift; sourceTree = "<group>"; };
 		ECBD100E2322EFDC005415EF /* UpdateBuildNumber.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = UpdateBuildNumber.sh; sourceTree = "<group>"; };
+		ECCAB97326419ACE00E48DC5 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		ECCAB97426419ACE00E48DC5 /* ArrayCoord.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArrayCoord.cpp; sourceTree = "<group>"; };
+		ECCAB97526419ACE00E48DC5 /* ArrayCoord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArrayCoord.h; sourceTree = "<group>"; };
+		ECCAB97726419AED00E48DC5 /* ArrayRankFloat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArrayRankFloat.cpp; sourceTree = "<group>"; };
+		ECCAB97826419AED00E48DC5 /* ArrayRankFloat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArrayRankFloat.h; sourceTree = "<group>"; };
+		ECCAB97E26419B0500E48DC5 /* Fingerprint */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Fingerprint; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECCAB98026419B0500E48DC5 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		ECCAB98926419B4A00E48DC5 /* Fingerprint-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Fingerprint-Bridging-Header.h"; sourceTree = "<group>"; };
+		ECCAB99A26419C4C00E48DC5 /* WindowFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WindowFunction.cpp; sourceTree = "<group>"; };
+		ECCAB99B26419C4C00E48DC5 /* WindowFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowFunction.h; sourceTree = "<group>"; };
+		ECCAB99E26419F2B00E48DC5 /* FingerprintProperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FingerprintProperties.cpp; sourceTree = "<group>"; };
+		ECCAB99F26419F2B00E48DC5 /* FingerprintProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FingerprintProperties.h; sourceTree = "<group>"; };
+		ECCAB9A22641A23900E48DC5 /* RobustIntensityProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RobustIntensityProcessor.cpp; sourceTree = "<group>"; };
+		ECCAB9A32641A23900E48DC5 /* RobustIntensityProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RobustIntensityProcessor.h; sourceTree = "<group>"; };
+		ECCAB9A62641A9A200E48DC5 /* QuickSortInteger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuickSortInteger.cpp; sourceTree = "<group>"; };
+		ECCAB9A72641A9A200E48DC5 /* QuickSortInteger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickSortInteger.h; sourceTree = "<group>"; };
+		ECCAB9AA2641ABDD00E48DC5 /* MapRankInteger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MapRankInteger.cpp; sourceTree = "<group>"; };
+		ECCAB9AB2641ABDD00E48DC5 /* MapRankInteger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapRankInteger.h; sourceTree = "<group>"; };
+		ECCAB9AE2641C0B200E48DC5 /* FingerprintSimilarityComputer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FingerprintSimilarityComputer.cpp; sourceTree = "<group>"; };
+		ECCAB9AF2641C0B200E48DC5 /* FingerprintSimilarityComputer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FingerprintSimilarityComputer.h; sourceTree = "<group>"; };
+		ECCAB9B22641C1AD00E48DC5 /* FingerprintSimilarity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FingerprintSimilarity.cpp; sourceTree = "<group>"; };
+		ECCAB9B32641C1AD00E48DC5 /* FingerprintSimilarity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FingerprintSimilarity.h; sourceTree = "<group>"; };
+		ECCAB9B62641C42200E48DC5 /* Spectrogram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Spectrogram.cpp; sourceTree = "<group>"; };
+		ECCAB9B72641C42200E48DC5 /* Spectrogram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spectrogram.h; sourceTree = "<group>"; };
+		ECCAB9BA2641C9B600E48DC5 /* FastFourierTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastFourierTransform.cpp; sourceTree = "<group>"; };
+		ECCAB9BB2641C9B600E48DC5 /* FastFourierTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastFourierTransform.h; sourceTree = "<group>"; };
+		ECCAB9BE2641D8B600E48DC5 /* PairManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PairManager.cpp; sourceTree = "<group>"; };
+		ECCAB9BF2641D8B600E48DC5 /* PairManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PairManager.h; sourceTree = "<group>"; };
+		ECCAB9C22641DF7100E48DC5 /* FingerprintManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FingerprintManager.cpp; sourceTree = "<group>"; };
+		ECCAB9C32641DF7100E48DC5 /* FingerprintManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FingerprintManager.h; sourceTree = "<group>"; };
+		ECCAB9C62641E85300E48DC5 /* Fingerprint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Fingerprint.cpp; sourceTree = "<group>"; };
+		ECCAB9C72641E85300E48DC5 /* Fingerprint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fingerprint.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +220,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ECCAB97B26419B0500E48DC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -142,6 +236,7 @@
 				ECBD100E2322EFDC005415EF /* UpdateBuildNumber.sh */,
 				6052363C201FE51900B65A72 /* TuneURL */,
 				60523653201FE51900B65A72 /* TuneURLTests */,
+				ECCAB97F26419B0500E48DC5 /* Fingerprint */,
 				6052363B201FE51900B65A72 /* Products */,
 				DB97329E3D2244005E84C3E0 /* Pods */,
 				706DE416CDBE83EE3CBC91AD /* Frameworks */,
@@ -153,6 +248,7 @@
 			children = (
 				6052363A201FE51900B65A72 /* TuneURL.app */,
 				60523650201FE51900B65A72 /* TuneURLTests.xctest */,
+				ECCAB97E26419B0500E48DC5 /* Fingerprint */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -166,6 +262,8 @@
 				60523643201FE51900B65A72 /* Main.storyboard */,
 				EC30069623317E8E0013B8F8 /* Trigger-Audio.wav */,
 				EC30067B23317E5A0013B8F8 /* musicg */,
+				ECCAB97226419AA700E48DC5 /* musicg-cpp */,
+				ECCAB97326419ACE00E48DC5 /* Bridging-Header.h */,
 				6052363D201FE51900B65A72 /* AppDelegate.swift */,
 				EC4E097E231EDF8300445E52 /* AudioBuffer.swift */,
 				EC4E097C231EDC6500445E52 /* AudioCapture.swift */,
@@ -241,6 +339,50 @@
 			path = musicg;
 			sourceTree = "<group>";
 		};
+		ECCAB97226419AA700E48DC5 /* musicg-cpp */ = {
+			isa = PBXGroup;
+			children = (
+				ECCAB97426419ACE00E48DC5 /* ArrayCoord.cpp */,
+				ECCAB97526419ACE00E48DC5 /* ArrayCoord.h */,
+				ECCAB97726419AED00E48DC5 /* ArrayRankFloat.cpp */,
+				ECCAB97826419AED00E48DC5 /* ArrayRankFloat.h */,
+				ECCAB9BA2641C9B600E48DC5 /* FastFourierTransform.cpp */,
+				ECCAB9BB2641C9B600E48DC5 /* FastFourierTransform.h */,
+				ECCAB9C62641E85300E48DC5 /* Fingerprint.cpp */,
+				ECCAB9C72641E85300E48DC5 /* Fingerprint.h */,
+				ECCAB9C22641DF7100E48DC5 /* FingerprintManager.cpp */,
+				ECCAB9C32641DF7100E48DC5 /* FingerprintManager.h */,
+				ECCAB99E26419F2B00E48DC5 /* FingerprintProperties.cpp */,
+				ECCAB99F26419F2B00E48DC5 /* FingerprintProperties.h */,
+				ECCAB9B22641C1AD00E48DC5 /* FingerprintSimilarity.cpp */,
+				ECCAB9B32641C1AD00E48DC5 /* FingerprintSimilarity.h */,
+				ECCAB9AE2641C0B200E48DC5 /* FingerprintSimilarityComputer.cpp */,
+				ECCAB9AF2641C0B200E48DC5 /* FingerprintSimilarityComputer.h */,
+				ECCAB9AA2641ABDD00E48DC5 /* MapRankInteger.cpp */,
+				ECCAB9AB2641ABDD00E48DC5 /* MapRankInteger.h */,
+				ECCAB9BE2641D8B600E48DC5 /* PairManager.cpp */,
+				ECCAB9BF2641D8B600E48DC5 /* PairManager.h */,
+				ECCAB9A62641A9A200E48DC5 /* QuickSortInteger.cpp */,
+				ECCAB9A72641A9A200E48DC5 /* QuickSortInteger.h */,
+				ECCAB9A22641A23900E48DC5 /* RobustIntensityProcessor.cpp */,
+				ECCAB9A32641A23900E48DC5 /* RobustIntensityProcessor.h */,
+				ECCAB9B62641C42200E48DC5 /* Spectrogram.cpp */,
+				ECCAB9B72641C42200E48DC5 /* Spectrogram.h */,
+				ECCAB99A26419C4C00E48DC5 /* WindowFunction.cpp */,
+				ECCAB99B26419C4C00E48DC5 /* WindowFunction.h */,
+			);
+			path = "musicg-cpp";
+			sourceTree = "<group>";
+		};
+		ECCAB97F26419B0500E48DC5 /* Fingerprint */ = {
+			isa = PBXGroup;
+			children = (
+				ECCAB98926419B4A00E48DC5 /* Fingerprint-Bridging-Header.h */,
+				ECCAB98026419B0500E48DC5 /* main.swift */,
+			);
+			path = Fingerprint;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -282,19 +424,36 @@
 			productReference = 60523650201FE51900B65A72 /* TuneURLTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		ECCAB97D26419B0500E48DC5 /* Fingerprint */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECCAB98226419B0500E48DC5 /* Build configuration list for PBXNativeTarget "Fingerprint" */;
+			buildPhases = (
+				ECCAB97A26419B0500E48DC5 /* Sources */,
+				ECCAB97B26419B0500E48DC5 /* Frameworks */,
+				ECCAB97C26419B0500E48DC5 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Fingerprint;
+			productName = Fingerprint;
+			productReference = ECCAB97E26419B0500E48DC5 /* Fingerprint */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		60523632201FE51800B65A72 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1220;
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "TuneURL Inc.";
 				TargetAttributes = {
 					60523639201FE51900B65A72 = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1020;
+						LastSwiftMigration = 1250;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -308,10 +467,14 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 60523639201FE51900B65A72;
 					};
+					ECCAB97D26419B0500E48DC5 = {
+						CreatedOnToolsVersion = 12.5;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 60523635201FE51800B65A72 /* Build configuration list for PBXProject "TuneURL" */;
-			compatibilityVersion = "Xcode 8.0";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -325,6 +488,7 @@
 			targets = (
 				60523639201FE51900B65A72 /* TuneURL */,
 				6052364F201FE51900B65A72 /* TuneURLTests */,
+				ECCAB97D26419B0500E48DC5 /* Fingerprint */,
 			);
 		};
 /* End PBXProject section */
@@ -414,25 +578,35 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ECCAB9AC2641ABDD00E48DC5 /* MapRankInteger.cpp in Sources */,
 				EC30068E23317E6D0013B8F8 /* ArrayCoord.swift in Sources */,
 				EC30068A23317E6D0013B8F8 /* ArrayRankFloat.swift in Sources */,
 				EC30068C23317E6D0013B8F8 /* AudioUtility.swift in Sources */,
 				EC30069523317E6D0013B8F8 /* FastFourierTransform.swift in Sources */,
+				ECCAB9C02641D8B600E48DC5 /* PairManager.cpp in Sources */,
+				ECCAB9A82641A9A200E48DC5 /* QuickSortInteger.cpp in Sources */,
 				EC30069223317E6D0013B8F8 /* FingerprintManager.swift in Sources */,
+				ECCAB9A42641A23900E48DC5 /* RobustIntensityProcessor.cpp in Sources */,
+				ECCAB9BC2641C9B600E48DC5 /* FastFourierTransform.cpp in Sources */,
 				EC31C3BE2333A43500D8E57C /* FingerprintProperties.swift in Sources */,
+				ECCAB97626419ACE00E48DC5 /* ArrayCoord.cpp in Sources */,
 				EC30069323317E6D0013B8F8 /* FingerprintSimilarity.swift in Sources */,
 				EC30069423317E6D0013B8F8 /* FingerprintSimilarityComputer.swift in Sources */,
+				ECCAB9B02641C0B200E48DC5 /* FingerprintSimilarityComputer.cpp in Sources */,
 				EC30068923317E6D0013B8F8 /* MapRankInteger.swift in Sources */,
 				EC30069023317E6D0013B8F8 /* PairManager.swift in Sources */,
 				EC30068D23317E6D0013B8F8 /* QuickSortInteger.swift in Sources */,
 				4D4ED16C25719A0F00EDC277 /* ReportingData.swift in Sources */,
 				EC30069123317E6D0013B8F8 /* RobustIntensityProcessor.swift in Sources */,
+				ECCAB99C26419C4C00E48DC5 /* WindowFunction.cpp in Sources */,
 				EC30068F23317E6D0013B8F8 /* Spectrogram.swift in Sources */,
 				EC30068B23317E6D0013B8F8 /* WindowFunction.swift in Sources */,
 				6052363E201FE51900B65A72 /* AppDelegate.swift in Sources */,
 				EC4E097F231EDF8300445E52 /* AudioBuffer.swift in Sources */,
+				ECCAB9B82641C42200E48DC5 /* Spectrogram.cpp in Sources */,
 				EC4E0980231EE76600445E52 /* AudioCapture.swift in Sources */,
 				600A6EBE205EBEC500F96F7A /* AudioMatcher.swift in Sources */,
+				ECCAB9B42641C1AD00E48DC5 /* FingerprintSimilarity.cpp in Sources */,
 				ECB9166924F5D2170091C76B /* BasePageViewController.swift in Sources */,
 				601E0C1420FF81A200AD535E /* BoolExtension.swift in Sources */,
 				60D361E320CB40380079C14C /* EncodableExtension.swift in Sources */,
@@ -448,9 +622,13 @@
 				EC2CA86F24F9537600443202 /* RecentItemCollectionLayout.swift in Sources */,
 				6D9F1B12258188BC004C4E29 /* InterestViewController.swift in Sources */,
 				6024B74120606C8D0005A984 /* SampleData.swift in Sources */,
+				ECCAB9C82641E85300E48DC5 /* Fingerprint.cpp in Sources */,
 				ECB9164324F5C92C0091C76B /* SavedContentViewController.swift in Sources */,
+				ECCAB9A026419F2B00E48DC5 /* FingerprintProperties.cpp in Sources */,
+				ECCAB97926419AED00E48DC5 /* ArrayRankFloat.cpp in Sources */,
 				EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */,
 				4D4ED16E2573D59800EDC277 /* ReportingManager.swift in Sources */,
+				ECCAB9C42641DF7100E48DC5 /* FingerprintManager.cpp in Sources */,
 				EC2CA86B24F93B8700443202 /* UIViewExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -460,6 +638,42 @@
 			buildActionMask = 2147483647;
 			files = (
 				60523655201FE51900B65A72 /* TuneURLTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECCAB97A26419B0500E48DC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECCAB99226419BDC00E48DC5 /* ArrayCoord.swift in Sources */,
+				ECCAB98F26419BDC00E48DC5 /* ArrayRankFloat.swift in Sources */,
+				ECCAB99526419BDC00E48DC5 /* FastFourierTransform.swift in Sources */,
+				ECCAB99426419BDC00E48DC5 /* FingerprintManager.swift in Sources */,
+				ECCAB98A26419BDC00E48DC5 /* FingerprintProperties.swift in Sources */,
+				ECCAB9C92641E85300E48DC5 /* Fingerprint.cpp in Sources */,
+				ECCAB99026419BDC00E48DC5 /* FingerprintSimilarity.swift in Sources */,
+				ECCAB99126419BDC00E48DC5 /* FingerprintSimilarityComputer.swift in Sources */,
+				ECCAB98B26419BDC00E48DC5 /* MapRankInteger.swift in Sources */,
+				ECCAB98E26419BDC00E48DC5 /* PairManager.swift in Sources */,
+				ECCAB99326419BDC00E48DC5 /* QuickSortInteger.swift in Sources */,
+				ECCAB98C26419BDC00E48DC5 /* RobustIntensityProcessor.swift in Sources */,
+				ECCAB99626419BDC00E48DC5 /* Spectrogram.swift in Sources */,
+				ECCAB98D26419BDC00E48DC5 /* WindowFunction.swift in Sources */,
+				ECCAB99926419C1400E48DC5 /* ArrayCoord.cpp in Sources */,
+				ECCAB99826419C1400E48DC5 /* ArrayRankFloat.cpp in Sources */,
+				ECCAB9BD2641C9B600E48DC5 /* FastFourierTransform.cpp in Sources */,
+				ECCAB9C52641DF7100E48DC5 /* FingerprintManager.cpp in Sources */,
+				ECCAB9A126419F2B00E48DC5 /* FingerprintProperties.cpp in Sources */,
+				ECCAB9B52641C1AD00E48DC5 /* FingerprintSimilarity.cpp in Sources */,
+				ECCAB9B12641C0B200E48DC5 /* FingerprintSimilarityComputer.cpp in Sources */,
+				ECCAB9AD2641ABDD00E48DC5 /* MapRankInteger.cpp in Sources */,
+				ECCAB9C12641D8B600E48DC5 /* PairManager.cpp in Sources */,
+				ECCAB9A92641A9A200E48DC5 /* QuickSortInteger.cpp in Sources */,
+				ECCAB9A52641A23900E48DC5 /* RobustIntensityProcessor.cpp in Sources */,
+				ECCAB9B92641C42200E48DC5 /* Spectrogram.cpp in Sources */,
+				ECCAB99D26419C4C00E48DC5 /* WindowFunction.cpp in Sources */,
+				ECCAB99726419BDF00E48DC5 /* AudioUtility.swift in Sources */,
+				ECCAB98126419B0500E48DC5 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -606,7 +820,8 @@
 				MARKETING_VERSION = 2.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -623,9 +838,15 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = TuneURL/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuneurl.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TuneURL/Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -641,8 +862,14 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = TuneURL/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuneurl.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "TuneURL/Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -655,7 +882,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B74A3WDYVP;
 				INFOPLIST_FILE = TuneURLTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuneurl.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -671,11 +902,48 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B74A3WDYVP;
 				INFOPLIST_FILE = TuneURLTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuneurl.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TuneURL.app/TuneURL";
+			};
+			name = Release;
+		};
+		ECCAB98326419B0500E48DC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A63XWBVGEW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "Fingerprint/Fingerprint-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		ECCAB98426419B0500E48DC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A63XWBVGEW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "Fingerprint/Fingerprint-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -705,6 +973,15 @@
 			buildConfigurations = (
 				6052365D201FE51900B65A72 /* Debug */,
 				6052365E201FE51900B65A72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECCAB98226419B0500E48DC5 /* Build configuration list for PBXNativeTarget "Fingerprint" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECCAB98326419B0500E48DC5 /* Debug */,
+				ECCAB98426419B0500E48DC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

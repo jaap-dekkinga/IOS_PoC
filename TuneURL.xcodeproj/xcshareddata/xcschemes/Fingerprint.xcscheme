@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "60523639201FE51900B65A72"
-               BuildableName = "TuneURL.app"
-               BlueprintName = "TuneURL"
+               BlueprintIdentifier = "ECCAB97D26419B0500E48DC5"
+               BuildableName = "Fingerprint"
+               BlueprintName = "Fingerprint"
                ReferencedContainer = "container:TuneURL.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -27,26 +27,7 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "60523639201FE51900B65A72"
-            BuildableName = "TuneURL.app"
-            BlueprintName = "TuneURL"
-            ReferencedContainer = "container:TuneURL.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6052364F201FE51900B65A72"
-               BuildableName = "TuneURLTests.xctest"
-               BlueprintName = "TuneURLTests"
-               ReferencedContainer = "container:TuneURL.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -63,12 +44,18 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "60523639201FE51900B65A72"
-            BuildableName = "TuneURL.app"
-            BlueprintName = "TuneURL"
+            BlueprintIdentifier = "ECCAB97D26419B0500E48DC5"
+            BuildableName = "Fingerprint"
+            BlueprintName = "Fingerprint"
             ReferencedContainer = "container:TuneURL.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "fingerprint &quot;/Users/Gerrit/Upwork/TuneURL/Testing/Test-1.wav&quot;"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -80,9 +67,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "60523639201FE51900B65A72"
-            BuildableName = "TuneURL.app"
-            BlueprintName = "TuneURL"
+            BlueprintIdentifier = "ECCAB97D26419B0500E48DC5"
+            BuildableName = "Fingerprint"
+            BlueprintName = "Fingerprint"
             ReferencedContainer = "container:TuneURL.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
