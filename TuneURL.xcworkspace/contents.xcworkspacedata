@@ -5,6 +5,9 @@
       location = "group:TuneURL.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Fingerprint/Fingerprint.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>
