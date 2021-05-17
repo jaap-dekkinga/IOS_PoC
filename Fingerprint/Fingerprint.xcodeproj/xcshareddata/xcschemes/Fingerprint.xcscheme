@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ECCAB97D26419B0500E48DC5"
+               BlueprintIdentifier = "EC0668FC2652EEF0000D0ECF"
                BuildableName = "Fingerprint"
                BlueprintName = "Fingerprint"
-               ReferencedContainer = "container:TuneURL.xcodeproj">
+               ReferencedContainer = "container:Fingerprint.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,10 +44,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "ECCAB97D26419B0500E48DC5"
+            BlueprintIdentifier = "EC0668FC2652EEF0000D0ECF"
             BuildableName = "Fingerprint"
             BlueprintName = "Fingerprint"
-            ReferencedContainer = "container:TuneURL.xcodeproj">
+            ReferencedContainer = "container:Fingerprint.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -63,16 +63,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "ECCAB97D26419B0500E48DC5"
+            BlueprintIdentifier = "EC0668FC2652EEF0000D0ECF"
             BuildableName = "Fingerprint"
             BlueprintName = "Fingerprint"
-            ReferencedContainer = "container:TuneURL.xcodeproj">
+            ReferencedContainer = "container:Fingerprint.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

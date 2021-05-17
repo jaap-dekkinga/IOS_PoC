@@ -11,7 +11,7 @@ import AVFoundation
 import Foundation
 
 
-fileprivate func extractFingerprintCpp(audioData: [Int16]) -> [UInt8]?
+fileprivate func extractFingerprint(audioData: [Int16]) -> [UInt8]?
 {
 	// generate the fingerprint
 	guard let fingerprint = ExtractFingerprint(audioData, Int32(audioData.count)) else {
@@ -25,11 +25,6 @@ fileprivate func extractFingerprintCpp(audioData: [Int16]) -> [UInt8]?
 	}
 
 	return array
-}
-
-fileprivate func extractFingerprintSwift(audioData: [Int16]) -> [UInt8]?
-{
-	return FingerprintManager().extractFingerprint(audioData, resample: false)
 }
 
 fileprivate func loadAudio(from fileURL: URL, resample: Bool) -> [Int16]?
@@ -91,25 +86,11 @@ while index < arguments.count {
 
 			// load the audio file
 			if let audioData = loadAudio(from: URL(fileURLWithPath: filePath), resample: false) {
-
-				// C++
-				var fingerprintCpp = extractFingerprintCpp(audioData: audioData)
-
-				// Swift
-				var fingerprintSwift = extractFingerprintSwift(audioData: audioData)
-
-				// compare the fingerprints
-				fingerprintCpp!.withUnsafeMutableBufferPointer {
-					bufferCpp in
-					var fingerprint1 = Fingerprint(data: bufferCpp.baseAddress, dataSize: Int32(bufferCpp.count))
-					fingerprintSwift!.withUnsafeMutableBufferPointer {
-						bufferSwift in
-						var fingerprint2 = Fingerprint(data: bufferSwift.baseAddress, dataSize: Int32(bufferSwift.count))
-						let result = CompareFingerprints(&fingerprint1, &fingerprint2)
-						print("Comparison result: \(result)")
-					}
+				if let fingerprint = extractFingerprint(audioData: audioData) {
+					print("Fingerprint:\n\(fingerprint)")
+				} else {
+					print("Error creating fingerprint.")
 				}
-
 			} else {
 				print("Error loading audio file. ('\(filePath)')")
 			}
