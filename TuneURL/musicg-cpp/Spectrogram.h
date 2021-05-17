@@ -6,6 +6,9 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
+#ifndef SPECTROGRAM_H
+#define SPECTROGRAM_H
+
 #include <vector>
 #include "FingerprintProperties.h"
 
@@ -38,3 +41,5 @@ private:
 	void buildSpectrogram();
 
 };
+
+#endif /* SPECTROGRAM_H */

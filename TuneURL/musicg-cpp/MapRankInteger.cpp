@@ -10,7 +10,7 @@
 #include "MapRankInteger.h"
 
 
-MapRankInteger::MapRankInteger(const std::map<int, int> &map, bool ascending) : map(map), ascending(ascending), array(map.size())
+MapRankInteger::MapRankInteger(const map<int, int> &_map, bool ascending) : _map(_map), ascending(ascending), array(_map.size())
 {
 }
 
@@ -21,16 +21,16 @@ vector<int> MapRankInteger::getOrderedKeyList(int numKeys, bool sharpLimit)
 	vector<int> keyList;
 
 	// if the numKeys is larger than map size, limit it
-	if (numKeys > (int)map.size()) {
-		numKeys = (int)map.size();
+	if (numKeys > (int)_map.size()) {
+		numKeys = (int)_map.size();
 	}
 
-	if (map.size() > 0) {
+	if (_map.size() > 0) {
 //		var array = [Int](repeating: 0, count: map.count);
 		int count = 0;
 
 		// get the pass values
-		for (auto it : map) {
+		for (auto it : _map) {
 			array[count] = it.second;
 			count += 1;
 		}
@@ -44,10 +44,10 @@ vector<int> MapRankInteger::getOrderedKeyList(int numKeys, bool sharpLimit)
 
 		// get the passed keys and values
 		int passValue = getOrderedValue(targetindex);	// this value is the value of the numKey-th element
-		std::map<int, int> passedMap;
+		map<int, int> passedMap;
 		vector<int> valueList;
 
-		for (auto it : map) {
+		for (auto it : _map) {
 			if ((ascending && (it.second <= passValue)) || (!ascending && (it.second >= passValue))) {
 				passedMap[it.first] = it.second;
 				valueList.push_back(it.second);

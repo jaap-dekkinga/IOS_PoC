@@ -6,8 +6,8 @@
 //  Copyright © 2021 TuneURL Inc. All rights reserved.
 //
 
-#ifndef Fingerprint_h
-#define Fingerprint_h
+#ifndef FINGERPRINT_H
+#define FINGERPRINT_H
 
 #include <stdlib.h>
 
@@ -22,10 +22,11 @@ typedef struct Fingerprint {
 
 } Fingerprint;
 
+float CompareFingerprints(const Fingerprint *fingerprint1, const Fingerprint *fingerprint2);
 Fingerprint *ExtractFingerprint(const int16_t *wave, int waveLength);
 
 #ifdef __cplusplus
 }
 #endif // __cplusplus
 
-#endif // Fingerprint_h
+#endif /* FINGERPRINT_H */

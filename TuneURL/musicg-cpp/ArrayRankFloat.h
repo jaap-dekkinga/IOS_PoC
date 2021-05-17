@@ -6,6 +6,9 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
+#ifndef ARRAYRANKFLOAT_H
+#define ARRAYRANKFLOAT_H
+
 #include <vector>
 
 using std::vector;
@@ -30,3 +33,5 @@ private:
 	void swap(int i, int j);
 
 };
+
+#endif /* ARRAYRANKFLOAT_H */

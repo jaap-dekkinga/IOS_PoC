@@ -78,7 +78,6 @@ class FastFourierTransform {
 
 					// in-place single-precision complex discrete Fourier transform
 					vDSP_fft_zip(setup, &complexA, 1, log2n, FFTDirection(FFT_FORWARD))
-
 /*
 					outFFTData.withUnsafeMutableBufferPointer {
 						outFFTDataBufferPointer in
@@ -94,6 +93,11 @@ class FastFourierTransform {
 		}
 
 		// TODO: perform this step with vDSP
+
+		// FFT produces a transformed pair of arrays where the first half of the
+		// values represent positive frequency components and the second half
+		// represents negative frequency components.
+		// we omit the negative ones
 
 		for c in 0 ..< outFFTData.count {
 			let value = (complexARealP[c] * complexARealP[c]) + (complexAImagP[c] * complexAImagP[c])

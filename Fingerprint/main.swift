@@ -11,6 +11,27 @@ import AVFoundation
 import Foundation
 
 
+fileprivate func extractFingerprintCpp(audioData: [Int16]) -> [UInt8]?
+{
+	// generate the fingerprint
+	guard let fingerprint = ExtractFingerprint(audioData, Int32(audioData.count)) else {
+		return nil
+	}
+
+	var array = [UInt8]()
+	let pointer = fingerprint.pointee.data!
+	for x in 0 ..< Int(fingerprint.pointee.dataSize) {
+		array.append(pointer[x])
+	}
+
+	return array
+}
+
+fileprivate func extractFingerprintSwift(audioData: [Int16]) -> [UInt8]?
+{
+	return FingerprintManager().extractFingerprint(audioData, resample: false)
+}
+
 fileprivate func loadAudio(from fileURL: URL, resample: Bool) -> [Int16]?
 {
 	var result: OSStatus = noErr
@@ -70,24 +91,25 @@ while index < arguments.count {
 
 			// load the audio file
 			if let audioData = loadAudio(from: URL(fileURLWithPath: filePath), resample: false) {
-				// generate the fingerprint
-				if let fingerprint = ExtractFingerprint(audioData, Int32(audioData.count)) {
-//					print("IT WORKED.")
-					print("Fingerprint (\(fingerprint.pointee.dataSize)):")
-					var string = "["
-					let pointer = fingerprint.pointee.data!
-					for x in 0 ..< Int(fingerprint.pointee.dataSize) {
-						string += "\(pointer[x]), "
-					}
-					string += "]"
-					print(string)
 
-//				let fingerprinter = FingerprintManager()
-//				if let fingerprint = fingerprinter.extractFingerprint(audioData, resample: false) {
-//					print("Fingerprint: \(fingerprint)")
-				} else {
-					print("Error generating fingerprint.")
+				// C++
+				var fingerprintCpp = extractFingerprintCpp(audioData: audioData)
+
+				// Swift
+				var fingerprintSwift = extractFingerprintSwift(audioData: audioData)
+
+				// compare the fingerprints
+				fingerprintCpp!.withUnsafeMutableBufferPointer {
+					bufferCpp in
+					var fingerprint1 = Fingerprint(data: bufferCpp.baseAddress, dataSize: Int32(bufferCpp.count))
+					fingerprintSwift!.withUnsafeMutableBufferPointer {
+						bufferSwift in
+						var fingerprint2 = Fingerprint(data: bufferSwift.baseAddress, dataSize: Int32(bufferSwift.count))
+						let result = CompareFingerprints(&fingerprint1, &fingerprint2)
+						print("Comparison result: \(result)")
+					}
 				}
+
 			} else {
 				print("Error loading audio file. ('\(filePath)')")
 			}

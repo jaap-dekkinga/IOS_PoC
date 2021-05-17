@@ -6,8 +6,8 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
-#ifndef FingerprintProperties_h
-#define FingerprintProperties_h
+#ifndef FINGERPRINTPROPERTIES_H
+#define FINGERPRINTPROPERTIES_H
 
 class FingerprintProperties {
 
@@ -30,4 +30,4 @@ public:
 
 };
 
-#endif // FingerprintProperties_h
+#endif /* FINGERPRINTPROPERTIES_H */

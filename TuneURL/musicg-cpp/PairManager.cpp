@@ -6,10 +6,10 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
-// TEMP
-#if IGNORE
 
+#include "FingerprintManager.h"
 #include "PairManager.h"
+#include "QuickSortInteger.h"
 
 
 PairManager::PairManager()
@@ -37,57 +37,42 @@ PairManager::PairManager(bool isReferencePairing) : isReferencePairing(isReferen
 * That means the table stores the positions which have the same hashed pair
 */
 
-[Int : [Int]] PairManager::getPair_PositionList_Table(const vector<uint8_t> &fingerprint)
+map<int, vector<int>> PairManager::getPair_PositionList_Table(const vector<uint8_t> &fingerprint)
 {
-	let pairPositionList = getPairPositionList(fingerprint);
-
-/*
-// TEMP: dump for comparison testing
-	print("pairPositionList:")
-	var string = "\t"
-	for value in pairPositionList {
-		string += "\(value)"
-	}
-	print(string)
-// ----
-*/
+	vector<PairPosition> pairPositionList = getPairPositionList(fingerprint);
 
 	// table to store pair: pos, pos, pos, ...; pair2: pos, pos, pos, ...
-	var pair_positionList_table = [Int : [Int]]()
+	map<int, vector<int>> pair_positionList_table;
 
 	// get all pair positions from list, use a table to collect the data group by pair hashcode
-	for pairPosition in pairPositionList {
+	for (auto& pairPosition : pairPositionList) {
 		// group by pair-hashcode, i.e.: <pair, List<position>>
-		if var array = pair_positionList_table[pairPosition[0]] {
-			array.append(pairPosition[1])
-			pair_positionList_table[pairPosition[0]] = array
-		} else {
-			pair_positionList_table[pairPosition[0]] = [ pairPosition[1] ]
-		}
+		vector<int> &array = pair_positionList_table[pairPosition.hashcode];
+		array.push_back(pairPosition.position);
 	}
 
-	return pair_positionList_table
+	return pair_positionList_table;
 }
 
 // MARK: -
 // MARK: Private
 
 // this return list contains: int[0] = pair_hashcode, int[1] = position
-vector<vector<int>> PairManager::getPairPositionList(const vector<uint8_t> &fingerprint)
+vector<PairPosition> PairManager::getPairPositionList(const vector<uint8_t> &fingerprint)
 {
-	let numFrames = FingerprintManager.getNumFrames(fingerprint);
+	int numFrames = FingerprintManager::getNumFrames(fingerprint);
 
 	// table for paired frames
-	var pairedFrameTable = [UInt8](repeating: 0, count: (numFrames / anchorPointsIntervalLength + 1));
+	vector<uint8_t> pairedFrameTable((numFrames / anchorPointsIntervalLength + 1));
+
 	// each second has numAnchorPointsPerSecond pairs only
+	vector<PairPosition> pairList;
+	vector<ArrayCoord> sortedCoordinateList = getSortedCoordinateList(fingerprint);
 
-	var pairList = [[Int]]();
-	let sortedCoordinateList = getSortedCoordinateList(fingerprint: fingerprint);
+	for (auto& anchorPoint : sortedCoordinateList) {
+		int numPairs = 0;
 
-	for anchorPoint in sortedCoordinateList {
-		var numPairs = 0;
-
-		for targetPoint in sortedCoordinateList {
+		for (auto& targetPoint : sortedCoordinateList) {
 
 			if (numPairs >= maxPairs) {
 				break;
@@ -130,16 +115,16 @@ vector<vector<int>> PairManager::getPairPositionList(const vector<uint8_t> &fing
 				continue;
 			}
 
-			let pairHashcode = (x2 - x1) * numFrequencyUnits * numFrequencyUnits + y2 * numFrequencyUnits + y1;
+			int pairHashcode = (x2 - x1) * numFrequencyUnits * numFrequencyUnits + y2 * numFrequencyUnits + y1;
 
 			// stop list applied on sample pairing only
-			if (!isReferencePairing && (stopPairTable[pairHashcode] != nil)) {
+			if (!isReferencePairing && (stopPairTable.find(pairHashcode) != stopPairTable.end())) {
 				numPairs += 1;	// no reservation
 				continue;	// escape this point only
 			}
 
 			// pass all rules
-			pairList.append([pairHashcode, anchorPoint.x]);
+			pairList.push_back(PairPosition(pairHashcode, anchorPoint.x));
 			pairedFrameTable[anchorPoint.x / anchorPointsIntervalLength] += 1;
 			numPairs += 1;
 		}
@@ -148,7 +133,7 @@ vector<vector<int>> PairManager::getPairPositionList(const vector<uint8_t> &fing
 	return pairList;
 }
 
-vector<ArrayCoord> PairManager::getSortedCoordinateList(const vector<uint8> &fingerprint)
+vector<ArrayCoord> PairManager::getSortedCoordinateList(const vector<uint8_t> &fingerprint)
 {
 	// each point data is 8 bytes
 	// x: 2 byte integer
@@ -165,32 +150,19 @@ vector<ArrayCoord> PairManager::getSortedCoordinateList(const vector<uint8> &fin
 		intensities[i] = intensity;
 	}
 
-	let quicksort = QuickSortInteger(intensities);
-	let sortIndexes = quicksort.getSortIndexes();
+	QuickSortInteger quicksort(intensities);
+	vector<int> sortIndexes = quicksort.getSortIndexes();
 
 	vector<ArrayCoord> sortedCoordinateList;
 	int i = ((int)sortIndexes.size() - 1);
 
 	while (i >= 0) {
 		int pointer = (sortIndexes[i] * 8);
-		int x = ((int)fingerprint[pointer + 0]) << 8) | (int)fingerprint[pointer + 1]);
-		int y = ((int)fingerprint[pointer + 2]) << 8) | (int)fingerprint[pointer + 3]);
+		int x = (((int)fingerprint[pointer + 0] << 8) | (int)fingerprint[pointer + 1]);
+		int y = (((int)fingerprint[pointer + 2] << 8) | (int)fingerprint[pointer + 3]);
 		sortedCoordinateList.push_back(ArrayCoord(x, y));
 		i -= 1;
 	}
 
-/*
-	// TEMP: dump for comparison testing
-	printf("sortedCoordinateList:\n");
-	for (int c = 0; c < (int)sortIndexes.size(); c++) {
-		ArrayCoord pos = sortedCoordinateList[c];
-		printf("\t%d: %d - %d, %d\n", sortIndexes[c], intensities[sortIndexes[c]], pos.x, pos.y);
-	}
-	// ----
-*/
-
 	return sortedCoordinateList;
 }
-
-// TEMP
-#endif // IGNORE

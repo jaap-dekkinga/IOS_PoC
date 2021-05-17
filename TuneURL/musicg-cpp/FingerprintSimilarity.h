@@ -6,6 +6,9 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
+#ifndef FINGERPRINTSIMILARITY_H
+#define FINGERPRINTSIMILARITY_H
+
 #include <limits.h>
 
 class FingerprintSimilarity {
@@ -26,3 +29,5 @@ public:
 	float mostSimilarStartTime();
 
 };
+
+#endif /* FINGERPRINTSIMILARITY_H */

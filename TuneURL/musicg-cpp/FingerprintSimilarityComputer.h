@@ -6,21 +6,29 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
-#include <vector>
-#include "FingerprintSimilarity.h"
+#ifndef FINGERPRINTSIMILARITYCOMPUTER_H
+#define FINGERPRINTSIMILARITYCOMPUTER_H
 
+#include <map>
+#include <vector>
+
+using std::map;
 using std::vector;
+
+class FingerprintSimilarity;
 
 class FingerprintSimilarityComputer {
 
 public:
 
-	FingerprintSimilarityComputer(const vector<uint8> &fingerprint1, const vector<uint8> &fingerprint2)
+	FingerprintSimilarityComputer(const vector<uint8_t> &fingerprint1, const vector<uint8_t> &fingerprint2);
 	FingerprintSimilarity getMatchResults();
 
 private:
 
-	vector<uint8> fingerprint1;
-	vector<uint8> fingerprint2;
+	vector<uint8_t> fingerprint1;
+	vector<uint8_t> fingerprint2;
 
-}
+};
+
+#endif /* FINGERPRINTSIMILARITYCOMPUTER_H */

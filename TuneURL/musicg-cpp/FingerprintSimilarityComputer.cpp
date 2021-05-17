@@ -6,21 +6,22 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
-// TEMP
-#if IGNORE
 
 #include "FingerprintManager.h"
+#include "FingerprintSimilarity.h"
 #include "FingerprintSimilarityComputer.h"
+#include "MapRankInteger.h"
+#include "PairManager.h"
 
 
-FingerprintSimilarityComputer::FingerprintSimilarityComputer(const vector<uint8> &fingerprint1, const vector<uint8> &fingerprint2) : fingerprint1(fingerprint1), fingerprint2(fingerprint2)
+FingerprintSimilarityComputer::FingerprintSimilarityComputer(const vector<uint8_t> &fingerprint1, const vector<uint8_t> &fingerprint2) : fingerprint1(fingerprint1), fingerprint2(fingerprint2)
 {
 }
 
 FingerprintSimilarity FingerprintSimilarityComputer::getMatchResults()
 {
 	FingerprintSimilarity results;
-	var offsetScoreTable = [Int : Int]();
+	map<int, int> offsetScoreTable;
 	int numFrames = 0;
 
 	// reset the results
@@ -30,53 +31,35 @@ FingerprintSimilarity FingerprintSimilarityComputer::getMatchResults()
 
 	// one frame may contain several points, use the shorter one be the denominator
 	if (fingerprint1.size() > fingerprint2.size()) {
-		numFrames = FingerprintManager.getNumFrames(fingerprint2);
+		numFrames = FingerprintManager::getNumFrames(fingerprint2);
 	} else {
-		numFrames = FingerprintManager.getNumFrames(fingerprint1);
+		numFrames = FingerprintManager::getNumFrames(fingerprint1);
 	}
-
-/*
-// TEMP: dump for comparison testing
-	print("FingerprintSimilarityComputer: numFrames: \(numFrames)")
-// ----
-*/
 
 	// get the pairs
-	let pairManager = PairManager();
-	let this_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint1);
-	let compareWave_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint2);
+	PairManager pairManager;
+	map<int, vector<int>> this_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint1);
+	map<int, vector<int>> compareWave_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint2);
 
-/*
-// TEMP: dump for comparison testing
-	// [Int : [Int]]
-	print("this_Pair_PositionList_Table:")
-	for (key, value) in this_Pair_PositionList_Table {
-		var string = "\t\(key): "
-		for subvalue in value {
-			string += "\(subvalue),"
-		}
-		print(string)
-	}
-// ----
-*/
-
-	for compareWaveHashNumber in compareWave_Pair_PositionList_Table.keys {
+	for (auto& it : compareWave_Pair_PositionList_Table) {
+		int compareWaveHashNumber = it.first;
 
 		// for each compare hash number, get the positions
 		// if the compareWaveHashNumber in either table, no need to compare
-		guard let wavePositionList = this_Pair_PositionList_Table[compareWaveHashNumber] else {
-			continue;
-		}
-		guard let compareWavePositionList = compareWave_Pair_PositionList_Table[compareWaveHashNumber] else {
+		if ((this_Pair_PositionList_Table.find(compareWaveHashNumber) == this_Pair_PositionList_Table.end()) ||
+			(compareWave_Pair_PositionList_Table.find(compareWaveHashNumber) == compareWave_Pair_PositionList_Table.end())) {
 			continue;
 		}
 
-		for thisPosition in wavePositionList {
-			for compareWavePosition in compareWavePositionList {
-				let offset = (thisPosition - compareWavePosition);
+		vector<int>& wavePositionList = this_Pair_PositionList_Table[compareWaveHashNumber];
+		vector<int>& compareWavePositionList = compareWave_Pair_PositionList_Table[compareWaveHashNumber];
 
-				if let currentScore = offsetScoreTable[offset] {
-					offsetScoreTable[offset] = (currentScore + 1);
+		for (auto& thisPosition : wavePositionList) {
+			for (auto& compareWavePosition : compareWavePositionList) {
+				int offset = (thisPosition - compareWavePosition);
+
+				if (offsetScoreTable.find(offset) != offsetScoreTable.end()) {
+					offsetScoreTable[offset] += 1;
 				} else {
 					offsetScoreTable[offset] = 1;
 				}
@@ -85,24 +68,28 @@ FingerprintSimilarity FingerprintSimilarityComputer::getMatchResults()
 	}
 
 	// map rank
-	let mapRank = MapRankInteger(offsetScoreTable, ascending: false);
+	MapRankInteger mapRank = MapRankInteger(offsetScoreTable, false);
 
 	// get the most similar positions and scores
-	let orderedKeyList = mapRank.getOrderedKeyList(100, true);
-	if (orderedKeyList.count > 0) {
-		let key = orderedKeyList[0];
+	vector<int> orderedKeyList = mapRank.getOrderedKeyList(100, true);
+	if (orderedKeyList.size() > 0) {
+		int key = orderedKeyList[0];
 
 		// get the highest score position
 		if (results.mostSimilarFramePosition == INT_MIN) {
 			results.mostSimilarFramePosition = key;
-			results.score = Float(offsetScoreTable[key]!);
+			results.score = (float)offsetScoreTable[key];
 
 			// accumulate the scores from neighbors
-			if let offsetScore = offsetScoreTable[(key - 1)] {
-				results.score += Float(offsetScore / 2);
+//			if int offsetScore = offsetScoreTable[(key - 1)] {
+			if (offsetScoreTable.find(key - 1) != offsetScoreTable.end()) {
+				int offsetScore = offsetScoreTable[key - 1];
+				results.score += (float)(offsetScore / 2);
 			}
-			if let offsetScore = offsetScoreTable[(key + 1)] {
-				results.score += Float(offsetScore / 2);
+//			if int offsetScore = offsetScoreTable[(key + 1)] {
+			if (offsetScoreTable.find(key + 1) != offsetScoreTable.end()) {
+				int offsetScore = offsetScoreTable[key + 1];
+				results.score += (float)(offsetScore / 2);
 			}
 		}
 	}
@@ -116,6 +103,3 @@ FingerprintSimilarity FingerprintSimilarityComputer::getMatchResults()
 
 	return results;
 }
-
-// TEMP
-#endif // IGNORE

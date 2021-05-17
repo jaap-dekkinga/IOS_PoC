@@ -6,21 +6,25 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
+#ifndef MAPRANKINTEGER_H
+#define MAPRANKINTEGER_H
+
 #include <map>
 #include <vector>
 
+using std::map;
 using std::vector;
 
 class MapRankInteger {
 
 public:
 
-	MapRankInteger(const std::map<int, int> &map, bool ascending);
+	MapRankInteger(const map<int, int> &map, bool ascending);
 	vector<int> getOrderedKeyList(int numKeys1, bool sharpLimit);
 
 private:
 
-	std::map<int, int> map;
+	map<int, int> _map;
 	vector<int> array;
 	bool ascending { true };
 
@@ -29,3 +33,5 @@ private:
 	void swap(int i, int j);
 
 };
+
+#endif /* MAPRANKINTEGER_H */

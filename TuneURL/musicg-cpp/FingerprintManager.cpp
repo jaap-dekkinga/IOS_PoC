@@ -60,7 +60,6 @@ vector<uint8_t> *FingerprintManager::extractFingerprint(const int16_t *wave, int
 
 	// get the spectrogram data
 	Spectrogram spectrogram(resampledWave, sampleSizePerFrame, overlapFactor);
-//	let spectrogramData = spectrogram.getNormalizedSpectrogramData();
 	const vector<vector<float>> &spectrogramData = spectrogram.getNormalizedSpectrogramData();
 
 	// get the robust point list
@@ -68,8 +67,6 @@ vector<uint8_t> *FingerprintManager::extractFingerprint(const int16_t *wave, int
 	int numFrames = (int)pointsLists.size();
 
 	// prepare fingerprint bytes
-//	var coordinates = new int[numFrames][numRobustPointsPerFrame]
-//	var coordinates = [[Int]](repeating: [Int](repeating: 0, count: numRobustPointsPerFrame), count: numFrames)
 	vector<vector<int>> coordinates(numFrames);
 	for (int x = 0; x < numFrames; x++) {
 		coordinates[x].resize(numRobustPointsPerFrame);
@@ -77,9 +74,7 @@ vector<uint8_t> *FingerprintManager::extractFingerprint(const int16_t *wave, int
 
 	for (int x = 0; x < numFrames; x++) {
 		if (pointsLists[x].size() == numRobustPointsPerFrame) {
-//				Iterator<Integer> pointsListsIterator=pointsLists[x].iterator()
 			for (int y = 0; y < numRobustPointsPerFrame; y++) {
-//					coordinates[x][y] = pointsListsIterator.next()
 				coordinates[x][y] = pointsLists[x][y];
 			}
 		} else {
@@ -130,7 +125,6 @@ vector<vector<int>> FingerprintManager::getRobustPointList(const vector<vector<f
 	int numX = (int)spectrogramData.size();
 	int numY = (int)spectrogramData[0].size();
 
-//	var allBanksIntensities = [[Float]](repeating: [Float](repeating: 0.0, count: numY), count: numX);
 	vector<vector<float>> allBanksIntensities(numX);
 	for (int x = 0; x < numX; x++) {
 		allBanksIntensities[x].resize(numY);
@@ -139,7 +133,6 @@ vector<vector<int>> FingerprintManager::getRobustPointList(const vector<vector<f
 	int bandwidthPerBank = (numY / numFilterBanks);
 
 	for (int b = 0; b < numFilterBanks; b++) {
-//		var bankIntensities = [[Float]](repeating: [Float](repeating: 0.0, count: bandwidthPerBank), count: numX);
 		vector<vector<float>> bankIntensities(numX);
 		for (int x = 0; x < numX; x++) {
 			bankIntensities[x].resize(bandwidthPerBank);
@@ -175,7 +168,6 @@ vector<vector<int>> FingerprintManager::getRobustPointList(const vector<vector<f
 	}
 
 	// robustLists[x] = y1, y2, y3, ...
-//	var robustLists = [[Int]](repeating: [Int](), count: spectrogramData.size());
 	vector<vector<int>> robustLists(spectrogramData.size());
 
 	for (auto coord : robustPointList) {

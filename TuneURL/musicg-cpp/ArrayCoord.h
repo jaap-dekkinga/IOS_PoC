@@ -6,6 +6,8 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
+#ifndef ARRAYCOORD_H
+#define ARRAYCOORD_H
 
 struct ArrayCoord {
 
@@ -15,3 +17,5 @@ struct ArrayCoord {
 	ArrayCoord(int x, int y) : x(x), y(y) { }
 
 };
+
+#endif /* ARRAYCOORD_H */

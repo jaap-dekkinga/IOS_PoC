@@ -6,6 +6,8 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
+#ifndef WINDOWFUNCTION_H
+#define WINDOWFUNCTION_H
 
 #include <vector>
 
@@ -23,9 +25,8 @@ class WindowFunction {
 
 public:
 
-	// defaults to rectangular window
-	WindowFunctionType windowType { WindowFunctionType::rectangular };
-
-	vector<float> generate(int nSamples);
+	static vector<float> generate(WindowFunctionType windowType, int sampleCount);
 
 };
+
+#endif /* WINDOWFUNCTION_H */

@@ -200,8 +200,8 @@
 		ECCAB9BF2641D8B600E48DC5 /* PairManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PairManager.h; sourceTree = "<group>"; };
 		ECCAB9C22641DF7100E48DC5 /* FingerprintManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FingerprintManager.cpp; sourceTree = "<group>"; };
 		ECCAB9C32641DF7100E48DC5 /* FingerprintManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FingerprintManager.h; sourceTree = "<group>"; };
-		ECCAB9C62641E85300E48DC5 /* Fingerprint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Fingerprint.cpp; sourceTree = "<group>"; };
-		ECCAB9C72641E85300E48DC5 /* Fingerprint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fingerprint.h; sourceTree = "<group>"; };
+		ECCAB9C62641E85300E48DC5 /* Fingerprint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fingerprint.cpp; sourceTree = "<group>"; };
+		ECCAB9C72641E85300E48DC5 /* Fingerprint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fingerprint.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

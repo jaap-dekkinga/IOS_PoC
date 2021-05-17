@@ -7,6 +7,8 @@
 //
 
 
+#include <float.h>
+#include <math.h>
 #include "FastFourierTransform.h"
 #include "Spectrogram.h"
 #include "WindowFunction.h"
@@ -50,26 +52,15 @@ void Spectrogram::buildSpectrogram()
 		amplitudes = overlapAmp;
 	}
 
-/*
-	// TEMP: dump for comparison testing
-	printf("buildSpectrogram amplitudes (%d):\n", (int)amplitudes.size());
-	for (int c = 0; c < 5000; c++) {
-		printf("\t%d: %d\n", c, amplitudes[c]);
-	}
-	// ----
-*/
-
 	// number of frames of the spectrogram
 	int numFrames = (numSamples / fftSampleSize);
 
 	// TODO: Optimization: Use vDSP for the window function.
+	// TODO: Optimization: Only generate the window function once.
 
 	// create the signals array for fft
-	WindowFunction windowFunction;
-	windowFunction.windowType = WindowFunctionType::hamming;
-	vector<float> window = windowFunction.generate(fftSampleSize);
+	vector<float> window = WindowFunction::generate(WindowFunctionType::hamming, fftSampleSize);
 
-//	var signals = [[Float]](repeating: [Float](repeating: 0.0, count: fftSampleSize), count: numFrames);
 	vector<vector<float>> signals(numFrames);
 	for (int x = 0; x < numFrames; x++) {
 		signals[x].resize(fftSampleSize);
@@ -82,33 +73,14 @@ void Spectrogram::buildSpectrogram()
 		}
 	}
 
-/*
-	// TEMP: dump for comparison testing
-	printf("buildSpectrogram signals (%d):\n", (int)signals.size());
-	for (int c = 0; c < (int)signals[42].size(); c++) {
-		printf("\t%d: %1.16f\n", c, signals[42][c]);
-	}
-	// ----
-*/
-
 	// TODO: Optimization: Move the FFT setup elsewhere (instead of setting up every time).
 
-//	absoluteSpectrogram = [[Float]](repeating: [Float](), count: numFrames);
 	absoluteSpectrogram.resize(numFrames);
 	// for each frame in signals, do fft on it
 	FastFourierTransform fft(fftSampleSize);
 	for (int i = 0; i < numFrames; i++) {
 		absoluteSpectrogram[i] = fft.getMagnitudes(signals[i]);
 	}
-
-/*
-	// TEMP: dump for comparison testing
-	printf("buildSpectrogram absoluteSpectrogram (%d):\n", (int)absoluteSpectrogram.size());
-	for (int c = 0; c < (int)absoluteSpectrogram[42].size(); c++) {
-		printf("\t%d: %1.16f\n", c, absoluteSpectrogram[42][c]);
-	}
-	// ----
-*/
 
 	if (absoluteSpectrogram.size() > 0) {
 
@@ -136,7 +108,6 @@ void Spectrogram::buildSpectrogram()
 		}
 
 		// normalize the absolute spectrogram
-//		spectrogram = [[Float]](repeating: [Float](repeating: 0.0, count: numFrequencyUnit), count: numFrames);
 		spectrogram.resize(numFrames);
 		for (int x = 0; x < numFrames; x++) {
 			spectrogram[x].resize(numFrequencyUnit);
@@ -152,13 +123,6 @@ void Spectrogram::buildSpectrogram()
 				}
 			}
 		}
-/*
-		// TEMP: dump for comparison testing
-		printf("buildSpectrogram spectrogram (%d):\n", (int)spectrogram.size());
-		for (int c = 0; c < (int)spectrogram[0].size(); c++) {
-			printf("\t%d: %1.16f\n", c, spectrogram[0][c]);
-		}
-		// ----
-*/
+
 	}
 }

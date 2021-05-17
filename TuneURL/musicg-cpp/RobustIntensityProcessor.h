@@ -6,6 +6,9 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
+#ifndef ROBUSTINTENSITYPROCESSOR_H
+#define ROBUSTINTENSITYPROCESSOR_H
+
 #include <vector>
 
 using std::vector;
@@ -21,3 +24,5 @@ public:
 	void execute();
 
 };
+
+#endif /* ROBUSTINTENSITYPROCESSOR_H */

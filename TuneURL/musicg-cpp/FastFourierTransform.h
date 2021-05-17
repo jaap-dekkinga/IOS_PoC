@@ -6,7 +6,13 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
+#ifndef FASTFOURIERTRANSFORM_H
+#define FASTFOURIERTRANSFORM_H
+
+#if __APPLE__
 #include <Accelerate/Accelerate.h>
+#endif // __APPLE
+
 #include <vector>
 
 using std::vector;
@@ -23,15 +29,32 @@ public:
 private:
 
 	int fftFrameSize { 0 };
-
-	// Accelerate opaque type that contains setup information for a given FFT transform.
-	FFTSetup fftSetup { nil };
-
-	// Accelerate type for complex number
-	vector<float> complexARealP;
-	vector<float> complexAImagP;
-
-	// output data
 	vector<float> outFFTData;
 
+#if __APPLE__
+	// ios accelerated fft
+	vector<float> complexReal;
+	vector<float> complexImag;
+	FFTSetup fftSetup { nil };
+
+	vector<float> getMagnitudesAcceleratedFFT(const vector<float> &timeDomainData);
+#endif // __APPLE__
+
+	// fft
+	vector<int> bitm_array;
+	vector<float> w;
+	int fftFrameSize2 { 0 };
+
+	vector<float> getMagnitudesJavaFFT(const vector<float> &timeDomainData);
+	void setup();
+	void transform(vector<float> &data);
+	vector<float> computeTwiddleFactors(int fftFrameSize);
+	void calc(int fftFrameSize, vector<float> &data, vector<float> &w);
+	void calcF2E(int fftFrameSize, vector<float> &data, int i, int nstep, vector<float> &w);
+	void calcF4F(int fftFrameSize, vector<float> &data, int i, int nstep, vector<float> &w);
+	void calcF4FE(int fftFrameSize, vector<float> &data, int i, int nstep, vector<float> &w);
+	void bitreversal(vector<float> &data);
+
 };
+
+#endif /* FASTFOURIERTRANSFORM_H */

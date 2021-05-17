@@ -6,6 +6,9 @@
 //  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
+#ifndef FINGERPRINTMANAGER_H
+#define FINGERPRINTMANAGER_H
+
 #include <vector>
 #include "FingerprintProperties.h"
 
@@ -30,3 +33,5 @@ private:
 	float sampleRate { FingerprintProperties::sampleRate } ;
 
 };
+
+#endif /* FINGERPRINTMANAGER_H */

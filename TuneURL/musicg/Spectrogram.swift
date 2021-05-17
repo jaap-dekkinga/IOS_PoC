@@ -69,6 +69,7 @@ class Spectrogram {
 		for c in 0 ..< 5000 {
 			print("\t\(c): \(amplitudes[c])")
 		}
+		print("")
 		// ----
 */
 
@@ -82,6 +83,17 @@ class Spectrogram {
 		windowFunction.windowType = .hamming
 		let window = windowFunction.generate(fftSampleSize)
 
+/*
+		// TEMP: dump for comparison testing
+		print("buildSpectrogram window (\(window.count)):")
+		let dumpCount = min(5000, window.count)
+		for c in 0 ..< dumpCount {
+			print("\t\(c): " + String(format: "%1.16f", window[c]))
+		}
+		print("")
+		// ----
+*/
+
 		var signals = [[Float]](repeating: [Float](repeating: 0.0, count: fftSampleSize), count: numFrames)
 		for frameIndex in 0 ..< numFrames {
 			let startSample = (frameIndex * fftSampleSize)
@@ -93,7 +105,8 @@ class Spectrogram {
 /*
 		// TEMP: dump for comparison testing
 		print("buildSpectrogram signals (\(signals.count)):")
-		for c in 0 ..< signals[42].count {
+		let dumpCount2 = min(5000, signals[42].count)
+		for c in 0 ..< dumpCount2 {
 			print("\t\(c): " + String(format: "%1.16f", signals[42][c]))
 		}
 		// ----
