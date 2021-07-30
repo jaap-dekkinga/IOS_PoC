@@ -131,9 +131,15 @@ class AudioCapture: NSObject {
 			return
 		}
 
+		// resample the fingerprint
+		// TODO: move the sample rate elsewhere
+		let sampleRate = 10240.0
+		guard let resampledData = AudioUtility.changeSampleRate(sampleRate: sampleRate, buffer1: bufferData) else {
+			return
+		}
+
 		// generate a fingerprint
-		let fingerprinter = FingerprintManager()
-		guard let bufferFingerprint = fingerprinter.extractFingerprint(bufferData, resample: true) else {
+		guard let bufferFingerprint = ExtractFingerprint(resampledData, Int32(resampledData.count)) else {
 			return
 		}
 
@@ -142,8 +148,7 @@ class AudioCapture: NSObject {
 		let triggerFingerprint = audioMatcher.triggerFingerprint
 
 		// calculate the fingerprint match results
-		let fingerprintComputer = FingerprintSimilarityComputer(fingerprint1: bufferFingerprint, fingerprint2: triggerFingerprint)
-		let matchResults = fingerprintComputer.getMatchResults()
+		let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint)
 		if (matchResults.similarity > 0.1) {
 
 			// calculate the time of the sound relative to now

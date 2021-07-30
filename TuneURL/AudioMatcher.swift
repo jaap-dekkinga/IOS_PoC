@@ -26,7 +26,7 @@ class AudioMatcher: NSObject {
 	// public (read-only)
 	public private(set) var audioCapture: AudioCapture?
 	public private(set) var isRunning = false
-	public private(set) var triggerFingerprint = [UInt8]()
+	public private(set) var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
 
 	// private
 	private let audioBuffer: AudioBuffer
@@ -150,7 +150,7 @@ class AudioMatcher: NSObject {
 	// MARK: -
 	// MARK: Private
 
-	private func generateFingerprint(for fileURL: URL, resample: Bool) -> [UInt8]?
+	private func generateFingerprint(for fileURL: URL, resample: Bool) -> UnsafeMutablePointer<Fingerprint>?
 	{
 		var result: OSStatus = noErr
 		var audioFile: AudioFileID?
@@ -191,8 +191,20 @@ class AudioMatcher: NSObject {
 			print("AudioMatcher: Error closing audio file. \(result)")
 		}
 
-		let fingerprinter = FingerprintManager()
-		if let fingerprint = fingerprinter.extractFingerprint(dataBuffer, resample: resample) {
+		// resample the audio
+		let resampled: [Int16]
+		if (resample) {
+			// TODO: move the sample rate elsewhere
+			let sampleRate = 10204.0
+			guard let buffer = AudioUtility.changeSampleRate(sampleRate: Double(sampleRate), buffer1: dataBuffer) else {
+				return nil
+			}
+			resampled = buffer
+		} else {
+			resampled = dataBuffer
+		}
+
+		if let fingerprint = ExtractFingerprint(resampled, Int32(resampled.count)) {
 			return fingerprint
 		}
 
