@@ -3,7 +3,7 @@
 //  TuneURL
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 9/2/19.
-//  Copyright © 2019 TuneURL Inc. All rights reserved.
+//  Copyright © 2019-2021 TuneURL Inc. All rights reserved.
 //
 
 
@@ -120,10 +120,6 @@ class AudioCapture: NSObject {
 	{
 		// TODO: move this into the audio matcher
 
-#if DEBUG
-		print("AudioCapture: Checking for trigger sound.")
-#endif // DEBUG
-
 		audioBuffer.resetUntestedSize()
 
 		// copy the sound data from the buffer
@@ -132,8 +128,7 @@ class AudioCapture: NSObject {
 		}
 
 		// resample the fingerprint
-		// TODO: move the sample rate elsewhere
-		let sampleRate = 10240.0
+		let sampleRate = FINGERPRINT_SAMPLE_RATE
 		guard let resampledData = AudioUtility.changeSampleRate(sampleRate: sampleRate, buffer1: bufferData) else {
 			return
 		}
@@ -149,18 +144,21 @@ class AudioCapture: NSObject {
 
 		// calculate the fingerprint match results
 		let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint)
+		FingerprintFree(bufferFingerprint)
+
+		// check the match results
 		if (matchResults.similarity > 0.1) {
 
 			// calculate the time of the sound relative to now
 			let mostSimilarStartingTime = matchResults.mostSimilarStartTime
-			let similarityConfidence = matchResults.similarity
 			let relativeTime = (Float(triggerWindowDuration) - mostSimilarStartingTime)
-			print("\tTrigger detected \(relativeTime) seconds ago.")
+#if DEBUG
+			print("AudioCapture: Detected trigger \(relativeTime) seconds ago. (similarity: \(matchResults.similarity))")
+#endif // DEBUG
 
-			if (similarityConfidence > 0.2) {
-				let audioMatcher = AppDelegate.audioMatcher
-				audioMatcher.recognizedSound(timeRelativeToNow: relativeTime)
-			}
+			// match the tune url
+			let audioMatcher = AppDelegate.audioMatcher
+			audioMatcher.recognizedSound(timeRelativeToNow: relativeTime)
 
 #if DEBUG
 			// dump fingerprint data
@@ -184,6 +182,10 @@ class AudioCapture: NSObject {
 			// write the match sound
 			let fingerprintFileURL = recordingFolderURL.appendingPathComponent(filename + ".aif")
 			_ = try? AudioUtility.writeAudioFile(to: fingerprintFileURL, buffer: bufferData, sampleRate: 44100.0)
+#endif // DEBUG
+		} else {
+#if DEBUG
+			print("AudioCapture: Checked for trigger sound. (similarity: \(matchResults.similarity))")
 #endif // DEBUG
 		}
 	}

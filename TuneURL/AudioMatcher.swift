@@ -3,7 +3,7 @@
 //  TuneURL
 //
 //  Created by Aleksandar Mihailovski on 3/18/18.
-//  Copyright © 2018-2019 TuneURL Inc. All rights reserved.
+//  Copyright © 2018-2021 TuneURL Inc. All rights reserved.
 //
 
 
@@ -57,6 +57,14 @@ class AudioMatcher: NSObject {
 		audioBuffer.reset()
 		prepareAudioTrigger()
 	}
+
+	deinit
+	{
+		FingerprintFree(triggerFingerprint)
+		triggerFingerprint = nil
+	}
+
+	// MARK: -
 
 	func start()
 	{
@@ -136,7 +144,7 @@ class AudioMatcher: NSObject {
 					// notfiy the delegate on a successful match
 					if let matchResponse = response {
 						self.delegate?.audioMatched(matchResponse)
-                        }
+					}
 
 #if !DEBUG
 					// delete the recording

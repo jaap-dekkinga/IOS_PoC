@@ -3,7 +3,7 @@
 //  TuneURL
 //
 //  Created by Aleksandar Mihailovski on 6/8/18.
-//  Copyright © 2018-2019 TuneURL Inc. All rights reserved.
+//  Copyright © 2018-2021 TuneURL Inc. All rights reserved.
 //
 
 

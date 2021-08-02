@@ -3,7 +3,7 @@
 //  TuneURL
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 8/25/20.
-//  Copyright © 2020 TuneURL Inc. All rights reserved.
+//  Copyright © 2020-2021 TuneURL Inc. All rights reserved.
 //
 
 
