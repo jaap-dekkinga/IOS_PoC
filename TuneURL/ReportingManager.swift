@@ -20,14 +20,14 @@ class ReportingManager: NSObject {
 
     func captureUserAction(for matchedItem: MatchedItem, InterestAction: String)
 	{
-		// get the songId
+		// get the tune url id
         let matchedTime = matchedItem.matchedTime
         let uuid = matchedItem.uuid
-        let songId = matchedItem.songId
-        let songIdString = "\(songId!)"
+        let id = matchedItem.id
+        let idString = "\(id!)"
         
 		// create the reporting data
-        let reportingData = ReportingData (UserId: uuid, TuneURL_ID: songIdString, Interest_action: InterestAction, timestamp: matchedTime)
+        let reportingData = ReportingData(UserId: uuid, TuneURL_ID: idString, Interest_action: InterestAction, timestamp: matchedTime)
 
 		// post the reporting record
 		self.postReporting(reportingData: reportingData, completion: {

@@ -44,10 +44,10 @@ class MatchedItemCollection {
 
 	// MARK: -
 
-	func addItem(with sampleData: SampleData) -> MatchedItem?
+	func addItem(with matchResponse: MatchResponse) -> MatchedItem?
 	{
 		// add the item to the collection
-		let matchedItem = MatchedItem(with: sampleData)
+		let matchedItem = MatchedItem(with: matchResponse)
 		collectionItems.insert(matchedItem, at: 0)
 		saveItems()
 

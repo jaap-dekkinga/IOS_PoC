@@ -27,7 +27,7 @@ class MatchedItem: Codable {
 
 	// public (read-only)
 	public private(set) var action: Action = .none
-    public private(set) var songId: Int?
+    public private(set) var id: Int?
 	public private(set) var matchedTime = Date()
 	public private(set) var phoneNumber: String?
 	public private(set) var pollID: String?
@@ -69,7 +69,7 @@ class MatchedItem: Codable {
 	private enum Keys: String, CodingKey {
 		case action = "Action"
 		case favorite = "Favorite"
-        case songId = "Song Id"
+        case id = "ID"
 		case matchedTime = "Matched Time"
 		case phoneNumber = "Phone Number"
 		case pollID = "Poll ID"
@@ -80,12 +80,12 @@ class MatchedItem: Codable {
 
 	// MARK: -
 
-	convenience init(with sampleData: SampleData)
+	convenience init(with matchResponse: MatchResponse)
 	{
 		self.init()
 
-		// parse the sample data description
-		switch (sampleData.desc.lowercased()) {
+		// parse the match response
+		switch (matchResponse.type) {
 			case "coupon":
 				action = .coupon
 			case "phone":
@@ -101,17 +101,17 @@ class MatchedItem: Codable {
 		}
         
         uuid = UUID().uuidString
-        title = sampleData.songName
-        songId = sampleData.songId
+        title = matchResponse.name
+        id = matchResponse.id
 		if (action == .phoneNumber) {
-			phoneNumber = sampleData.title
+			phoneNumber = matchResponse.name ?? ""
 		}
 		if (action == .poll) {
-			pollID = sampleData.title
+			pollID = matchResponse.name ?? ""
 		}
-		if (sampleData.url != "") {
-			url = URL(string: sampleData.url)
-		}
+//		if (matchResponse.url != "") {
+//			url = URL(string: matchResponse.url)
+//		}
 	}
 
 	// MARK: -
@@ -149,8 +149,8 @@ class MatchedItem: Codable {
         if let decodedUUID: String = try? container.decode(String.self, forKey: .uuid) {
             uuid = decodedUUID
         }
-        if let decodedsongId: Int = try? container.decode(Int.self, forKey: .songId) {
-            songId = decodedsongId
+        if let decodedID: Int = try? container.decode(Int.self, forKey: .id) {
+            id = decodedID
         }
 	}
 
@@ -161,7 +161,7 @@ class MatchedItem: Codable {
 		try container.encode(favorite, forKey: .favorite)
 		try container.encode(matchedTime, forKey: .matchedTime)
         try container.encode(title, forKey: .title)
-        try container.encode(songId, forKey: .songId)
+        try container.encode(id, forKey: .id)
 		if let phoneNumber = self.phoneNumber {
 			try container.encode(phoneNumber, forKey: .phoneNumber)
 		}

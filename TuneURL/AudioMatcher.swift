@@ -13,7 +13,7 @@ import Foundation
 
 protocol AudioMatcherDelegate {
 
-	func audioMatched(_ matchResponse: SampleData)
+	func audioMatched(_ matchResponse: MatchResponse)
 
 }
 
@@ -120,38 +120,30 @@ class AudioMatcher: NSObject {
 
 		DispatchQueue.main.asyncAfter(deadline: (.now() + remainingTimeToRecord)) {
 
-			// create the recording file name
-			let format = DateFormatter()
-			format.dateFormat = "yyyy-MM-dd-HH-mm-ss"
-			let sampleFileName = "recording-\(format.string(from: Date())).m4a"
+			// create the tune url fingerprint
+			guard let matchAudioBuffer = self.audioBuffer.copyBufferData(maxDuration: identifiableAudioDuration),
+				  let matchFingerprint = ExtractFingerprint(matchAudioBuffer, Int32(matchAudioBuffer.count)) else {
+				return
+			}
 
-			// create the recording file url
-			let recordingFolderURL = AppDelegate.recordingFolderURL
-			let soundFileURL = recordingFolderURL.appendingPathComponent(sampleFileName)
+			// create the match fingerprint data
+			var matchFingerprintData = [UInt8]()
+			let pointer = matchFingerprint.pointee.data!
+			for x in 0 ..< Int(matchFingerprint.pointee.dataSize) {
+				matchFingerprintData.append(pointer[x])
+			}
 
-#if DEBUG
-			print("Writing recording to: '\(soundFileURL)'")
-#endif // DEBUG
-
-			// write the sample to the file
-			self.audioBuffer.export(to: soundFileURL, maxDuration: identifiableAudioDuration) {
-				(Bool, Double) in
-
-				// ask the server to match the recording
-				MatchServer.shared.requestMatch(for: soundFileURL) {
-					(response: SampleData?) in
-
-					// notfiy the delegate on a successful match
-					if let matchResponse = response {
-						self.delegate?.audioMatched(matchResponse)
-					}
-
-#if !DEBUG
-					// delete the recording
-					_ = try? FileManager.default.removeItem(at: soundFileURL)
-#endif // !DEBUG
+			// ask the server to match the audio
+			MatchServer.shared.requestMatch(for: matchFingerprintData) {
+				(response: MatchResponse?) in
+				// notfiy the delegate on a successful match
+				if let matchResponse = response {
+					self.delegate?.audioMatched(matchResponse)
 				}
 			}
+
+			// cleanup
+			FingerprintFree(matchFingerprint)
 		}
 	}
 

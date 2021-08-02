@@ -11,120 +11,66 @@ import Alamofire
 import Foundation
 
 
-class MatchServerError {
-
-	let description: String
-	let code: Int
-
-	// MARK: -
-
-	init(description: String, code: Int)
-	{
-		self.description = description
-		self.code = code
-	}
-
-	convenience init(error: NSError)
-	{
-		self.init(description: error.localizedDescription, code: error.code)
-	}
-
-}
-
-// MARK: -
-
-class MatchServer: NSObject {
-
-	enum MatchServerResult {
-		case success(SampleData)
-		case failure(MatchServerError)
-	}
+class MatchServer {
 
 	// static
 	static let shared = MatchServer()
 
 	// match server configuration
-	private let serverHost = "ec2-54-213-252-225.us-west-2.compute.amazonaws.com"
-	private let serverPath = "/api/match"
+	private let serverHost = "pnz3vadc52.execute-api.us-east-2.amazonaws.com"
+	private let serverMatchPath = "/dev/search-fingerprint"
 
 	// MARK: -
 
-	func requestMatch(for fileURL: URL, completion: ((SampleData?) -> Void)? = nil)
+	func requestMatch(for fingerprintData: [UInt8], completion: ((MatchResponse?) -> Void)? = nil)
 	{
 #if DEBUG
-		print("Requesting match for: \(fileURL)")
+		print("Requesting fingerprint match.")
 #endif // DEBUG
 
-		// send the recording to the match server
-		sendRecording(fileURL: fileURL, completion: {
-			(response) in
-
-			switch response {
-				case .success(let matchResponse):
-					completion?(matchResponse)
-				case .failure:
-					completion?(nil)
-			}
-		})
-	}
-
-	// MARK: -
-	// MARK: Private
-
-	func sendRecording(fileURL: URL, name: String? = nil, completion: ((MatchServerResult) -> Void)?)
-	{
-		// get the server url
-		guard let serverURL = URL(string: ("http://" + serverHost + serverPath)) else {
+		// create the server url
+		guard let serverURL = URL(string: ("https://" + serverHost + serverMatchPath)) else {
 			return
 		}
 
-		// upload the recording
-		Alamofire.upload(multipartFormData: {
-			(multipartFormData) in
+		// create the request parameters
+		let fingerprintParameters: [String : Any] = [
+			"type" : "Buffer",
+			"data" : fingerprintData
+		]
+		let parameters = [
+			"fingerPrint" : fingerprintParameters
+		]
 
-			// prepare the form dat
-			multipartFormData.append(fileURL, withName: "file")
+		// make the request
+		Alamofire.request(serverURL, method: .post, parameters: parameters, encoding: JSONEncoding.default).response {
+			(response) in
 
-		}, to: serverURL) {
-			(result) in
-
-			// parse the server response
-			switch result {
-				case .success(let upload, _, _):
-					upload.responseJSON {
-						(response) in
-
-						// check for an error
-						if let error = response.error {
-							print("MatchServer: Response error: \(error.localizedDescription)")
-							let nsError = error as NSError
-							completion?(.failure(MatchServerError(error: nsError)))
-							return
-						}
-
-						// parse the response json
-						guard let jsonRoot = response.result.value as? [String : Any],
-								let mainDict = jsonRoot["data"] as? [String : Any],
-								let matchResponse = SampleData(jsonDict: mainDict) else {
-							// return a parsing error
-							let error = NSError(domain: "App", code: -1, userInfo: nil)
-							completion?(.failure(MatchServerError(error: error)))
-							return
-						}
+			// get the response data
+			guard let responseData = response.data else {
+				completion?(nil)
+				return
+			}
 
 #if DEBUG
-						print("Server response: \(jsonRoot)")
+			print("Match response: \(String(data: responseData, encoding: .utf8) ?? "")")
 #endif // DEBUG
 
-						// return the match result
-						completion?(.success(matchResponse))
+			// parse the response
+			var matchResponse: MatchResponse?
+			if let matchResponses = try? JSONDecoder().decode([MatchResponse].self, from: responseData) {
+				// find the best match response
+				var bestPercentage = -1
+				for item in matchResponses {
+					if (item.matchPercentage > bestPercentage) {
+						bestPercentage = item.matchPercentage
+						matchResponse = item
 					}
-
-				case .failure(let error):
-					print("MatchServer: Upload error: \(error.localizedDescription)")
-					let nsError = error as NSError
-					completion?(.failure(MatchServerError(error: nsError)))
+				}
 			}
+
+			// call the completion handler
+			completion?(matchResponse)
 		}
 	}
 

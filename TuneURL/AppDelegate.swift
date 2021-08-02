@@ -141,10 +141,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 
 	// MARK: -
 
-	func audioMatched(_ matchResponse: SampleData)
+	func audioMatched(_ matchResponse: MatchResponse)
 	{
 		// ignore matches with extremely low confidence
-		guard (matchResponse.confidence > 1) else {
+		guard (matchResponse.matchPercentage >= 50) else {
 			return
 		}
 
