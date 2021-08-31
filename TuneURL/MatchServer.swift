@@ -35,11 +35,11 @@ class MatchServer {
 
 		// create the request parameters
 		let fingerprintParameters: [String : Any] = [
-			"type" : "Buffer",
+			"type" : "buffer",
 			"data" : fingerprintData
 		]
 		let parameters = [
-			"fingerPrint" : fingerprintParameters
+			"fingerprint" : fingerprintParameters
 		]
 
 		// make the request

@@ -122,7 +122,8 @@ class AudioMatcher: NSObject {
 
 			// create the tune url fingerprint
 			guard let matchAudioBuffer = self.audioBuffer.copyBufferData(maxDuration: identifiableAudioDuration),
-				  let matchFingerprint = ExtractFingerprint(matchAudioBuffer, Int32(matchAudioBuffer.count)) else {
+				  let matchResampledBuffer = AudioUtility.changeSampleRate(sampleRate: FINGERPRINT_SAMPLE_RATE, buffer1: matchAudioBuffer),
+				  let matchFingerprint = ExtractFingerprint(matchResampledBuffer, Int32(matchResampledBuffer.count)) else {
 				return
 			}
 
@@ -194,8 +195,7 @@ class AudioMatcher: NSObject {
 		// resample the audio
 		let resampled: [Int16]
 		if (resample) {
-			// TODO: move the sample rate elsewhere
-			let sampleRate = 10204.0
+			let sampleRate = FINGERPRINT_SAMPLE_RATE
 			guard let buffer = AudioUtility.changeSampleRate(sampleRate: Double(sampleRate), buffer1: dataBuffer) else {
 				return nil
 			}
