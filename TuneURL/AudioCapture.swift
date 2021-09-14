@@ -156,32 +156,18 @@ class AudioCapture: NSObject {
 			print("AudioCapture: Detected trigger \(relativeTime) seconds ago. (similarity: \(matchResults.similarity))")
 #endif // DEBUG
 
-			// match the tune url
+			// match the tune url trigger
 			let audioMatcher = AppDelegate.audioMatcher
 			audioMatcher.recognizedSound(timeRelativeToNow: relativeTime)
 
 #if DEBUG
 			// dump fingerprint data
 			var string = ""
-			string += "\tFingerprint score: \(matchResults.score)\n"
-			string += "\tFingerprint similarity: \(matchResults.similarity)\n"
-			string += "\tFingerprint similar time: \(matchResults.mostSimilarStartTime)\n"
-			string += "\tFingerprint most similar frame: \(matchResults.mostSimilarFramePosition)\n"
+			string += "\tTrigger fingerprint score: \(matchResults.score)\n"
+			string += "\tTrigger fingerprint similarity: \(matchResults.similarity)\n"
+			string += "\tTrigger fingerprint similar time: \(matchResults.mostSimilarStartTime)\n"
+			string += "\tTrigger fingerprint most similar frame: \(matchResults.mostSimilarFramePosition)\n"
 			print(string)
-
-			// create the file name
-			let recordingFolderURL = AppDelegate.recordingFolderURL
-			let format = DateFormatter()
-			format.dateFormat = "yyyy-MM-dd-HH-mm-ss"
-			let filename = "Matched-\(format.string(from: Date()))"
-
-			// write the match results
-			let resultsFileURL = recordingFolderURL.appendingPathComponent(filename + ".txt")
-			_ = try? string.write(to: resultsFileURL, atomically: true, encoding: .utf8)
-
-			// write the match sound
-			let fingerprintFileURL = recordingFolderURL.appendingPathComponent(filename + ".aif")
-			_ = try? AudioUtility.writeAudioFile(to: fingerprintFileURL, buffer: bufferData, sampleRate: 44100.0)
 #endif // DEBUG
 		} else {
 #if DEBUG

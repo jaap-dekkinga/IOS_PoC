@@ -127,6 +127,37 @@ class AudioMatcher: NSObject {
 				return
 			}
 
+#if DEBUG
+			print("matchAudioBuffer size: \(matchAudioBuffer.count)")
+			print("matchResampledBuffer size: \(matchResampledBuffer.count)")
+			print("matchFingerprint size: \(matchFingerprint.pointee.dataSize)")
+			let tempPointer = matchFingerprint.pointee.data!
+			var tempString = "["
+			for tempValueIndex in 0 ..< Int(matchFingerprint.pointee.dataSize) {
+				tempString += "\(tempPointer[tempValueIndex])"
+				if (tempValueIndex < (matchFingerprint.pointee.dataSize - 1)) {
+					tempString += ","
+				} else {
+					tempString += "]"
+				}
+			}
+			print(tempString)
+
+			// create the file name
+			let recordingFolderURL = AppDelegate.recordingFolderURL
+			let format = DateFormatter()
+			format.dateFormat = "yyyy-MM-dd-HH-mm-ss"
+			let filename = "Match-\(format.string(from: Date()))"
+
+			// write the fingerprint
+			let resultsFileURL = recordingFolderURL.appendingPathComponent(filename + ".txt")
+			_ = try? tempString.write(to: resultsFileURL, atomically: true, encoding: .utf8)
+
+			// write the tuneurl audio
+			let fingerprintFileURL = recordingFolderURL.appendingPathComponent(filename + ".aif")
+			_ = try? AudioUtility.writeAudioFile(to: fingerprintFileURL, buffer: matchAudioBuffer, sampleRate: 44100.0)
+#endif // DEBUG
+
 			// create the match fingerprint data
 			var matchFingerprintData = [UInt8]()
 			let pointer = matchFingerprint.pointee.data!

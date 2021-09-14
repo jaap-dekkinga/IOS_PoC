@@ -39,13 +39,13 @@ fileprivate func loadAudio(from fileURL: URL, resample: Bool) -> [Int16]?
 
 	result = AudioFileOpenURL(fileURL as CFURL, .readPermission, kAudioFileAIFFType, &audioFile)
 	if (result != noErr) {
-		print("AudioMatcher: Error opening audio file. \(result)")
+		print("Error opening audio file. (\(result))")
 		return nil
 	}
 
 	result = AudioFileGetProperty(audioFile!, kAudioFilePropertyAudioDataByteCount, &propertyDataSize, &dataSize)
 	if (result != noErr) {
-		print("AudioMatcher: Error getting audio file property. \(result)")
+		print("Error getting audio file property. (\(result))")
 		return nil
 	}
 
@@ -62,29 +62,55 @@ fileprivate func loadAudio(from fileURL: URL, resample: Bool) -> [Int16]?
 
 	// check the result of the read
 	if (result != noErr) {
-		print("AudioMatcher: Error reading audio file packet data. \(result)")
+		print("Error reading audio file packet data. (\(result))")
 		return nil
 	}
 
 	result = AudioFileClose(audioFile!)
 	if (result != noErr) {
-		print("AudioMatcher: Error closing audio file. \(result)")
+		print("Error closing audio file. (\(result))")
 	}
 
 	return dataBuffer
 }
 
+fileprivate func compareFiles(file1: String, file2: String)
+{
+	// extract the fingerprints from the audio files
+	guard let audioData1 = loadAudio(from: URL(fileURLWithPath: file1), resample: false),
+		  let fingerprint1 = ExtractFingerprint(audioData1, Int32(audioData1.count)) else {
+		print("Error loading audio file. ('\(file1)')")
+		return
+	}
+
+	guard let audioData2 = loadAudio(from: URL(fileURLWithPath: file2), resample: false),
+		  let fingerprint2 = ExtractFingerprint(audioData2, Int32(audioData2.count)) else {
+		print("Error loading audio file. ('\(file2)')")
+		return
+	}
+
+	// compare the fingerprints
+	let results = CompareFingerprints(fingerprint1, fingerprint2)
+	print("mostSimilarFramePosition: \(results.mostSimilarFramePosition)")
+	print("mostSimilarStartTime: \(results.mostSimilarStartTime)")
+	print("score: \(results.score)")
+	print("similarity: \(results.similarity)")
+
+	// cleanup
+	FingerprintFree(fingerprint1)
+	FingerprintFree(fingerprint2)
+}
+
 // MARK: -
 
 let arguments = CommandLine.arguments
-var index = 0;
+var index = 0
 
 while index < arguments.count {
 
 	if (arguments[index].lowercased() == "fingerprint") {
-		index += 1
-		if (index < arguments.count) {
-			let filePath = arguments[index]
+		if ((index + 2) <= arguments.count) {
+			let filePath = arguments[index + 1]
 			print("Extracting fingerprint: '\(filePath)'")
 
 			// load the audio file
@@ -98,6 +124,16 @@ while index < arguments.count {
 				print("Error loading audio file. ('\(filePath)')")
 			}
 		}
+		index += 1
+	} else if (arguments[index].lowercased() == "compare") {
+		if ((index + 3) <= arguments.count) {
+			let filePath1 = arguments[index + 1]
+			let filePath2 = arguments[index + 2]
+			// compare the files
+			print("Comparing fingerprints: '\(filePath1)' to '\(filePath2)'")
+			compareFiles(file1: filePath1, file2: filePath2)
+		}
+		index += 2
 	}
 
 	index += 1
