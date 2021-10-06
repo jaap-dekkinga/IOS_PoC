@@ -2,7 +2,7 @@
 //  Fingerprint.h
 //  TuneURL
 //
-//  Created by Gerrit on 5/4/21.
+//  Created by Gerrit Goossen <developer@gerrit.email> on 5/4/21.
 //  Copyright © 2021 TuneURL Inc. All rights reserved.
 //
 

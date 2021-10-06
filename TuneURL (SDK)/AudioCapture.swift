@@ -1,6 +1,6 @@
 //
 //  AudioCapture.swift
-//  TuneURL
+//  TuneURL (SDK)
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 9/2/19.
 //  Copyright © 2019-2021 TuneURL Inc. All rights reserved.
@@ -17,18 +17,9 @@ protocol AudioCaptureDelegate {
 
 }
 
-protocol AudioCaptureSpeechDelegate {
-
-	func audioCaptureBuffer(buffer: AVAudioPCMBuffer)
-
-}
-
 // MARK: -
 
-class AudioCapture: NSObject {
-
-	// public
-	var speechDelegate: AudioCaptureSpeechDelegate?
+public class AudioCapture: NSObject {
 
 	// private
 	private let audioBuffer: AudioBuffer
@@ -113,8 +104,7 @@ class AudioCapture: NSObject {
 		delegate?.audioCaptureStatusChanged()
 	}
 
-	// MARK: -
-	// MARK: Private
+	// MARK: - Private
 
 	private func checkForTriggerSound()
 	{
@@ -139,8 +129,7 @@ class AudioCapture: NSObject {
 		}
 
 		// get the trigger fingerprint
-		let audioMatcher = AppDelegate.audioMatcher
-		let triggerFingerprint = audioMatcher.triggerFingerprint
+		let triggerFingerprint = AudioMatcher.shared.triggerFingerprint
 
 		// calculate the fingerprint match results
 		let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint)
@@ -152,26 +141,21 @@ class AudioCapture: NSObject {
 			// calculate the time of the sound relative to now
 			let mostSimilarStartingTime = matchResults.mostSimilarStartTime
 			let relativeTime = (Float(triggerWindowDuration) - mostSimilarStartingTime)
-#if DEBUG
-			print("AudioCapture: Detected trigger \(relativeTime) seconds ago. (similarity: \(matchResults.similarity))")
-#endif // DEBUG
-
-			// match the tune url trigger
-			let audioMatcher = AppDelegate.audioMatcher
-			audioMatcher.recognizedSound(timeRelativeToNow: relativeTime)
 
 #if DEBUG
-			// dump fingerprint data
-			var string = ""
-			string += "\tTrigger fingerprint score: \(matchResults.score)\n"
-			string += "\tTrigger fingerprint similarity: \(matchResults.similarity)\n"
-			string += "\tTrigger fingerprint similar time: \(matchResults.mostSimilarStartTime)\n"
-			string += "\tTrigger fingerprint most similar frame: \(matchResults.mostSimilarFramePosition)\n"
-			print(string)
+			// dump the trigger match results
+			print("TuneURL: Trigger detected \(relativeTime) seconds ago. (similarity: \(matchResults.similarity))")
+			print("\tTrigger fingerprint score: \(matchResults.score)")
+			print("\tTrigger fingerprint similarity: \(matchResults.similarity)")
+			print("\tTrigger fingerprint similar time: \(matchResults.mostSimilarStartTime)")
+			print("\tTrigger fingerprint most similar frame: \(matchResults.mostSimilarFramePosition)")
 #endif // DEBUG
+
+			// match the tuneurl
+			AudioMatcher.shared.recognizedSound(timeRelativeToNow: relativeTime)
 		} else {
 #if DEBUG
-			print("AudioCapture: Checked for trigger sound. (similarity: \(matchResults.similarity))")
+			print("TuneURL: Trigger not detected. (similarity: \(matchResults.similarity))")
 #endif // DEBUG
 		}
 	}
@@ -266,7 +250,7 @@ class AudioCapture: NSObject {
 			}
 
 			// pass the buffer to speech recognition
-			self.speechDelegate?.audioCaptureBuffer(buffer: sourceBuffer)
+			AudioMatcher.shared.speechDelegate?.audioCaptureBuffer(buffer: sourceBuffer)
 		})
 
 		audioEngine.mainMixerNode.outputVolume = 0.0
@@ -294,8 +278,7 @@ class AudioCapture: NSObject {
 		audioConverter = nil
 	}
 
-	// MARK: -
-	// MARK: AVAudioEngine notifications
+	// MARK: - AVAudioEngine notifications
 
 	@objc func audioEngineConfigurationChange(_ notification: Notification)
 	{

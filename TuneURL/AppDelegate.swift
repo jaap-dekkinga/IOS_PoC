@@ -7,26 +7,22 @@
 //
 
 
-import UIKit
 import Speech
+import TuneURL
+import UIKit
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	// static
-	static let audioMatcher = AudioMatcher()
-    private let itemCollection = MatchedItemCollection.shared
-
-	static var recordingFolderURL: URL {
-		let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-		return documentsDirectory.appendingPathComponent("Recordings/")
-	}
+	static var shared: AppDelegate!
 
 	// public
 	var window: UIWindow?
 
 	// private
+	fileprivate let itemCollection = MatchedItemCollection.shared
 	fileprivate var backgroundTask = UIBackgroundTaskIdentifier.invalid
 	fileprivate static let notify = Notify()
 	fileprivate weak var pollViewController: PollViewController?
@@ -34,18 +30,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 
     // reporting init
     private var matchedItem: MatchedItem?
-    private let reportingManager = ReportingManager ()
+    private let reportingManager = ReportingManager()
 
 	// MARK: -
 
+	override init()
+	{
+		super.init()
+		AppDelegate.shared = self
+	}
+
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
 	{
-		// prepare the recordings folder
-		prepareRecordingsFolder()
-
-		// setup the audio matcher
-		AppDelegate.audioMatcher.delegate = self
-
 		DispatchQueue.main.async {
 			self.enterForeground(application)
 		}
@@ -56,6 +52,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 		}
         
         NotificationCenter.default.addObserver(self, selector: #selector(collectionAddedItem), name: MatchedItemCollectionAddedItemNotification, object: itemCollection)
+
+		// start listening for tuneurls
+		startListening()
 
 		return true
 	}
@@ -82,7 +81,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 	func applicationDidBecomeActive(_ application: UIApplication)
 	{
 		// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-		becomeActive(application)
+		AppDelegate.notify.requestPermissionForNotifications()
+		AppDelegate.notify.delegate = self
 	}
 
 	func applicationWillTerminate(_ application: UIApplication)
@@ -90,24 +90,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	}
 
-	// MARK: -
-	// MARK: Private
+	// MARK: - Public
 
-	private func prepareRecordingsFolder()
+	func startListening()
 	{
-		let fileManager = FileManager.default
-		let folderURL = AppDelegate.recordingFolderURL
+		// start listening
+		TuneURL.startListening() {
+			(matchResponse) in
 
-		// make sure the folder exists
-		_ = try? fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+			// ignore matches with extremely low confidence
+			guard (matchResponse.matchPercentage >= 30) else {
+				return
+			}
 
-		// delete every file in the folder
-		if let folderContents = try? fileManager.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil, options: []) {
-			for fileURL in folderContents {
-				_ = try? fileManager.removeItem(at: fileURL)
+			// audio was successfully matched
+			if let matchedItem = MatchedItemCollection.shared.addItem(with: matchResponse) {
+				AppDelegate.notify.notifyMatch(matchedItem)
+				self.reportingManager.captureUserAction(for: matchedItem, interestAction: "heard")
 			}
 		}
 	}
+
+	func stopListening()
+	{
+		TuneURL.stopListening()
+	}
+
+	// MARK: - Private
 
 	private func stopBackgroundTask(_ application: UIApplication)
 	{
@@ -127,34 +136,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
 	private func enterForeground(_ application: UIApplication)
 	{
 		stopBackgroundTask(application)
-        
-        // watch for collection changes
-        
-	}
-
-	private func becomeActive(_ application: UIApplication)
-	{
-		AppDelegate.notify.requestPermissionForNotifications()
-		AppDelegate.notify.delegate = self
-		AppDelegate.audioMatcher.start()
 	}
 
 	// MARK: -
-
-	func audioMatched(_ matchResponse: MatchResponse)
-	{
-		// ignore matches with extremely low confidence
-		guard (matchResponse.matchPercentage >= 50) else {
-			return
-		}
-
-		// audio was successfully matched
-		if let matchedItem = MatchedItemCollection.shared.addItem(with: matchResponse) {
-			AppDelegate.notify.notifyMatch(matchedItem)
-            reportingManager.captureUserAction(for: matchedItem, InterestAction: "heard")
-
-		}
-	}
 
     @objc func collectionAddedItem(_ notification: Notification)
     {
@@ -180,11 +164,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AudioMatcherDelegate {
                 self.window?.rootViewController?.present(viewController, animated: true)
                 interestViewController = viewController
             }
-        }  
+        }
     }
 
-    
-    
 	func openPoll(with item: MatchedItem, wasUserInitiated: Bool)
 	{
 		// dismiss any previous view controller

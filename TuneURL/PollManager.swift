@@ -41,8 +41,7 @@ class PollManager: NSObject {
 		})
 	}
 
-	// MARK: -
-	// MARK: Private
+	// MARK: - Private
 
 	private func postVote(pollData: PollData, completion: @escaping (_ response: PollResponse?) -> ())
 	{

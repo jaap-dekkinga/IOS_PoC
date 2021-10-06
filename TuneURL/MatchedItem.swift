@@ -8,6 +8,7 @@
 
 
 import Foundation
+import TuneURL
 
 
 class MatchedItem: Codable {
@@ -104,18 +105,17 @@ class MatchedItem: Codable {
         title = matchResponse.name
         id = matchResponse.id
 		if (action == .phoneNumber) {
-			phoneNumber = matchResponse.name ?? ""
+			phoneNumber = matchResponse.name
 		}
 		if (action == .poll) {
-			pollID = matchResponse.name ?? ""
+			pollID = matchResponse.name
 		}
 //		if (matchResponse.url != "") {
 //			url = URL(string: matchResponse.url)
 //		}
 	}
 
-	// MARK: -
-	// MARK: Codable
+	// MARK: - Codable
 
 	required convenience init(from decoder: Decoder) throws
 	{

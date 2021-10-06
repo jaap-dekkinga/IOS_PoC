@@ -1,9 +1,9 @@
 //
 //  AudioMatcher.swift
-//  TuneURL
+//  TuneURL (SDK)
 //
-//  Created by Aleksandar Mihailovski on 3/18/18.
-//  Copyright © 2018-2021 TuneURL Inc. All rights reserved.
+//  Created by Gerrit Goossen <developer@gerrit.email> on 9/12/19.
+//  Copyright © 2019-2021 TuneURL Inc. All rights reserved.
 //
 
 
@@ -11,17 +11,21 @@ import AVFoundation
 import Foundation
 
 
-protocol AudioMatcherDelegate {
+public protocol AudioMatcherSpeechDelegate {
 
-	func audioMatched(_ matchResponse: MatchResponse)
+	func audioCaptureBuffer(buffer: AVAudioPCMBuffer)
 
 }
 
+// MARK: -
 
 class AudioMatcher: NSObject {
 
+	// static
+	static let shared = AudioMatcher()
+
 	// public
-	var delegate: AudioMatcherDelegate?
+	var speechDelegate: AudioMatcherSpeechDelegate?
 
 	// public (read-only)
 	public private(set) var audioCapture: AudioCapture?
@@ -30,20 +34,7 @@ class AudioMatcher: NSObject {
 
 	// private
 	private let audioBuffer: AudioBuffer
-
-	// MARK: -
-
-	var enabled: Bool = true {
-		didSet {
-			if enabled != oldValue {
-				if enabled {
-					start()
-				} else {
-					stop()
-				}
-			}
-		}
-	}
+	private var matchHandler: TuneURL.MatchHandler?
 
 	// MARK: -
 
@@ -64,12 +55,14 @@ class AudioMatcher: NSObject {
 		triggerFingerprint = nil
 	}
 
-	// MARK: -
+	// MARK: - Public
 
-	func start()
+	func start(matchHandler: @escaping TuneURL.MatchHandler)
 	{
-		let audioSession = AVAudioSession.sharedInstance()
+		// save the match handler
+		self.matchHandler = matchHandler
 
+		let audioSession = AVAudioSession.sharedInstance()
 		if (audioSession.recordPermission == .granted) {
 			// start matching immediately
 			startMatching()
@@ -81,7 +74,7 @@ class AudioMatcher: NSObject {
 					// start matching
 					self.startMatching()
 				} else {
-					print("AudioMatching: Does not have recording permission.")
+					NSLog("TuneURL: Does not have recording permission.")
 				}
 			}
 		}
@@ -92,6 +85,10 @@ class AudioMatcher: NSObject {
 		// stop audio capture
 		audioCapture?.stop()
 		audioCapture = nil
+
+		// cleanup
+		matchHandler = nil
+		isRunning = false
 	}
 
 	// MARK: -
@@ -102,12 +99,10 @@ class AudioMatcher: NSObject {
 		formatter.dateStyle = .none
 		formatter.timeStyle = .medium
 		let currentTime = formatter.string(from: Date())
-		print("(\(currentTime)): Did Recognize: window time: \(-timeRelativeToNow) seconds ago")
 
-		// verify matching is enabled
-		if self.enabled == false {
-			return
-		}
+#if DEBUG
+		print("TuneURL: (\(currentTime)): Did Recognize: window time: \(-timeRelativeToNow) seconds ago")
+#endif // DEBUG
 
 		// calculate how much of the sample has already been recorded
 		let triggerSoundDuration = 2.0
@@ -120,7 +115,7 @@ class AudioMatcher: NSObject {
 
 		DispatchQueue.main.asyncAfter(deadline: (.now() + remainingTimeToRecord)) {
 
-			// create the tune url fingerprint
+			// create the tuneurl fingerprint
 			guard let matchAudioBuffer = self.audioBuffer.copyBufferData(maxDuration: identifiableAudioDuration),
 				  let matchResampledBuffer = AudioUtility.changeSampleRate(sampleRate: FINGERPRINT_SAMPLE_RATE, buffer1: matchAudioBuffer),
 				  let matchFingerprint = ExtractFingerprint(matchResampledBuffer, Int32(matchResampledBuffer.count)) else {
@@ -144,7 +139,7 @@ class AudioMatcher: NSObject {
 			print(tempString)
 
 			// create the file name
-			let recordingFolderURL = AppDelegate.recordingFolderURL
+			let recordingFolderURL = Debug.recordingFolderURL
 			let format = DateFormatter()
 			format.dateFormat = "yyyy-MM-dd-HH-mm-ss"
 			let filename = "Match-\(format.string(from: Date()))"
@@ -169,8 +164,8 @@ class AudioMatcher: NSObject {
 			MatchServer.shared.requestMatch(for: matchFingerprintData) {
 				(response: MatchResponse?) in
 				// notfiy the delegate on a successful match
-				if let matchResponse = response {
-					self.delegate?.audioMatched(matchResponse)
+				if let matchResponse = response, let handler = self.matchHandler {
+					handler(matchResponse)
 				}
 			}
 
@@ -179,8 +174,7 @@ class AudioMatcher: NSObject {
 		}
 	}
 
-	// MARK: -
-	// MARK: Private
+	// MARK: - Private
 
 	private func generateFingerprint(for fileURL: URL, resample: Bool) -> UnsafeMutablePointer<Fingerprint>?
 	{
@@ -191,13 +185,13 @@ class AudioMatcher: NSObject {
 
 		result = AudioFileOpenURL(fileURL as CFURL, .readPermission, kAudioFileAIFFType, &audioFile)
 		if (result != noErr) {
-			print("AudioMatcher: Error opening audio file. \(result)")
+			NSLog("TuneURL: Error opening audio file. (\(result))")
 			return nil
 		}
 
 		result = AudioFileGetProperty(audioFile!, kAudioFilePropertyAudioDataByteCount, &propertyDataSize, &dataSize)
 		if (result != noErr) {
-			print("AudioMatcher: Error getting audio file property. \(result)")
+			NSLog("TuneURL: Error getting audio file property. (\(result))")
 			return nil
 		}
 
@@ -214,13 +208,13 @@ class AudioMatcher: NSObject {
 
 		// check the result of the read
 		if (result != noErr) {
-			print("AudioMatcher: Error reading audio file packet data. \(result)")
+			NSLog("TuneURL: Error reading audio file packet data. (\(result))")
 			return nil
 		}
 
 		result = AudioFileClose(audioFile!)
 		if (result != noErr) {
-			print("AudioMatcher: Error closing audio file. \(result)")
+			NSLog("TuneURL: Error closing audio file. (\(result))")
 		}
 
 		// resample the audio
@@ -255,9 +249,6 @@ class AudioMatcher: NSObject {
 		}
 	}
 
-	// MARK: -
-	// MARK: Private
-
 	private func startMatching()
 	{
 		DispatchQueue.main.async {
@@ -267,8 +258,9 @@ class AudioMatcher: NSObject {
 				self.audioCapture = AudioCapture(audioBuffer: self.audioBuffer, sampleRate: 44100.0, delegate: nil)
 				_ = self.audioCapture?.start()
 			}
-			// TODO: start audio matching...
 		}
+
+		isRunning = true
 	}
 
 }

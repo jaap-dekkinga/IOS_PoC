@@ -8,6 +8,7 @@
 
 
 import Foundation
+import TuneURL
 
 
 let MatchedItemCollectionAddedItemNotification = Notification.Name("MatchedItemCollectionAddedItemNotification")
@@ -79,8 +80,7 @@ class MatchedItemCollection {
 		return collectionItems[index]
 	}
 
-	// MARK: -
-	// MARK: Favorite Items
+	// MARK: - Favorite Items
 
 	var favoriteCount: Int {
 		var count = 0
@@ -123,8 +123,7 @@ class MatchedItemCollection {
 		saveItems()
 	}
 
-	// MARK: -
-	// MARK: Recent Items
+	// MARK: - Recent Items
 
 	private func itemIsRecent(_ item: MatchedItem) -> Bool
 	{
@@ -176,8 +175,7 @@ class MatchedItemCollection {
 		return nil
 	}
 
-	// MARK: -
-	// MARK: Private
+	// MARK: - Private
 
 	private func reloadItems()
 	{

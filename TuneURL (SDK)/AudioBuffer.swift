@@ -1,6 +1,6 @@
 //
 //  AudioBuffer.swift
-//  TuneURL
+//  TuneURL (SDK)
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 9/2/19.
 //  Copyright © 2019-2021 TuneURL Inc. All rights reserved.
@@ -62,7 +62,7 @@ class AudioBuffer {
 		sampleRate = rate
 
 		// setup the audio buffer queue
-		bufferQueue = DispatchQueue(label: "com.tuneurl.ios.AudioBuffer")
+		bufferQueue = DispatchQueue(label: "com.TuneURL.AudioBuffer")
 
 		// setup the memory buffer
 		memoryBufferMaxSize = AudioBuffer.dataSizeForRecordingTime(captureDuration, sampleRate: sampleRate, sampleSize: sampleSize)
@@ -74,8 +74,7 @@ class AudioBuffer {
 		stopRecording()
 	}
 
-	// MARK: -
-	// MARK: Public
+	// MARK: - Public
 
 	func reset()
 	{
@@ -244,8 +243,7 @@ class AudioBuffer {
 		untestedSize = 0
 	}
 
-	// MARK: -
-	// MARK: Private
+	// MARK: - Private
 
 	private func copyToMemoryBuffer(from sampleBuffer: AVAudioPCMBuffer, atOffset sampleBufferOffset: Int, toOffset memoryOffset: Int, length copyLength: Int)
 	{

@@ -16,8 +16,7 @@ final class BasePageViewController: UIPageViewController, UIPageViewControllerDa
 	private var pageControl = UIPageControl()
 	private var pageControllers = [UIViewController]()
 
-	// MARK: -
-	// MARK: UIViewController
+	// MARK: - UIViewController
 
 	override func viewDidLoad()
 	{
@@ -40,8 +39,7 @@ final class BasePageViewController: UIPageViewController, UIPageViewControllerDa
 		self.view.addSubview(pageControl)
 	}
 
-	// MARK: -
-	// MARK: UIPageViewControllerDataSource
+	// MARK: - UIPageViewControllerDataSource
 
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController?
 	{
@@ -71,8 +69,7 @@ final class BasePageViewController: UIPageViewController, UIPageViewControllerDa
 		return pageControllers[newIndex]
 	}
 
-	// MARK: -
-	// MARK: UIPageViewControllerDelegate
+	// MARK: - UIPageViewControllerDelegate
 
 	func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool)
 	{

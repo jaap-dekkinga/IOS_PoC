@@ -70,13 +70,12 @@ final class SavedContentViewController: UIViewController, UICollectionViewDataSo
 		recentCollectionView.reloadData()
 	}
 
-	// MARK: -
-	// MARK: Private
+	// MARK: - Private
 
 	private func openItem(_ item: MatchedItem, wasUserInitiated: Bool = false)
 	{
         //reporting
-        reportingManager.captureUserAction(for: item, InterestAction: "interested")
+        reportingManager.captureUserAction(for: item, interestAction: "interested")
 		switch (item.action) {
 			case .phoneNumber:
 				// open the phone number
@@ -98,8 +97,7 @@ final class SavedContentViewController: UIViewController, UICollectionViewDataSo
 		}
 	}
 
-	// MARK: -
-	// MARK: UICollectionViewDataSource
+	// MARK: - UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
@@ -128,8 +126,7 @@ final class SavedContentViewController: UIViewController, UICollectionViewDataSo
 		}
 	}
 
-	// MARK: -
-	// MARK: UICollectionViewDelegate
+	// MARK: - UICollectionViewDelegate
 
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
 	{

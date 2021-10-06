@@ -6,14 +6,14 @@
 //  Copyright © 2020-2021 TuneURL Inc. All rights reserved.
 //
 
-//import Foundation
 
 import DMSwipeCards
 import Speech
+import TuneURL
 import UIKit
 
 
-class InterestViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeCardsViewDelegate {
+class InterestViewController: UIViewController, AudioMatcherSpeechDelegate, DMSwipeCardsViewDelegate {
 
     // private
     private var matchedItem: MatchedItem?
@@ -41,8 +41,7 @@ class InterestViewController: UIViewController, AudioCaptureSpeechDelegate, DMSw
         return viewController
     }
 
-    // MARK: -
-    // MARK: UIViewController
+    // MARK: - UIViewController
 
     override func viewDidLoad()
     {
@@ -165,8 +164,7 @@ class InterestViewController: UIViewController, AudioCaptureSpeechDelegate, DMSw
         self.dismiss(animated: false, completion: nil)
     }
 
-    // MARK: -
-    // MARK: Private
+    // MARK: - Private
 
     private func addCard()
     {
@@ -193,8 +191,7 @@ class InterestViewController: UIViewController, AudioCaptureSpeechDelegate, DMSw
 //        label.text = "Your choice has been recorded\nThank you"
     }
 
-    // MARK: -
-    // MARK: Speech recognition
+    // MARK: - Speech recognition
 
     func audioCaptureBuffer(buffer: AVAudioPCMBuffer)
     {
@@ -271,17 +268,13 @@ class InterestViewController: UIViewController, AudioCaptureSpeechDelegate, DMSw
         }
 
         // start receiving audio buffers from the audio capture
-        if let audioCapture = AppDelegate.audioMatcher.audioCapture {
-            audioCapture.speechDelegate = self
-        }
+		TuneURL.speechDelegate = self
     }
 
     private func stopSpeechRecognition()
     {
         // stop receiving audio buffers from the audio capture
-        if let audioCapture = AppDelegate.audioMatcher.audioCapture {
-            audioCapture.speechDelegate = nil
-        }
+		TuneURL.speechDelegate = nil
 
         // stop speech recognition
         recognitionTask?.cancel()
@@ -290,8 +283,7 @@ class InterestViewController: UIViewController, AudioCaptureSpeechDelegate, DMSw
         speechRecognizer = nil
     }
 
-    // MARK: -
-    // MARK: DMSwipeCardsViewDelegate
+    // MARK: - DMSwipeCardsViewDelegate
 
     func swipedLeft(_ object: Any)
     {
@@ -310,7 +302,7 @@ class InterestViewController: UIViewController, AudioCaptureSpeechDelegate, DMSw
         // cast the vote
         //pollManager.castVote(userResponse: false, for: item)
         voted = true
-        reportingManager.captureUserAction(for: item, InterestAction: "acted")
+        reportingManager.captureUserAction(for: item, interestAction: "acted")
         
         self.view.backgroundColor = UIColor(red: (240.0 / 255.0), green: (83.0 / 255.0), blue: (73.0 / 255.0), alpha: 0.5)
         // This is the end - close the pop-up
@@ -335,7 +327,7 @@ class InterestViewController: UIViewController, AudioCaptureSpeechDelegate, DMSw
         //pollManager.castVote(userResponse: true, for: item)
         
         voted = true
-        reportingManager.captureUserAction(for: item, InterestAction: "acted")
+        reportingManager.captureUserAction(for: item, interestAction: "acted")
         
         self.view.backgroundColor = UIColor(red: (35.0 / 255.0), green: (188.0 / 255.0), blue: (73.0 / 255.0), alpha: 0.5)
 
@@ -353,13 +345,12 @@ class InterestViewController: UIViewController, AudioCaptureSpeechDelegate, DMSw
         self.dismiss(animated: true, completion: nil)
     }
 
-    // MARK: -
-    // MARK: Private
+    // MARK: - Private
 
     private func handleItem(_ item: MatchedItem, wasUserInitiated: Bool = false)
     {
         //reporting
-        reportingManager.captureUserAction(for: item, InterestAction: "interested")
+        reportingManager.captureUserAction(for: item, interestAction: "interested")
         switch (item.action) {
             // Immediate action items - phone number, text message, open web page
             // Save items - coupons, save web page

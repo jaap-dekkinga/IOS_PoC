@@ -9,10 +9,11 @@
 
 import DMSwipeCards
 import Speech
+import TuneURL
 import UIKit
 
 
-class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeCardsViewDelegate {
+class PollViewController: UIViewController, AudioMatcherSpeechDelegate, DMSwipeCardsViewDelegate {
 
 	// private
 	private var matchedItem: MatchedItem?
@@ -40,8 +41,7 @@ class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeC
 		return viewController
 	}
 
-	// MARK: -
-	// MARK: UIViewController
+	// MARK: - UIViewController
 
 	override func viewDidLoad()
 	{
@@ -164,8 +164,7 @@ class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeC
 		self.dismiss(animated: false, completion: nil)
 	}
 
-	// MARK: -
-	// MARK: Private
+	// MARK: - Private
 
 	private func addCard()
 	{
@@ -192,8 +191,7 @@ class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeC
 		label.text = "Your choice has been recorded\nThank you"
 	}
 
-	// MARK: -
-	// MARK: Speech recognition
+	// MARK: - Speech recognition
 
 	func audioCaptureBuffer(buffer: AVAudioPCMBuffer)
 	{
@@ -270,17 +268,13 @@ class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeC
 		}
 
 		// start receiving audio buffers from the audio capture
-		if let audioCapture = AppDelegate.audioMatcher.audioCapture {
-			audioCapture.speechDelegate = self
-		}
+		TuneURL.speechDelegate = self
 	}
 
 	private func stopSpeechRecognition()
 	{
 		// stop receiving audio buffers from the audio capture
-		if let audioCapture = AppDelegate.audioMatcher.audioCapture {
-			audioCapture.speechDelegate = nil
-		}
+		TuneURL.speechDelegate = nil
 
 		// stop speech recognition
         recognitionTask?.cancel()
@@ -289,8 +283,7 @@ class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeC
 		speechRecognizer = nil
 	}
 
-	// MARK: -
-	// MARK: DMSwipeCardsViewDelegate
+	// MARK: - DMSwipeCardsViewDelegate
 
 	func swipedLeft(_ object: Any)
 	{
@@ -308,7 +301,7 @@ class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeC
 		// cast the vote
 		pollManager.castVote(userResponse: false, for: item)
 		voted = true
-        reportingManager.captureUserAction(for: item, InterestAction: "acted")
+        reportingManager.captureUserAction(for: item, interestAction: "acted")
 	}
 
 	func swipedRight(_ object: Any)
@@ -327,7 +320,7 @@ class PollViewController: UIViewController, AudioCaptureSpeechDelegate, DMSwipeC
 		// cast the vote
 		pollManager.castVote(userResponse: true, for: item)
 		voted = true
-        reportingManager.captureUserAction(for: item, InterestAction: "acted")
+        reportingManager.captureUserAction(for: item, interestAction: "acted")
 	}
 
 	func cardTapped(_ object: Any)

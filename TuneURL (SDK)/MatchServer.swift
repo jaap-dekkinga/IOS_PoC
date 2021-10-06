@@ -1,9 +1,9 @@
 //
 //  MatchServer.swift
-//  TuneURL
+//  TuneURL (SDK)
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 9/23/19.
-//  Copyright © 2018-2021 TuneURL Inc. All rights reserved.
+//  Copyright © 2019-2021 TuneURL Inc. All rights reserved.
 //
 
 
@@ -25,7 +25,7 @@ class MatchServer {
 	func requestMatch(for fingerprintData: [UInt8], completion: ((MatchResponse?) -> Void)? = nil)
 	{
 #if DEBUG
-		print("Requesting fingerprint match.")
+		print("TuneURL: Requesting fingerprint match.")
 #endif // DEBUG
 
 		// create the server url
@@ -53,7 +53,7 @@ class MatchServer {
 			}
 
 #if DEBUG
-			print("Match response: \(String(data: responseData, encoding: .utf8) ?? "")")
+			print("TuneURL: Match response: \(String(data: responseData, encoding: .utf8) ?? "")")
 #endif // DEBUG
 
 			// parse the response

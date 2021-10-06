@@ -7,6 +7,7 @@
 //
 
 
+import TuneURL
 import UIKit
 
 
@@ -15,24 +16,23 @@ final class ListenViewController: UIViewController {
 	// interface
 	@IBOutlet var enableSwitch: UISwitch!
 
-	// private
-	private let audioMatcher = AppDelegate.audioMatcher
-
-	// MARK: -
-	// MARK: UIViewController
+	// MARK: - UIViewController
 
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
-		enableSwitch.isOn = audioMatcher.enabled
+		enableSwitch.isOn = TuneURL.isListening
 	}
 
-	// MARK: -
-	// MARK: Actions
+	// MARK: - Actions
 
 	@IBAction func enableSwitchChanged(_ sender: Any?)
 	{
-		audioMatcher.enabled = enableSwitch.isOn
+		if (enableSwitch.isOn) {
+			AppDelegate.shared.startListening()
+		} else {
+			AppDelegate.shared.stopListening()
+		}
 	}
 
 }

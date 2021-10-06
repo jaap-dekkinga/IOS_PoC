@@ -1,6 +1,6 @@
 //
 //  AudioUtility.swift
-//  TuneURL
+//  TuneURL (SDK)
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 9/12/19.
 //  Copyright © 2019-2021 TuneURL Inc. All rights reserved.
@@ -22,17 +22,17 @@ class AudioUtility {
 	static func changeSampleRate(sampleRate: Double, buffer1: [Int16]) -> [Int16]?
 	{
 		guard let inputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: 44100.0, channels: 1, interleaved: false) else {
-			print("AudioUtility: Error creating audio format.")
+			NSLog("TuneURL: Error creating audio format for sample rate conversion.")
 			return nil
 		}
 
 		guard let outputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: sampleRate, channels: 1, interleaved: false) else {
-			print("AudioUtility: Error creating audio format.")
+			NSLog("TuneURL: Error creating audio format for sample rate conversion.")
 			return nil
 		}
 
 		guard let converter = AVAudioConverter(from: inputFormat, to: outputFormat) else {
-			print("AudioUtility: Error creating audio converter.")
+			NSLog("TuneURL: Error creating audio converter for sample rate conversion.")
 			return nil
 		}
 
@@ -41,7 +41,7 @@ class AudioUtility {
 		let sampleRateConversionRatio: Double = (sampleRate / 44100.0)
 		let outputBufferSize = AVAudioFrameCount((Double(buffer1.count) * sampleRateConversionRatio))
 		guard let outputBuffer = AVAudioPCMBuffer(pcmFormat: outputFormat, frameCapacity: outputBufferSize) else {
-			print("AudioUtility: Error creating input audio buffer.")
+			NSLog("TuneURL: Error creating input audio buffer for sample rate conversion.")
 			return nil
 		}
 
@@ -62,7 +62,7 @@ class AudioUtility {
 
 			// create the buffer
 			guard let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: AVAudioFrameCount(copySampleCount)) else {
-				print("AudioUtility: Error creating input audio buffer.")
+				NSLog("TuneURL: Error creating input audio buffer for sample rate conversion.")
 				status.pointee = .endOfStream
 				return nil
 			}
@@ -90,12 +90,12 @@ class AudioUtility {
 
 		// check for errors
 		if (result == .error) {
-			print("AudioUtility: Error converting audio sample rate.")
+			NSLog("TuneURL: Error converting audio sample rate.")
 			return nil
 		}
 
 		if (error != nil) {
-			print("AudioUtility: Error converting audio sample rate. (\(error!.localizedDescription))")
+			NSLog("TuneURL: Error converting audio sample rate. (\(error!.localizedDescription))")
 			return nil
 		}
 
@@ -122,7 +122,7 @@ class AudioUtility {
 	{
 		// safety check
 		guard (buffer.count > 0) else {
-			NSLog("AudioUtility: Attempting to write audio file with audio that's too short.")
+			NSLog("TuneURL: Attempting to write audio file with audio that's too short.")
 			throw AudioUtilityError.internalError
 		}
 
@@ -142,7 +142,7 @@ class AudioUtility {
 		// create the audio capture file
 		var result = ExtAudioFileCreateWithURL(fileURL as CFURL, kAudioFileAIFFType, &streamDescription, nil, AudioFileFlags.eraseFile.rawValue, &audioFileRef)
 		if (result != noErr) {
-			NSLog("AudioUtility: Error creating audio capture file. (\(result))")
+			NSLog("TuneURL: Error creating audio capture file. (\(result))")
 			throw AudioUtilityError.internalError
 		}
 
@@ -162,7 +162,7 @@ class AudioUtility {
 		result = ExtAudioFileSetProperty(audioFileRef!, kExtAudioFileProperty_ClientDataFormat, UInt32(MemoryLayout<AudioStreamBasicDescription>.stride), &bufferFormat)
 		if (result != noErr) {
 			// report the error
-			NSLog("AudioUtility: Error setting audio capture data format. (\(result))")
+			NSLog("TuneURL: Error setting audio capture data format. (\(result))")
 			error = true
 		}
 
@@ -184,7 +184,7 @@ class AudioUtility {
 				// write the buffer list to the audio file
 				result = ExtAudioFileWrite(audioFileRef!, frameCount, &bufferList)
 				if (result != noErr) {
-					NSLog("Error writing to audio capture file. (\(result))")
+					NSLog("TuneURL: Error writing to audio capture file. (\(result))")
 					error = true
 				}
 			}
@@ -198,7 +198,7 @@ class AudioUtility {
 			// cleanup on error
 			_ = try? FileManager.default.removeItem(at: fileURL)
 			// report the error
-			NSLog("AudioUtility: Error writing audio file. (Deleting file.)")
+			NSLog("TuneURL: Error writing audio file. (Deleting file.)")
 			throw AudioUtilityError.internalError
 		}
 	}

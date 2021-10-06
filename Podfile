@@ -1,4 +1,4 @@
-platform :ios, '10.0'
+platform :ios, '12.2'
 use_frameworks!
 
 # ignore all warnings from all pods
@@ -8,7 +8,11 @@ install! 'cocoapods',
          :generate_multiple_pod_projects => true,
          :incremental_installation => true
 
-target :TuneURL do
+target 'TuneURL' do
     pod 'Alamofire', '~> 4.9.0'
     pod 'DMSwipeCards'
+end
+
+target 'TuneURL (SDK)' do
+    pod 'Alamofire', '~> 4.9.0'
 end
