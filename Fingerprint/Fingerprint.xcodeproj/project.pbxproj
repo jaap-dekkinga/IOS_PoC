@@ -143,6 +143,7 @@
 		EC0669342652F4CF000D0ECF /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 		EC1E775A267AD08C00D61EDF /* Fingerprint */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Fingerprint; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC1E775C267AD08C00D61EDF /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		EC232482270E68D200B9D7F6 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		EC335CB1265E9116002FCD08 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -188,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				EC335CB1265E9116002FCD08 /* README.md */,
+				EC232482270E68D200B9D7F6 /* module.modulemap */,
 				EC0668AA2652EA0C000D0ECF /* Source */,
 				EC0668FE2652EEF0000D0ECF /* macOS */,
 				EC1E775B267AD08C00D61EDF /* Fingerprint */,
@@ -389,7 +391,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = "TuneURL Inc.";
 				TargetAttributes = {
 					EC0668A72652EA0C000D0ECF = {
@@ -607,6 +609,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
 		};

@@ -7,12 +7,16 @@
 //
 
 
+import AVFoundation
 import Foundation
 
 
 public class TuneURL {
 
-	typealias MatchHandler = (MatchResponse) -> Void
+	public typealias AudioBufferHandler = (AVAudioPCMBuffer) -> Void
+	public typealias MatchHandler = (MatchResponse) -> Void
+
+	// MARK: -
 
 	public static var isListening: Bool {
 		get {
@@ -20,14 +24,16 @@ public class TuneURL {
 		}
 	}
 
-	public static var speechDelegate: AudioMatcherSpeechDelegate? {
+	public static var audioBufferDelegate: AudioBufferHandler? {
 		get {
-			return AudioMatcher.shared.speechDelegate
+			return AudioMatcher.shared.audioBufferDelegate
 		}
 		set {
-			return AudioMatcher.shared.speechDelegate = newValue
+			return AudioMatcher.shared.audioBufferDelegate = newValue
 		}
 	}
+
+	// MARK: -
 
 	public static func startListening(matchHandler: @escaping (MatchResponse) -> Void)
 	{

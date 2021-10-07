@@ -13,7 +13,7 @@ import TuneURL
 import UIKit
 
 
-class PollViewController: UIViewController, AudioMatcherSpeechDelegate, DMSwipeCardsViewDelegate {
+class PollViewController: UIViewController, DMSwipeCardsViewDelegate {
 
 	// private
 	private var matchedItem: MatchedItem?
@@ -193,11 +193,6 @@ class PollViewController: UIViewController, AudioMatcherSpeechDelegate, DMSwipeC
 
 	// MARK: - Speech recognition
 
-	func audioCaptureBuffer(buffer: AVAudioPCMBuffer)
-	{
-		self.recognitionRequest?.append(buffer)
-	}
-
 	private func speechRecognized(_ text: String)
 	{
 		// safety check
@@ -267,14 +262,16 @@ class PollViewController: UIViewController, AudioMatcherSpeechDelegate, DMSwipeC
 			}
 		}
 
-		// start receiving audio buffers from the audio capture
-		TuneURL.speechDelegate = self
+		// start receiving audio buffers
+		TuneURL.audioBufferDelegate = { buffer in
+			self.recognitionRequest?.append(buffer)
+		}
 	}
 
 	private func stopSpeechRecognition()
 	{
-		// stop receiving audio buffers from the audio capture
-		TuneURL.speechDelegate = nil
+		// stop receiving audio buffers
+		TuneURL.audioBufferDelegate = nil
 
 		// stop speech recognition
         recognitionTask?.cancel()

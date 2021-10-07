@@ -13,7 +13,7 @@ import TuneURL
 import UIKit
 
 
-class InterestViewController: UIViewController, AudioMatcherSpeechDelegate, DMSwipeCardsViewDelegate {
+class InterestViewController: UIViewController, DMSwipeCardsViewDelegate {
 
     // private
     private var matchedItem: MatchedItem?
@@ -193,11 +193,6 @@ class InterestViewController: UIViewController, AudioMatcherSpeechDelegate, DMSw
 
     // MARK: - Speech recognition
 
-    func audioCaptureBuffer(buffer: AVAudioPCMBuffer)
-    {
-        self.recognitionRequest?.append(buffer)
-    }
-
     private func speechRecognized(_ text: String)
     {
         // safety check
@@ -267,14 +262,16 @@ class InterestViewController: UIViewController, AudioMatcherSpeechDelegate, DMSw
             }
         }
 
-        // start receiving audio buffers from the audio capture
-		TuneURL.speechDelegate = self
+        // start receiving audio buffers
+		TuneURL.audioBufferDelegate = { buffer in
+			self.recognitionRequest?.append(buffer)
+		}
     }
 
     private func stopSpeechRecognition()
     {
-        // stop receiving audio buffers from the audio capture
-		TuneURL.speechDelegate = nil
+        // stop receiving audio buffers
+		TuneURL.audioBufferDelegate = nil
 
         // stop speech recognition
         recognitionTask?.cancel()
@@ -295,7 +292,7 @@ class InterestViewController: UIViewController, AudioMatcherSpeechDelegate, DMSw
 
         // get the matched item
         guard let item = matchedItem else {
-            NSLog("PollViewController: Error with matched item on swipe.")
+            NSLog("InterestViewController: Error with matched item on swipe.")
             return
         }
 
@@ -319,7 +316,7 @@ class InterestViewController: UIViewController, AudioMatcherSpeechDelegate, DMSw
 
         // get the matched item
         guard let item = matchedItem else {
-            NSLog("PollViewController: Error with matched item on swipe.")
+            NSLog("InterestViewController: Error with matched item on swipe.")
             return
         }
 

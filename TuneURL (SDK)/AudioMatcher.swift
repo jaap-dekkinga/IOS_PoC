@@ -8,24 +8,17 @@
 
 
 import AVFoundation
+import Fingerprint
 import Foundation
 
 
-public protocol AudioMatcherSpeechDelegate {
-
-	func audioCaptureBuffer(buffer: AVAudioPCMBuffer)
-
-}
-
-// MARK: -
-
-class AudioMatcher: NSObject {
+class AudioMatcher {
 
 	// static
 	static let shared = AudioMatcher()
 
 	// public
-	var speechDelegate: AudioMatcherSpeechDelegate?
+	var audioBufferDelegate: TuneURL.AudioBufferHandler?
 
 	// public (read-only)
 	public private(set) var audioCapture: AudioCapture?
@@ -38,14 +31,13 @@ class AudioMatcher: NSObject {
 
 	// MARK: -
 
-	override init()
+	init()
 	{
 		// setup the audio buffer
 		audioBuffer = AudioBuffer(captureDuration: 10.0, sampleRate: 44100.0)
-
-		super.init()
-
 		audioBuffer.reset()
+
+		// setup the audio trigger
 		prepareAudioTrigger()
 	}
 

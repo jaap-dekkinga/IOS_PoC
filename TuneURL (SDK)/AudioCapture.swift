@@ -8,6 +8,7 @@
 
 
 import AVFoundation
+import Fingerprint
 import Foundation
 
 
@@ -19,7 +20,7 @@ protocol AudioCaptureDelegate {
 
 // MARK: -
 
-public class AudioCapture: NSObject {
+class AudioCapture: NSObject {
 
 	// private
 	private let audioBuffer: AudioBuffer
@@ -202,7 +203,7 @@ public class AudioCapture: NSObject {
 				try audioSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
 			}
 		} catch {
-			NSLog("AudioCapture: Error setting up audio session. (\(error.localizedDescription))")
+			NSLog("TuneURL: Error setting up audio session. (\(error.localizedDescription))")
 		}
 	}
 
@@ -250,7 +251,7 @@ public class AudioCapture: NSObject {
 			}
 
 			// pass the buffer to speech recognition
-			AudioMatcher.shared.speechDelegate?.audioCaptureBuffer(buffer: sourceBuffer)
+			AudioMatcher.shared.audioBufferDelegate?(sourceBuffer)
 		})
 
 		audioEngine.mainMixerNode.outputVolume = 0.0
@@ -260,7 +261,7 @@ public class AudioCapture: NSObject {
 		do {
 			try audioEngine.start()
 		} catch {
-			NSLog("AudioCapture: Error starting audio engine. (\(error.localizedDescription))")
+			NSLog("TuneURL: Error starting audio engine. (\(error.localizedDescription))")
 			return false
 		}
 
@@ -282,14 +283,16 @@ public class AudioCapture: NSObject {
 
 	@objc func audioEngineConfigurationChange(_ notification: Notification)
 	{
-		NSLog("AudioCapture: audioEngineConfigurationChange")
+#if DEBUG
+		print("TuneURL: audioEngineConfigurationChange")
+#endif // DEBUG
 
 		// make sure the audio engine is stopped
 		stopAudioEngine()
 
 		// restart the audio engine
 		if (startAudioEngine() == false) {
-			NSLog("AudioCapture: Error restarting the audio engine.")
+			NSLog("TuneURL: Error restarting the audio engine.")
 		}
 
 		// notify the delegate

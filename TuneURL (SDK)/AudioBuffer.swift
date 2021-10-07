@@ -107,7 +107,7 @@ class AudioBuffer {
 		// get the sample buffer data length
 		let sampleBufferDataLength = (Int(sampleBuffer.frameLength) * sampleSize)
 		guard (sampleBufferDataLength != 0) else {
-			NSLog("AudioBuffer: Error appending empty sample buffer.")
+			NSLog("TuneURL: Error appending empty sample buffer.")
 			return
 		}
 
@@ -138,7 +138,7 @@ class AudioBuffer {
 
 			// safety check
 			guard (copyLength > 0) else {
-				NSLog("AudioBuffer: Internal error while copying sample buffer data.")
+				NSLog("TuneURL: Internal error while copying sample buffer data.")
 				return
 			}
 
@@ -164,7 +164,7 @@ class AudioBuffer {
 
 			// safety check
 			guard (maxDuration > 1.0) else {
-				NSLog("AudioBuffer: Attempting to create sample buffer that's too short.")
+				NSLog("TuneURL: Attempting to create sample buffer that's too short.")
 				return nil
 			}
 
@@ -267,7 +267,7 @@ class AudioBuffer {
 	{
 		// safety check
 		guard (maxDuration > 1.0) else {
-			NSLog("AudioBuffer: Attempting to export audio that's too short.")
+			NSLog("TuneURL: Attempting to export audio that's too short.")
 			throw AudioBufferError.internalError
 		}
 
@@ -287,7 +287,7 @@ class AudioBuffer {
 		// create the audio capture file
 		var result = ExtAudioFileCreateWithURL(fileURL as CFURL, kAudioFileM4AType, &streamDescription, nil, AudioFileFlags.eraseFile.rawValue, &audioCaptureFileRef)
 		if (result != noErr) {
-			NSLog("AudioBuffer: Error creating audio capture file. (\(result))")
+			NSLog("TuneURL: Error creating audio capture file. (\(result))")
 			throw AudioBufferError.internalError
 		}
 
@@ -307,7 +307,7 @@ class AudioBuffer {
 		result = ExtAudioFileSetProperty(audioCaptureFileRef!, kExtAudioFileProperty_ClientDataFormat, UInt32(MemoryLayout<AudioStreamBasicDescription>.stride), &bufferFormat)
 		if (result != noErr) {
 			// report the error
-			NSLog("AudioBuffer: Error setting audio capture data format. (\(result))")
+			NSLog("TuneURL: Error setting audio capture data format. (\(result))")
 			error = true
 		}
 
@@ -347,7 +347,7 @@ class AudioBuffer {
 						// write the buffer list to the audio file
 						result = ExtAudioFileWrite(audioCaptureFileRef!, frameCount, &bufferList)
 						if (result != noErr) {
-							NSLog("Error writing to audio capture file. (\(result))")
+							NSLog("TuneURL: Error writing to audio capture file. (\(result))")
 							error = true
 						}
 					}
@@ -371,7 +371,7 @@ class AudioBuffer {
 			// cleanup on error
 			_ = try? FileManager.default.removeItem(at: fileURL)
 			// report the error
-			NSLog("AudioBuffer: Error writing audio file. (Deleting file.)")
+			NSLog("TuneURL: Error writing audio file. (Deleting file.)")
 			throw AudioBufferError.internalError
 		}
 
