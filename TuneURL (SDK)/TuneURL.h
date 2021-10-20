@@ -1,5 +1,5 @@
 //
-//  TuneURL_SDK_.h
+//  TuneURL.h
 //  TuneURL (SDK)
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 9/27/21.

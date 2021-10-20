@@ -49,7 +49,7 @@
 		C18729BB9B53D7793F31B926A8983B3A /* Alamofire-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Alamofire-Info.plist"; sourceTree = "<group>"; };
 		C5B4D5EFFFDC8A61930712AFAD6BDF40 /* Alamofire.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Alamofire.swift; path = Source/Alamofire.swift; sourceTree = "<group>"; };
 		C88858EF9A06B624ACE2F1659AFC83D6 /* ServerTrustPolicy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServerTrustPolicy.swift; path = Source/ServerTrustPolicy.swift; sourceTree = "<group>"; };
-		D063EE811069D306211D06E68BEF5C09 /* Alamofire */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Alamofire; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D063EE811069D306211D06E68BEF5C09 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4CF2C8AF08AAF78BAEAFC150077D9C0 /* SessionManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SessionManager.swift; path = Source/SessionManager.swift; sourceTree = "<group>"; };
 		D4DB7C701E973B414F610E08D615C456 /* NetworkReachabilityManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkReachabilityManager.swift; path = Source/NetworkReachabilityManager.swift; sourceTree = "<group>"; };
 		D60BF4331ED4E19250D256DBD0A5F805 /* Response.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Response.swift; path = Source/Response.swift; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 		15DB8F8C32C4899ECF82C9A66D2947FC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D063EE811069D306211D06E68BEF5C09 /* Alamofire */,
+				D063EE811069D306211D06E68BEF5C09 /* Alamofire.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,7 +108,6 @@
 				77232AF0D06A920C53D55A1F846127B9 /* Validation.swift */,
 				FABC00F9883425A853C4610C07D25618 /* Support Files */,
 			);
-			name = Alamofire;
 			path = Alamofire;
 			sourceTree = "<group>";
 		};
@@ -173,7 +172,7 @@
 			);
 			name = Alamofire;
 			productName = Alamofire;
-			productReference = D063EE811069D306211D06E68BEF5C09 /* Alamofire */;
+			productReference = D063EE811069D306211D06E68BEF5C09 /* Alamofire.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */

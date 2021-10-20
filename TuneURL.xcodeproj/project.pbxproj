@@ -22,7 +22,7 @@
 		60D361E920D164540079C14C /* PollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E820D164540079C14C /* PollViewController.swift */; };
 		6D9F1B12258188BC004C4E29 /* InterestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9F1B11258188BC004C4E29 /* InterestViewController.swift */; };
 		DCC3A21648720C0E8D25B72B /* Pods_TuneURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */; };
-		EC244B9B2702561E002D4D94 /* TuneURL_SDK_.h in Headers */ = {isa = PBXBuildFile; fileRef = EC244B9A2702561E002D4D94 /* TuneURL_SDK_.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EC244B9B2702561E002D4D94 /* TuneURL.h in Headers */ = {isa = PBXBuildFile; fileRef = EC244B9A2702561E002D4D94 /* TuneURL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EC244B9E2702561E002D4D94 /* TuneURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC244B982702561E002D4D94 /* TuneURL.framework */; };
 		EC244BA02702561E002D4D94 /* TuneURL.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EC244B982702561E002D4D94 /* TuneURL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EC244BA42702573C002D4D94 /* AudioUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067F23317E6D0013B8F8 /* AudioUtility.swift */; };
@@ -108,7 +108,7 @@
 		EC06696026530115000D0ECF /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		EC06696226530120000D0ECF /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		EC244B982702561E002D4D94 /* TuneURL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TuneURL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC244B9A2702561E002D4D94 /* TuneURL_SDK_.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TuneURL_SDK_.h; sourceTree = "<group>"; };
+		EC244B9A2702561E002D4D94 /* TuneURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TuneURL.h; sourceTree = "<group>"; };
 		EC244BB3270273AC002D4D94 /* TuneURL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TuneURL.swift; sourceTree = "<group>"; };
 		EC244BB527027BEB002D4D94 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		EC244BB727027DEE002D4D94 /* libFingerprint.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFingerprint.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,10 +125,12 @@
 		EC4F01312337CE4700E6FB77 /* MatchedItemCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchedItemCollection.swift; sourceTree = "<group>"; };
 		EC4F01332337CF0600E6FB77 /* MatchedItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchedItem.swift; sourceTree = "<group>"; };
 		EC4F01352337D03000E6FB77 /* MatchedItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchedItemCell.swift; sourceTree = "<group>"; };
+		EC7FAA122720AA7000B0AE65 /* SDK Build Notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "SDK Build Notes.md"; sourceTree = "<group>"; };
 		ECB9164224F5C92C0091C76B /* SavedContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedContentViewController.swift; sourceTree = "<group>"; };
 		ECB9166624F5CED10091C76B /* ListenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListenViewController.swift; sourceTree = "<group>"; };
 		ECB9166824F5D2170091C76B /* BasePageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasePageViewController.swift; sourceTree = "<group>"; };
 		ECBD100E2322EFDC005415EF /* UpdateBuildNumber.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = UpdateBuildNumber.sh; sourceTree = "<group>"; };
+		ECC009B02718F1E2003D950B /* BuildFramework.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = BuildFramework.sh; sourceTree = "<group>"; };
 		F7F3120AF95D36E3389C948D /* Pods-TuneURL (SDK).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL (SDK).debug.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL (SDK)/Pods-TuneURL (SDK).debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -166,6 +168,8 @@
 		60523631201FE51800B65A72 = {
 			isa = PBXGroup;
 			children = (
+				EC7FAA122720AA7000B0AE65 /* SDK Build Notes.md */,
+				ECC009B02718F1E2003D950B /* BuildFramework.sh */,
 				ECBD100E2322EFDC005415EF /* UpdateBuildNumber.sh */,
 				6052363C201FE51900B65A72 /* TuneURL */,
 				EC244B992702561E002D4D94 /* TuneURL (SDK) */,
@@ -254,7 +258,7 @@
 		EC244B992702561E002D4D94 /* TuneURL (SDK) */ = {
 			isa = PBXGroup;
 			children = (
-				EC244B9A2702561E002D4D94 /* TuneURL_SDK_.h */,
+				EC244B9A2702561E002D4D94 /* TuneURL.h */,
 				EC4E097E231EDF8300445E52 /* AudioBuffer.swift */,
 				EC4E097C231EDC6500445E52 /* AudioCapture.swift */,
 				600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */,
@@ -274,7 +278,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC244B9B2702561E002D4D94 /* TuneURL_SDK_.h in Headers */,
+				EC244B9B2702561E002D4D94 /* TuneURL.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -808,12 +812,14 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
+				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A63XWBVGEW;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -826,12 +832,13 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK;
 				PRODUCT_NAME = TuneURL;
 				SKIP_INSTALL = YES;
+				STRIP_STYLE = "non-global";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INCLUDE_PATHS = Fingerprint/;
 				SWIFT_VERSION = 5.0;
@@ -849,12 +856,14 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
+				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A63XWBVGEW;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -867,11 +876,12 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK;
 				PRODUCT_NAME = TuneURL;
 				SKIP_INSTALL = NO;
+				STRIP_STYLE = "non-global";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INCLUDE_PATHS = Fingerprint/;
 				SWIFT_VERSION = 5.0;
