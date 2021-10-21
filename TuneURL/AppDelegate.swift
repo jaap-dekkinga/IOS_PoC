@@ -95,7 +95,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func startListening()
 	{
 		// start listening
-		TuneURL.startListening() {
+		TuneURL.Listener.startListening() {
 			(matchResponse) in
 
 			// ignore matches with extremely low confidence
@@ -113,7 +113,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func stopListening()
 	{
-		TuneURL.stopListening()
+		TuneURL.Listener.stopListening()
 	}
 
 	// MARK: - Private

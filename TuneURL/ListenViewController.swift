@@ -21,7 +21,7 @@ final class ListenViewController: UIViewController {
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
-		enableSwitch.isOn = TuneURL.isListening
+		enableSwitch.isOn = TuneURL.Listener.isListening
 	}
 
 	// MARK: - Actions

@@ -8,7 +8,7 @@
 
 
 import AVFoundation
-import Fingerprint
+import Fingerprint_Private
 import Foundation
 
 

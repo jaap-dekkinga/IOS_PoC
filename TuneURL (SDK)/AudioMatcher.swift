@@ -8,7 +8,7 @@
 
 
 import AVFoundation
-import Fingerprint
+import Fingerprint_Private
 import Foundation
 
 
@@ -18,7 +18,7 @@ class AudioMatcher {
 	static let shared = AudioMatcher()
 
 	// public
-	var audioBufferDelegate: TuneURL.AudioBufferHandler?
+	var audioBufferDelegate: Listener.AudioBufferHandler?
 
 	// public (read-only)
 	public private(set) var audioCapture: AudioCapture?
@@ -27,7 +27,7 @@ class AudioMatcher {
 
 	// private
 	private let audioBuffer: AudioBuffer
-	private var matchHandler: TuneURL.MatchHandler?
+	private var matchHandler: Listener.MatchHandler?
 
 	// MARK: -
 
@@ -49,7 +49,7 @@ class AudioMatcher {
 
 	// MARK: - Public
 
-	func start(matchHandler: @escaping TuneURL.MatchHandler)
+	func start(matchHandler: @escaping Listener.MatchHandler)
 	{
 		// save the match handler
 		self.matchHandler = matchHandler

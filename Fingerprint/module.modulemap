@@ -1,5 +1,5 @@
 
-module Fingerprint {
+module Fingerprint_Private {
 	header "Source/Fingerprint.h"
 	export *
 }

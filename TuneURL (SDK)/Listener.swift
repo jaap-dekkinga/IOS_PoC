@@ -1,5 +1,5 @@
 //
-//  TuneURL.swift
+//  Listener.swift
 //  TuneURL (SDK)
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 9/27/21.
@@ -11,7 +11,7 @@ import AVFoundation
 import Foundation
 
 
-public class TuneURL {
+public class Listener {
 
 	public typealias AudioBufferHandler = (AVAudioPCMBuffer) -> Void
 	public typealias MatchHandler = (MatchResponse) -> Void

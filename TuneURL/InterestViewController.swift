@@ -263,7 +263,7 @@ class InterestViewController: UIViewController, DMSwipeCardsViewDelegate {
         }
 
         // start receiving audio buffers
-		TuneURL.audioBufferDelegate = { buffer in
+		TuneURL.Listener.audioBufferDelegate = { buffer in
 			self.recognitionRequest?.append(buffer)
 		}
     }
@@ -271,7 +271,7 @@ class InterestViewController: UIViewController, DMSwipeCardsViewDelegate {
     private func stopSpeechRecognition()
     {
         // stop receiving audio buffers
-		TuneURL.audioBufferDelegate = nil
+		TuneURL.Listener.audioBufferDelegate = nil
 
         // stop speech recognition
         recognitionTask?.cancel()
