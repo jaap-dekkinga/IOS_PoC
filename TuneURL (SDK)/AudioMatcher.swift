@@ -152,81 +152,21 @@ class AudioMatcher {
 				matchFingerprintData.append(pointer[x])
 			}
 
+			// cleanup
+			FingerprintFree(matchFingerprint)
+
 			// ask the server to match the audio
-			MatchServer.shared.requestMatch(for: matchFingerprintData) {
+			Server.shared.matchFingerprint(for: matchFingerprintData, queue: nil) {
 				(response: MatchResponse?) in
 				// notfiy the delegate on a successful match
 				if let matchResponse = response, let handler = self.matchHandler {
 					handler(matchResponse)
 				}
 			}
-
-			// cleanup
-			FingerprintFree(matchFingerprint)
 		}
 	}
 
 	// MARK: - Private
-
-	private func generateFingerprint(for fileURL: URL, resample: Bool) -> UnsafeMutablePointer<Fingerprint>?
-	{
-		var result: OSStatus = noErr
-		var audioFile: AudioFileID?
-		var propertyDataSize: UInt32 = 8
-		var dataSize: UInt64 = 0
-
-		result = AudioFileOpenURL(fileURL as CFURL, .readPermission, kAudioFileAIFFType, &audioFile)
-		if (result != noErr) {
-			NSLog("TuneURL: Error opening audio file. (\(result))")
-			return nil
-		}
-
-		result = AudioFileGetProperty(audioFile!, kAudioFilePropertyAudioDataByteCount, &propertyDataSize, &dataSize)
-		if (result != noErr) {
-			NSLog("TuneURL: Error getting audio file property. (\(result))")
-			return nil
-		}
-
-		let frameCount = UInt32(dataSize >> 1)	// 16-bit audio
-		var dataBuffer = [Int16](repeating: 0, count: Int(frameCount))
-		dataBuffer.withUnsafeMutableBytes {
-			bufferPointer in
-
-			var packetCount = frameCount
-			var dataRead = UInt32(dataSize)
-
-			result = AudioFileReadPacketData(audioFile!, false, &dataRead, nil, 0, &packetCount, bufferPointer.baseAddress)
-		}
-
-		// check the result of the read
-		if (result != noErr) {
-			NSLog("TuneURL: Error reading audio file packet data. (\(result))")
-			return nil
-		}
-
-		result = AudioFileClose(audioFile!)
-		if (result != noErr) {
-			NSLog("TuneURL: Error closing audio file. (\(result))")
-		}
-
-		// resample the audio
-		let resampled: [Int16]
-		if (resample) {
-			let sampleRate = FINGERPRINT_SAMPLE_RATE
-			guard let buffer = AudioUtility.changeSampleRate(sampleRate: Double(sampleRate), buffer1: dataBuffer) else {
-				return nil
-			}
-			resampled = buffer
-		} else {
-			resampled = dataBuffer
-		}
-
-		if let fingerprint = ExtractFingerprint(resampled, Int32(resampled.count)) {
-			return fingerprint
-		}
-
-		return nil
-	}
 
 	private func prepareAudioTrigger()
 	{
@@ -236,7 +176,7 @@ class AudioMatcher {
 		}
 
 		// create the fingerprint
-		if let fingerprint = generateFingerprint(for: triggerFileURL, resample: true) {
+		if let fingerprint = AudioUtility.generateFingerprint(for: triggerFileURL) {
 			triggerFingerprint = fingerprint
 		}
 	}

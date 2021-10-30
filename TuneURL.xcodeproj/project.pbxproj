@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		370717FAEF554C777A4AF35D /* Pods_TuneURL__SDK_.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6C7F5FD2741A11385FEDD2A /* Pods_TuneURL__SDK_.framework */; };
 		4D4ED16C25719A0F00EDC277 /* ReportingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16B25719A0F00EDC277 /* ReportingData.swift */; };
 		4D4ED16E2573D59800EDC277 /* ReportingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16D2573D59800EDC277 /* ReportingManager.swift */; };
 		600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EB7205EB2B500F96F7A /* Notify.swift */; };
@@ -29,7 +28,7 @@
 		EC244BA527025743002D4D94 /* AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E097E231EDF8300445E52 /* AudioBuffer.swift */; };
 		EC244BA627025747002D4D94 /* AudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E097C231EDC6500445E52 /* AudioCapture.swift */; };
 		EC244BA72702574C002D4D94 /* AudioMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */; };
-		EC244BA9270258A2002D4D94 /* MatchServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2FDA6D2339BABF0011DE7A /* MatchServer.swift */; };
+		EC244BA9270258A2002D4D94 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2FDA6D2339BABF0011DE7A /* Server.swift */; };
 		EC244BB22702736E002D4D94 /* MatchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6024B74020606C8D0005A984 /* MatchResponse.swift */; };
 		EC244BB4270273AC002D4D94 /* Listener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC244BB3270273AC002D4D94 /* Listener.swift */; };
 		EC244BB627027BEB002D4D94 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC244BB527027BEB002D4D94 /* Debug.swift */; };
@@ -40,9 +39,21 @@
 		EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86C24F93D8500443202 /* SavedItemCollectionLayout.swift */; };
 		EC2CA86F24F9537600443202 /* RecentItemCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86E24F9537600443202 /* RecentItemCollectionLayout.swift */; };
 		EC30069723317E8E0013B8F8 /* Trigger-Audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = EC30069623317E8E0013B8F8 /* Trigger-Audio.wav */; };
+		EC3FC8052729E42800869D88 /* Detector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3FC8042729E42800869D88 /* Detector.swift */; };
+		EC3FC80D2729EFA500869D88 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3FC80C2729EFA500869D88 /* main.swift */; };
+		EC3FC8112729F0A700869D88 /* AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E097E231EDF8300445E52 /* AudioBuffer.swift */; };
+		EC3FC8142729F0AD00869D88 /* AudioUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067F23317E6D0013B8F8 /* AudioUtility.swift */; };
+		EC3FC8152729F0AF00869D88 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC244BB527027BEB002D4D94 /* Debug.swift */; };
+		EC3FC8162729F0B000869D88 /* Detector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3FC8042729E42800869D88 /* Detector.swift */; };
+		EC3FC8182729F0B400869D88 /* MatchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6024B74020606C8D0005A984 /* MatchResponse.swift */; };
+		EC3FC82A2729F3FE00869D88 /* libFingerprint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3FC8292729F3FE00869D88 /* libFingerprint.a */; };
+		EC3FC82E2729F47300869D88 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3FC82B2729F40C00869D88 /* libc++.tbd */; };
+		EC3FC8302729F48E00869D88 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3FC82F2729F48E00869D88 /* Accelerate.framework */; };
 		EC4F01322337CE4700E6FB77 /* MatchedItemCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4F01312337CE4700E6FB77 /* MatchedItemCollection.swift */; };
 		EC4F01342337CF0600E6FB77 /* MatchedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4F01332337CF0600E6FB77 /* MatchedItem.swift */; };
 		EC4F01362337D03000E6FB77 /* MatchedItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4F01352337D03000E6FB77 /* MatchedItemCell.swift */; };
+		ECA8C139272D147000045723 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2FDA6D2339BABF0011DE7A /* Server.swift */; };
+		ECA8C13F272D2D9F00045723 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECA8C13E272D2D9F00045723 /* AVFoundation.framework */; };
 		ECB9164324F5C92C0091C76B /* SavedContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB9164224F5C92C0091C76B /* SavedContentViewController.swift */; };
 		ECB9166724F5CED10091C76B /* ListenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB9166624F5CED10091C76B /* ListenViewController.swift */; };
 		ECB9166924F5D2170091C76B /* BasePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB9166824F5D2170091C76B /* BasePageViewController.swift */; };
@@ -77,9 +88,19 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EC3FC8082729EFA500869D88 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0A2CFED9DCA2349DDD463049 /* Pods_TuneURL__CLI_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TuneURL__CLI_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D4ED16B25719A0F00EDC277 /* ReportingData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportingData.swift; sourceTree = "<group>"; };
 		4D4ED16D2573D59800EDC277 /* ReportingManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportingManager.swift; sourceTree = "<group>"; };
 		600A6EB7205EB2B500F96F7A /* Notify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notify.swift; sourceTree = "<group>"; };
@@ -99,11 +120,9 @@
 		60D361E620CDC17C0079C14C /* PollManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollManager.swift; sourceTree = "<group>"; };
 		60D361E820D164540079C14C /* PollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollViewController.swift; sourceTree = "<group>"; };
 		6D9F1B11258188BC004C4E29 /* InterestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterestViewController.swift; sourceTree = "<group>"; };
-		B6C7F5FD2741A11385FEDD2A /* Pods_TuneURL__SDK_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TuneURL__SDK_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBCE85622A4AC53FBFA986B1 /* Pods-TuneURL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.debug.xcconfig"; sourceTree = "<group>"; };
 		BDE2CA3B2B257A37E40EE614 /* Pods-TuneURL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.release.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.release.xcconfig"; sourceTree = "<group>"; };
 		D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TuneURL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E361F27645A7A7CE88BDCA41 /* Pods-TuneURL (SDK).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL (SDK).release.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL (SDK)/Pods-TuneURL (SDK).release.xcconfig"; sourceTree = "<group>"; };
 		EC06695A2652F781000D0ECF /* libFingerprint.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFingerprint.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC06696026530115000D0ECF /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		EC06696226530120000D0ECF /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -117,21 +136,28 @@
 		EC2CA86A24F93B8700443202 /* UIViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		EC2CA86C24F93D8500443202 /* SavedItemCollectionLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedItemCollectionLayout.swift; sourceTree = "<group>"; };
 		EC2CA86E24F9537600443202 /* RecentItemCollectionLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentItemCollectionLayout.swift; sourceTree = "<group>"; };
-		EC2FDA6D2339BABF0011DE7A /* MatchServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchServer.swift; sourceTree = "<group>"; };
+		EC2FDA6D2339BABF0011DE7A /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		EC30067F23317E6D0013B8F8 /* AudioUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioUtility.swift; sourceTree = "<group>"; };
 		EC30069623317E8E0013B8F8 /* Trigger-Audio.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Trigger-Audio.wav"; sourceTree = "<group>"; };
+		EC3FC8042729E42800869D88 /* Detector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Detector.swift; sourceTree = "<group>"; };
+		EC3FC80A2729EFA500869D88 /* TuneURL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TuneURL; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC3FC80C2729EFA500869D88 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		EC3FC8292729F3FE00869D88 /* libFingerprint.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFingerprint.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC3FC82B2729F40C00869D88 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
+		EC3FC82C2729F41600869D88 /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/usr/lib/libc++.1.tbd"; sourceTree = DEVELOPER_DIR; };
+		EC3FC82F2729F48E00869D88 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/Accelerate.framework; sourceTree = DEVELOPER_DIR; };
 		EC4E097C231EDC6500445E52 /* AudioCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioCapture.swift; sourceTree = "<group>"; };
 		EC4E097E231EDF8300445E52 /* AudioBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioBuffer.swift; sourceTree = "<group>"; };
 		EC4F01312337CE4700E6FB77 /* MatchedItemCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchedItemCollection.swift; sourceTree = "<group>"; };
 		EC4F01332337CF0600E6FB77 /* MatchedItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchedItem.swift; sourceTree = "<group>"; };
 		EC4F01352337D03000E6FB77 /* MatchedItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchedItemCell.swift; sourceTree = "<group>"; };
 		EC7FAA122720AA7000B0AE65 /* SDK Build Notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = "SDK Build Notes.md"; sourceTree = "<group>"; };
+		ECA8C13E272D2D9F00045723 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AVFoundation.framework; sourceTree = DEVELOPER_DIR; };
 		ECB9164224F5C92C0091C76B /* SavedContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedContentViewController.swift; sourceTree = "<group>"; };
 		ECB9166624F5CED10091C76B /* ListenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListenViewController.swift; sourceTree = "<group>"; };
 		ECB9166824F5D2170091C76B /* BasePageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasePageViewController.swift; sourceTree = "<group>"; };
 		ECBD100E2322EFDC005415EF /* UpdateBuildNumber.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = UpdateBuildNumber.sh; sourceTree = "<group>"; };
 		ECC009B02718F1E2003D950B /* BuildFramework.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = BuildFramework.sh; sourceTree = "<group>"; };
-		F7F3120AF95D36E3389C948D /* Pods-TuneURL (SDK).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL (SDK).debug.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL (SDK)/Pods-TuneURL (SDK).debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,7 +184,17 @@
 				EC244BBA27027E0E002D4D94 /* libc++.tbd in Frameworks */,
 				EC244BB827027DEE002D4D94 /* libFingerprint.a in Frameworks */,
 				EC244BBC27027E2C002D4D94 /* Accelerate.framework in Frameworks */,
-				370717FAEF554C777A4AF35D /* Pods_TuneURL__SDK_.framework in Frameworks */,
+				ECA8C13F272D2D9F00045723 /* AVFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC3FC8072729EFA500869D88 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC3FC8302729F48E00869D88 /* Accelerate.framework in Frameworks */,
+				EC3FC82E2729F47300869D88 /* libc++.tbd in Frameworks */,
+				EC3FC82A2729F3FE00869D88 /* libFingerprint.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,6 +208,7 @@
 				ECC009B02718F1E2003D950B /* BuildFramework.sh */,
 				ECBD100E2322EFDC005415EF /* UpdateBuildNumber.sh */,
 				6052363C201FE51900B65A72 /* TuneURL */,
+				EC3FC80B2729EFA500869D88 /* TuneURL (CLI) */,
 				EC244B992702561E002D4D94 /* TuneURL (SDK) */,
 				60523653201FE51900B65A72 /* TuneURLTests */,
 				6052363B201FE51900B65A72 /* Products */,
@@ -186,6 +223,7 @@
 				6052363A201FE51900B65A72 /* TuneURL.app */,
 				60523650201FE51900B65A72 /* TuneURLTests.xctest */,
 				EC244B982702561E002D4D94 /* TuneURL.framework */,
+				EC3FC80A2729EFA500869D88 /* TuneURL */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -232,6 +270,11 @@
 		706DE416CDBE83EE3CBC91AD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ECA8C13E272D2D9F00045723 /* AVFoundation.framework */,
+				EC3FC82F2729F48E00869D88 /* Accelerate.framework */,
+				EC3FC82C2729F41600869D88 /* libc++.1.tbd */,
+				EC3FC82B2729F40C00869D88 /* libc++.tbd */,
+				EC3FC8292729F3FE00869D88 /* libFingerprint.a */,
 				EC244BBB27027E2C002D4D94 /* Accelerate.framework */,
 				EC244BB927027E0D002D4D94 /* libc++.tbd */,
 				EC244BB727027DEE002D4D94 /* libFingerprint.a */,
@@ -239,7 +282,7 @@
 				EC06696026530115000D0ECF /* libc++.tbd */,
 				EC06695A2652F781000D0ECF /* libFingerprint.a */,
 				D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */,
-				B6C7F5FD2741A11385FEDD2A /* Pods_TuneURL__SDK_.framework */,
+				0A2CFED9DCA2349DDD463049 /* Pods_TuneURL__CLI_.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -249,8 +292,6 @@
 			children = (
 				BBCE85622A4AC53FBFA986B1 /* Pods-TuneURL.debug.xcconfig */,
 				BDE2CA3B2B257A37E40EE614 /* Pods-TuneURL.release.xcconfig */,
-				F7F3120AF95D36E3389C948D /* Pods-TuneURL (SDK).debug.xcconfig */,
-				E361F27645A7A7CE88BDCA41 /* Pods-TuneURL (SDK).release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -264,11 +305,20 @@
 				600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */,
 				EC30067F23317E6D0013B8F8 /* AudioUtility.swift */,
 				EC244BB527027BEB002D4D94 /* Debug.swift */,
+				EC3FC8042729E42800869D88 /* Detector.swift */,
 				EC244BB3270273AC002D4D94 /* Listener.swift */,
 				6024B74020606C8D0005A984 /* MatchResponse.swift */,
-				EC2FDA6D2339BABF0011DE7A /* MatchServer.swift */,
+				EC2FDA6D2339BABF0011DE7A /* Server.swift */,
 			);
 			path = "TuneURL (SDK)";
+			sourceTree = "<group>";
+		};
+		EC3FC80B2729EFA500869D88 /* TuneURL (CLI) */ = {
+			isa = PBXGroup;
+			children = (
+				EC3FC80C2729EFA500869D88 /* main.swift */,
+			);
+			path = "TuneURL (CLI)";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -329,7 +379,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EC244BA32702561E002D4D94 /* Build configuration list for PBXNativeTarget "TuneURL (SDK)" */;
 			buildPhases = (
-				1BBA385AAD9B8B8EF34286BC /* [CP] Check Pods Manifest.lock */,
 				EC244B932702561E002D4D94 /* Headers */,
 				EC244B942702561E002D4D94 /* Sources */,
 				EC244B952702561E002D4D94 /* Frameworks */,
@@ -344,13 +393,30 @@
 			productReference = EC244B982702561E002D4D94 /* TuneURL.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		EC3FC8092729EFA500869D88 /* TuneURL (CLI) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EC3FC80E2729EFA500869D88 /* Build configuration list for PBXNativeTarget "TuneURL (CLI)" */;
+			buildPhases = (
+				EC3FC8062729EFA500869D88 /* Sources */,
+				EC3FC8072729EFA500869D88 /* Frameworks */,
+				EC3FC8082729EFA500869D88 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "TuneURL (CLI)";
+			productName = "TuneURL (CLI)";
+			productReference = EC3FC80A2729EFA500869D88 /* TuneURL */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		60523632201FE51800B65A72 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1250;
+				LastSwiftUpdateCheck = 1310;
 				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "TuneURL Inc.";
 				TargetAttributes = {
@@ -373,6 +439,9 @@
 					EC244B972702561E002D4D94 = {
 						CreatedOnToolsVersion = 13.0;
 					};
+					EC3FC8092729EFA500869D88 = {
+						CreatedOnToolsVersion = 13.1;
+					};
 				};
 			};
 			buildConfigurationList = 60523635201FE51800B65A72 /* Build configuration list for PBXProject "TuneURL" */;
@@ -389,6 +458,7 @@
 			projectRoot = "";
 			targets = (
 				60523639201FE51900B65A72 /* TuneURL */,
+				EC3FC8092729EFA500869D88 /* TuneURL (CLI) */,
 				EC244B972702561E002D4D94 /* TuneURL (SDK) */,
 				6052364F201FE51900B65A72 /* TuneURLTests */,
 			);
@@ -459,28 +529,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		1BBA385AAD9B8B8EF34286BC /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TuneURL (SDK)-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		ECBD100F2322F003005415EF /* Update Build Number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -544,9 +592,24 @@
 				EC244BA72702574C002D4D94 /* AudioMatcher.swift in Sources */,
 				EC244BA42702573C002D4D94 /* AudioUtility.swift in Sources */,
 				EC244BB627027BEB002D4D94 /* Debug.swift in Sources */,
+				EC3FC8052729E42800869D88 /* Detector.swift in Sources */,
 				EC244BB4270273AC002D4D94 /* Listener.swift in Sources */,
 				EC244BB22702736E002D4D94 /* MatchResponse.swift in Sources */,
-				EC244BA9270258A2002D4D94 /* MatchServer.swift in Sources */,
+				EC244BA9270258A2002D4D94 /* Server.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EC3FC8062729EFA500869D88 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC3FC80D2729EFA500869D88 /* main.swift in Sources */,
+				EC3FC8112729F0A700869D88 /* AudioBuffer.swift in Sources */,
+				EC3FC8142729F0AD00869D88 /* AudioUtility.swift in Sources */,
+				EC3FC8152729F0AF00869D88 /* Debug.swift in Sources */,
+				EC3FC8162729F0B000869D88 /* Detector.swift in Sources */,
+				EC3FC8182729F0B400869D88 /* MatchResponse.swift in Sources */,
+				ECA8C139272D147000045723 /* Server.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -806,13 +869,12 @@
 		};
 		EC244BA12702561E002D4D94 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F7F3120AF95D36E3389C948D /* Pods-TuneURL (SDK).debug.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A63XWBVGEW;
@@ -832,7 +894,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK;
@@ -850,13 +912,12 @@
 		};
 		EC244BA22702561E002D4D94 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E361F27645A7A7CE88BDCA41 /* Pods-TuneURL (SDK).release.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A63XWBVGEW;
@@ -876,7 +937,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.1;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK;
 				PRODUCT_NAME = TuneURL;
@@ -888,6 +949,38 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		EC3FC80F2729EFA500869D88 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A63XWBVGEW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_NAME = TuneURL;
+				SDKROOT = macosx;
+				SWIFT_INCLUDE_PATHS = Fingerprint/;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		EC3FC8102729EFA500869D88 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A63XWBVGEW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_NAME = TuneURL;
+				SDKROOT = macosx;
+				SWIFT_INCLUDE_PATHS = Fingerprint/;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -926,6 +1019,15 @@
 			buildConfigurations = (
 				EC244BA12702561E002D4D94 /* Debug */,
 				EC244BA22702561E002D4D94 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EC3FC80E2729EFA500869D88 /* Build configuration list for PBXNativeTarget "TuneURL (CLI)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC3FC80F2729EFA500869D88 /* Debug */,
+				EC3FC8102729EFA500869D88 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

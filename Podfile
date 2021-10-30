@@ -12,7 +12,3 @@ target 'TuneURL' do
     pod 'Alamofire', '~> 4.9.0'
     pod 'DMSwipeCards'
 end
-
-target 'TuneURL (SDK)' do
-    pod 'Alamofire', '~> 4.9.0'
-end
