@@ -133,7 +133,7 @@ class AudioCapture: NSObject {
 		let triggerFingerprint = AudioMatcher.shared.triggerFingerprint
 
 		// calculate the fingerprint match results
-		let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint)
+		let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint, false)
 		FingerprintFree(bufferFingerprint)
 
 		// check the match results

@@ -9,6 +9,7 @@
 #ifndef FINGERPRINT_H
 #define FINGERPRINT_H
 
+#include <stdbool.h>
 #include <stdlib.h>
 
 #ifdef __cplusplus
@@ -37,7 +38,7 @@ typedef struct FingerprintSimilarity {
 } FingerprintSimilarity;
 
 
-FingerprintSimilarity CompareFingerprints(const Fingerprint *fingerprint1, const Fingerprint *fingerprint2);
+FingerprintSimilarity CompareFingerprints(const Fingerprint *fingerprint1, const Fingerprint *fingerprint2, bool truncating);
 Fingerprint *ExtractFingerprint(const int16_t *wave, int waveLength);
 Fingerprint *ExtractFingerprintFromRawFile(const char *filePath);
 void FingerprintFree(Fingerprint *fingerprint);

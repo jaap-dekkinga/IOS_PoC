@@ -12,16 +12,22 @@
 #include "FingerprintSimilarityComputer.h"
 
 
-FingerprintSimilarity CompareFingerprints(const Fingerprint *fingerprint1, const Fingerprint *fingerprint2)
+FingerprintSimilarity CompareFingerprints(const Fingerprint *fingerprint1, const Fingerprint *fingerprint2, bool truncating)
 {
-	// select the smaller fingerprint size
-	size_t dataSize = (fingerprint1->dataSize > fingerprint2->dataSize) ? fingerprint2->dataSize : fingerprint1->dataSize;
+	size_t data1Size = fingerprint1->dataSize;
+	size_t data2Size = fingerprint2->dataSize;
+
+	if (truncating) {
+		// select the smaller fingerprint size
+		data1Size = (data1Size > data2Size) ? data2Size : data1Size;
+		data2Size = data1Size;
+	}
 
 	// copy the fingerprint data
-	vector<uint8_t> data1(dataSize);
-	memcpy(data1.data(), fingerprint1->data, dataSize);
-	vector<uint8_t> data2(dataSize);
-	memcpy(data2.data(), fingerprint2->data, dataSize);
+	vector<uint8_t> data1(data1Size);
+	memcpy(data1.data(), fingerprint1->data, data1Size);
+	vector<uint8_t> data2(data2Size);
+	memcpy(data2.data(), fingerprint2->data, data2Size);
 
 	FingerprintSimilarityComputer computer(data1, data2);
 	return computer.getMatchResults();

@@ -90,7 +90,7 @@ fileprivate func compareFiles(file1: String, file2: String)
 	}
 
 	// compare the fingerprints
-	let results = CompareFingerprints(fingerprint1, fingerprint2)
+	let results = CompareFingerprints(fingerprint1, fingerprint2, true)
 	print("mostSimilarFramePosition: \(results.mostSimilarFramePosition)")
 	print("mostSimilarStartTime: \(results.mostSimilarStartTime)")
 	print("score: \(results.score)")
