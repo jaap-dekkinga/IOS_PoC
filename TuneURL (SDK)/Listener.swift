@@ -14,7 +14,7 @@ import Foundation
 public class Listener {
 
 	public typealias AudioBufferHandler = (AVAudioPCMBuffer) -> Void
-	public typealias MatchHandler = (MatchResponse) -> Void
+	public typealias MatchHandler = (Match) -> Void
 
 	// MARK: -
 
@@ -35,7 +35,7 @@ public class Listener {
 
 	// MARK: -
 
-	public static func startListening(matchHandler: @escaping (MatchResponse) -> Void)
+	public static func startListening(matchHandler: @escaping (Match) -> Void)
 	{
 		AudioMatcher.shared.start(matchHandler: matchHandler)
 	}

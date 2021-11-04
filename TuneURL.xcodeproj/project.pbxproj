@@ -29,7 +29,7 @@
 		EC244BA627025747002D4D94 /* AudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E097C231EDC6500445E52 /* AudioCapture.swift */; };
 		EC244BA72702574C002D4D94 /* AudioMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */; };
 		EC244BA9270258A2002D4D94 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2FDA6D2339BABF0011DE7A /* Server.swift */; };
-		EC244BB22702736E002D4D94 /* MatchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6024B74020606C8D0005A984 /* MatchResponse.swift */; };
+		EC244BB22702736E002D4D94 /* Match.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6024B74020606C8D0005A984 /* Match.swift */; };
 		EC244BB4270273AC002D4D94 /* Listener.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC244BB3270273AC002D4D94 /* Listener.swift */; };
 		EC244BB627027BEB002D4D94 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC244BB527027BEB002D4D94 /* Debug.swift */; };
 		EC244BB827027DEE002D4D94 /* libFingerprint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC244BB727027DEE002D4D94 /* libFingerprint.a */; };
@@ -45,7 +45,7 @@
 		EC3FC8142729F0AD00869D88 /* AudioUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30067F23317E6D0013B8F8 /* AudioUtility.swift */; };
 		EC3FC8152729F0AF00869D88 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC244BB527027BEB002D4D94 /* Debug.swift */; };
 		EC3FC8162729F0B000869D88 /* Detector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3FC8042729E42800869D88 /* Detector.swift */; };
-		EC3FC8182729F0B400869D88 /* MatchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6024B74020606C8D0005A984 /* MatchResponse.swift */; };
+		EC3FC8182729F0B400869D88 /* Match.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6024B74020606C8D0005A984 /* Match.swift */; };
 		EC3FC82A2729F3FE00869D88 /* libFingerprint.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3FC8292729F3FE00869D88 /* libFingerprint.a */; };
 		EC3FC82E2729F47300869D88 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3FC82B2729F40C00869D88 /* libc++.tbd */; };
 		EC3FC8302729F48E00869D88 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3FC82F2729F48E00869D88 /* Accelerate.framework */; };
@@ -105,7 +105,7 @@
 		4D4ED16D2573D59800EDC277 /* ReportingManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportingManager.swift; sourceTree = "<group>"; };
 		600A6EB7205EB2B500F96F7A /* Notify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notify.swift; sourceTree = "<group>"; };
 		600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioMatcher.swift; sourceTree = "<group>"; };
-		6024B74020606C8D0005A984 /* MatchResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchResponse.swift; sourceTree = "<group>"; };
+		6024B74020606C8D0005A984 /* Match.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Match.swift; sourceTree = "<group>"; };
 		6052363A201FE51900B65A72 /* TuneURL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TuneURL.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6052363D201FE51900B65A72 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		60523644201FE51900B65A72 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -307,7 +307,7 @@
 				EC244BB527027BEB002D4D94 /* Debug.swift */,
 				EC3FC8042729E42800869D88 /* Detector.swift */,
 				EC244BB3270273AC002D4D94 /* Listener.swift */,
-				6024B74020606C8D0005A984 /* MatchResponse.swift */,
+				6024B74020606C8D0005A984 /* Match.swift */,
 				EC2FDA6D2339BABF0011DE7A /* Server.swift */,
 			);
 			path = "TuneURL (SDK)";
@@ -594,7 +594,7 @@
 				EC244BB627027BEB002D4D94 /* Debug.swift in Sources */,
 				EC3FC8052729E42800869D88 /* Detector.swift in Sources */,
 				EC244BB4270273AC002D4D94 /* Listener.swift in Sources */,
-				EC244BB22702736E002D4D94 /* MatchResponse.swift in Sources */,
+				EC244BB22702736E002D4D94 /* Match.swift in Sources */,
 				EC244BA9270258A2002D4D94 /* Server.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -608,7 +608,7 @@
 				EC3FC8142729F0AD00869D88 /* AudioUtility.swift in Sources */,
 				EC3FC8152729F0AF00869D88 /* Debug.swift in Sources */,
 				EC3FC8162729F0B000869D88 /* Detector.swift in Sources */,
-				EC3FC8182729F0B400869D88 /* MatchResponse.swift in Sources */,
+				EC3FC8182729F0B400869D88 /* Match.swift in Sources */,
 				ECA8C139272D147000045723 /* Server.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -874,7 +874,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A63XWBVGEW;
@@ -894,7 +894,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.1.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK;
@@ -917,7 +917,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A63XWBVGEW;
@@ -937,7 +937,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.1.1;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK;
 				PRODUCT_NAME = TuneURL;

@@ -15,12 +15,12 @@ import Foundation
 public class Detector {
 
 	// types
-	public typealias CompletionHandler = ([MatchResponse]) -> Void
+	public typealias CompletionHandler = ([Match]) -> Void
 
 	private class DetectRequest {
 		let completionHandler: CompletionHandler
 		var possibleMatches = [PossibleMatch]()
-		var matches = [MatchResponse]()
+		var matches = [Match]()
 
 		init(completionHandler: @escaping CompletionHandler) {
 			self.completionHandler = completionHandler
@@ -89,27 +89,30 @@ public class Detector {
 		let triggerWindowDuration: Float = 4.0
 		let fingerprintBytesPerSecond = 640	// TODO: confirm this
 		let windowSize = (fingerprintBytesPerSecond * Int(triggerWindowDuration))
+		let fileFingerprintSize = Int(fileFingerprint.pointee.dataSize)
+		let totalMatchSize = Int((triggerDuration + matchDuration) * Float(fingerprintBytesPerSecond))
 
-		while (currentIndex < fileFingerprint.pointee.dataSize) {
+		while (currentIndex <= (fileFingerprintSize - totalMatchSize)) {
 			// create the window fingerprint
 			var windowFingerprint = Fingerprint(data: fileFingerprint.pointee.data.advanced(by: currentIndex), dataSize: Int32(windowSize))
 
 			// compare the fingerprints
 			let matchResults = CompareFingerprints(&windowFingerprint, triggerFingerprint, false)
 
-			// Note: This uses a very high similarity because the audio should really be an
-			// almost exact match from a podcast.
+			// Note: This uses a very high similarity because the audio should really
+			// be an almost exact match from a podcast.
 
 			// check the match results
 			if (matchResults.similarity > 0.75) {
-	#if DEBUG
+
+#if DEBUG
 				// dump the trigger match results
 				print("TuneURL: Trigger detected at: \(matchResults.mostSimilarStartTime) seconds (similarity: \(matchResults.similarity))")
 				print("\tTrigger fingerprint score: \(matchResults.score)")
 				print("\tTrigger fingerprint similarity: \(matchResults.similarity)")
 				print("\tTrigger fingerprint similar time: \(matchResults.mostSimilarStartTime)")
 				print("\tTrigger fingerprint most similar frame: \(matchResults.mostSimilarFramePosition)")
-	#endif // DEBUG
+#endif // DEBUG
 
 				// calculate the match fingerprint
 				var matchStartBytes = Int((matchResults.mostSimilarStartTime + triggerDuration) * Float(fingerprintBytesPerSecond))
@@ -129,15 +132,28 @@ public class Detector {
 
 					// add the possible match
 					let possibleMatch = PossibleMatch(fingerprint: fingerprintData, time: matchResults.mostSimilarStartTime)
-					detectRequest.possibleMatches.append(possibleMatch)
+					// check if the possible match is too close to the last one
+					if let lastPossibleMatch = detectRequest.possibleMatches.last {
+						if (abs(lastPossibleMatch.time - possibleMatch.time) > 0.5) {
+							detectRequest.possibleMatches.append(possibleMatch)
+						} else {
+#if DEBUG
+							print("Ignoring possible match.")
+#endif // DEBUG
+						}
+					} else {
+						// there are no other possible matches
+						detectRequest.possibleMatches.append(possibleMatch)
+					}
 				} else {
+#if DEBUG
 					print("Error: Match is too close to the end of the file.")
+#endif // DEBUG
 				}
 			}
 
-			// TODO: overlap the trigger window
-//			currentIndex += (windowSize >> 1)
-			currentIndex += windowSize
+			// advance, but overlap the trigger window
+			currentIndex += (windowSize >> 1)
 		}
 
 		// cleanup
@@ -156,17 +172,22 @@ public class Detector {
 	{
 		// pop the last possible match
 		guard let possibleMatch = detectRequest.possibleMatches.popLast() else {
+			// sort the results
+			detectRequest.matches.sort { (match1, match2) -> Bool in
+				return (match1.time < match2.time)
+			}
+			// call the completion handler
 			detectRequest.completionHandler(detectRequest.matches)
 			return
 		}
 
 		// make the server request
 		Server.shared.matchFingerprint(for: possibleMatch.fingerprint, queue: dispatchQueue) {
-			matchResponse in
+			match in
 
 			// add the server match
-			if let matchResponse = matchResponse {
-				detectRequest.matches.append(matchResponse)
+			if let match = match {
+				detectRequest.matches.append(Match(match: match, time: possibleMatch.time))
 			}
 
 			// process the next possible match

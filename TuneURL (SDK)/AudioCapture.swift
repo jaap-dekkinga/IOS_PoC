@@ -139,6 +139,9 @@ class AudioCapture: NSObject {
 		// check the match results
 		if (matchResults.similarity > 0.1) {
 
+			// TODO: Should check if this detection was already caught
+			// by the overlapping window.
+
 			// calculate the time of the sound relative to now
 			let mostSimilarStartingTime = matchResults.mostSimilarStartTime
 			let relativeTime = (Float(triggerWindowDuration) - mostSimilarStartingTime)
@@ -153,7 +156,7 @@ class AudioCapture: NSObject {
 #endif // DEBUG
 
 			// match the tuneurl
-			AudioMatcher.shared.recognizedSound(timeRelativeToNow: relativeTime)
+			AudioMatcher.shared.recognizedTrigger(timeRelativeToNow: relativeTime)
 		} else {
 #if DEBUG
 			print("TuneURL: Trigger not detected. (similarity: \(matchResults.similarity))")

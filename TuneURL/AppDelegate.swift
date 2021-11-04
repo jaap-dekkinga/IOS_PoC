@@ -96,15 +96,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	{
 		// start listening
 		TuneURL.Listener.startListening() {
-			(matchResponse) in
+			(match) in
 
 			// ignore matches with extremely low confidence
-			guard (matchResponse.matchPercentage >= 30) else {
+			guard (match.matchPercentage >= 30) else {
 				return
 			}
 
 			// audio was successfully matched
-			if let matchedItem = MatchedItemCollection.shared.addItem(with: matchResponse) {
+			if let matchedItem = MatchedItemCollection.shared.addItem(with: match) {
 				AppDelegate.notify.notifyMatch(matchedItem)
 				self.reportingManager.captureUserAction(for: matchedItem, interestAction: "heard")
 			}

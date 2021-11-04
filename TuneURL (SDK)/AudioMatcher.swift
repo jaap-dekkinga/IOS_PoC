@@ -85,7 +85,7 @@ class AudioMatcher {
 
 	// MARK: -
 
-	func recognizedSound(timeRelativeToNow: Float)
+	func recognizedTrigger(timeRelativeToNow: Float)
 	{
 		let formatter = DateFormatter()
 		formatter.dateStyle = .none
@@ -157,10 +157,10 @@ class AudioMatcher {
 
 			// ask the server to match the audio
 			Server.shared.matchFingerprint(for: matchFingerprintData, queue: nil) {
-				(response: MatchResponse?) in
+				(match: Match?) in
 				// notfiy the delegate on a successful match
-				if let matchResponse = response, let handler = self.matchHandler {
-					handler(matchResponse)
+				if let match = match, let handler = self.matchHandler {
+					handler(match)
 				}
 			}
 		}

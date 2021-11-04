@@ -22,7 +22,7 @@ class Server {
 
 	// MARK: - Public
 
-	func matchFingerprint(for fingerprintData: [UInt8], queue: DispatchQueue?, completion: ((MatchResponse?) -> Void)? = nil)
+	func matchFingerprint(for fingerprintData: [UInt8], queue: DispatchQueue?, completion: ((Match?) -> Void)? = nil)
 	{
 #if DEBUG
 		print("TuneURL: Requesting fingerprint match.")
@@ -59,7 +59,7 @@ class Server {
 		request.httpBody = jsonData
 
 		// make the request
-		makeRequest(request, queue: queue, responseType: [MatchResponse].self) {
+		makeRequest(request, queue: queue, responseType: [Match].self) {
 			responseObject in
 
 			// get the response
@@ -69,18 +69,18 @@ class Server {
 			}
 
 			// find the best match response
-			var matchResponse: MatchResponse?
+			var match: Match?
 			var bestPercentage = -1
 
 			for item in matchResponses {
 				if (item.matchPercentage > bestPercentage) {
 					bestPercentage = item.matchPercentage
-					matchResponse = item
+					match = item
 				}
 			}
 
 			// call the completion handler
-			completion?(matchResponse)
+			completion?(match)
 		}
 	}
 

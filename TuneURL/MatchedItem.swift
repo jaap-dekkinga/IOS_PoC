@@ -81,12 +81,12 @@ class MatchedItem: Codable {
 
 	// MARK: -
 
-	convenience init(with matchResponse: MatchResponse)
+	convenience init(with match: Match)
 	{
 		self.init()
 
-		// parse the match response
-		switch (matchResponse.type) {
+		// parse the match
+		switch (match.type) {
 			case "coupon":
 				action = .coupon
 			case "phone":
@@ -102,16 +102,16 @@ class MatchedItem: Codable {
 		}
         
         uuid = UUID().uuidString
-        title = matchResponse.name
-        id = matchResponse.id
+        title = match.name
+        id = match.id
 		if (action == .phoneNumber) {
-			phoneNumber = matchResponse.name
+			phoneNumber = match.name
 		}
 		if (action == .poll) {
-			pollID = matchResponse.name
+			pollID = match.name
 		}
-//		if (matchResponse.url != "") {
-//			url = URL(string: matchResponse.url)
+//		if (match.url != "") {
+//			url = URL(string: match.url)
 //		}
 	}
 
