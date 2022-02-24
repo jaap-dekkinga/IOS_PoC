@@ -887,7 +887,7 @@
 					"$(inherited)",
 					"${SRCROOT}/Fingerprint/Source",
 				);
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2021 TuneURL Inc. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 TuneURL Inc. All rights reserved.";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -930,7 +930,7 @@
 					"$(inherited)",
 					"${SRCROOT}/Fingerprint/Source",
 				);
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2021 TuneURL Inc. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 TuneURL Inc. All rights reserved.";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

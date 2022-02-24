@@ -3,7 +3,7 @@
 //  Fingerprint
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 6/16/21.
-//  Copyright (c) 2021 TuneURL Inc. All rights reserved.
+//  Copyright (c) 2021-2022 TuneURL Inc. All rights reserved.
 //
 
 #include <stdio.h>
