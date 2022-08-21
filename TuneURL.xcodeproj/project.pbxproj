@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4D4ED16C25719A0F00EDC277 /* ReportingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16B25719A0F00EDC277 /* ReportingData.swift */; };
-		4D4ED16E2573D59800EDC277 /* ReportingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16D2573D59800EDC277 /* ReportingManager.swift */; };
 		600A6EB8205EB2B500F96F7A /* Notify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A6EB7205EB2B500F96F7A /* Notify.swift */; };
 		6052363E201FE51900B65A72 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6052363D201FE51900B65A72 /* AppDelegate.swift */; };
 		60523645201FE51900B65A72 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60523643201FE51900B65A72 /* Main.storyboard */; };
@@ -21,6 +19,10 @@
 		60D361E920D164540079C14C /* PollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E820D164540079C14C /* PollViewController.swift */; };
 		6D9F1B12258188BC004C4E29 /* InterestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9F1B11258188BC004C4E29 /* InterestViewController.swift */; };
 		DCC3A21648720C0E8D25B72B /* Pods_TuneURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */; };
+		EC15389F27C75234007E85AE /* Reporting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16D2573D59800EDC277 /* Reporting.swift */; };
+		EC1538A027C75246007E85AE /* Reporting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16D2573D59800EDC277 /* Reporting.swift */; };
+		EC1538A127C752D5007E85AE /* ReportingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16B25719A0F00EDC277 /* ReportingData.swift */; };
+		EC1538A227C752D6007E85AE /* ReportingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4ED16B25719A0F00EDC277 /* ReportingData.swift */; };
 		EC244B9B2702561E002D4D94 /* TuneURL.h in Headers */ = {isa = PBXBuildFile; fileRef = EC244B9A2702561E002D4D94 /* TuneURL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EC244B9E2702561E002D4D94 /* TuneURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC244B982702561E002D4D94 /* TuneURL.framework */; };
 		EC244BA02702561E002D4D94 /* TuneURL.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EC244B982702561E002D4D94 /* TuneURL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -102,7 +104,7 @@
 /* Begin PBXFileReference section */
 		0A2CFED9DCA2349DDD463049 /* Pods_TuneURL__CLI_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TuneURL__CLI_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D4ED16B25719A0F00EDC277 /* ReportingData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportingData.swift; sourceTree = "<group>"; };
-		4D4ED16D2573D59800EDC277 /* ReportingManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportingManager.swift; sourceTree = "<group>"; };
+		4D4ED16D2573D59800EDC277 /* Reporting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reporting.swift; sourceTree = "<group>"; };
 		600A6EB7205EB2B500F96F7A /* Notify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notify.swift; sourceTree = "<group>"; };
 		600A6EBD205EBEC500F96F7A /* AudioMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioMatcher.swift; sourceTree = "<group>"; };
 		6024B74020606C8D0005A984 /* Match.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Match.swift; sourceTree = "<group>"; };
@@ -249,8 +251,6 @@
 				60D361E620CDC17C0079C14C /* PollManager.swift */,
 				60D361E820D164540079C14C /* PollViewController.swift */,
 				EC2CA86E24F9537600443202 /* RecentItemCollectionLayout.swift */,
-				4D4ED16B25719A0F00EDC277 /* ReportingData.swift */,
-				4D4ED16D2573D59800EDC277 /* ReportingManager.swift */,
 				ECB9164224F5C92C0091C76B /* SavedContentViewController.swift */,
 				EC2CA86C24F93D8500443202 /* SavedItemCollectionLayout.swift */,
 				EC2CA86A24F93B8700443202 /* UIViewExtensions.swift */,
@@ -308,6 +308,8 @@
 				EC3FC8042729E42800869D88 /* Detector.swift */,
 				EC244BB3270273AC002D4D94 /* Listener.swift */,
 				6024B74020606C8D0005A984 /* Match.swift */,
+				4D4ED16D2573D59800EDC277 /* Reporting.swift */,
+				4D4ED16B25719A0F00EDC277 /* ReportingData.swift */,
 				EC2FDA6D2339BABF0011DE7A /* Server.swift */,
 			);
 			path = "TuneURL (SDK)";
@@ -567,8 +569,6 @@
 				60D361E720CDC17C0079C14C /* PollManager.swift in Sources */,
 				60D361E920D164540079C14C /* PollViewController.swift in Sources */,
 				EC2CA86F24F9537600443202 /* RecentItemCollectionLayout.swift in Sources */,
-				4D4ED16C25719A0F00EDC277 /* ReportingData.swift in Sources */,
-				4D4ED16E2573D59800EDC277 /* ReportingManager.swift in Sources */,
 				ECB9164324F5C92C0091C76B /* SavedContentViewController.swift in Sources */,
 				EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */,
 				EC2CA86B24F93B8700443202 /* UIViewExtensions.swift in Sources */,
@@ -595,6 +595,8 @@
 				EC3FC8052729E42800869D88 /* Detector.swift in Sources */,
 				EC244BB4270273AC002D4D94 /* Listener.swift in Sources */,
 				EC244BB22702736E002D4D94 /* Match.swift in Sources */,
+				EC15389F27C75234007E85AE /* Reporting.swift in Sources */,
+				EC1538A127C752D5007E85AE /* ReportingData.swift in Sources */,
 				EC244BA9270258A2002D4D94 /* Server.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -609,6 +611,8 @@
 				EC3FC8152729F0AF00869D88 /* Debug.swift in Sources */,
 				EC3FC8162729F0B000869D88 /* Detector.swift in Sources */,
 				EC3FC8182729F0B400869D88 /* Match.swift in Sources */,
+				EC1538A027C75246007E85AE /* Reporting.swift in Sources */,
+				EC1538A227C752D6007E85AE /* ReportingData.swift in Sources */,
 				ECA8C139272D147000045723 /* Server.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

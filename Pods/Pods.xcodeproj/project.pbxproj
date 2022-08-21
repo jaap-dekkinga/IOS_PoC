@@ -20,7 +20,7 @@
 			remoteGlobalIDString = 81B7E9B7CD0CADA087A4BB042FBA92E7;
 			remoteInfo = Alamofire;
 		};
-		B1C9B8E8C65FA4A06548CE2ACDD3641D /* PBXContainerItemProxy */ = {
+		CD2272053D2EFA11BE5267AAB0152E57 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 65E7D01ADBDACE3F99F88D20B09F9513 /* DMSwipeCards.xcodeproj */;
 			proxyType = 1;
@@ -154,7 +154,7 @@
 			);
 			dependencies = (
 				F5A0331082E1B5E6A069F0E70DF7E15C /* PBXTargetDependency */,
-				93B41C86B1A63933D2C7FB2FE6CF29A2 /* PBXTargetDependency */,
+				8C59607CA4157657533204A53CAF7F14 /* PBXTargetDependency */,
 			);
 			name = "Pods-TuneURL";
 			productName = Pods_TuneURL;
@@ -167,8 +167,8 @@
 		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastSwiftUpdateCheck = 1300;
+				LastUpgradeCheck = 1300;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 12.0";
@@ -218,10 +218,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		93B41C86B1A63933D2C7FB2FE6CF29A2 /* PBXTargetDependency */ = {
+		8C59607CA4157657533204A53CAF7F14 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = DMSwipeCards;
-			targetProxy = B1C9B8E8C65FA4A06548CE2ACDD3641D /* PBXContainerItemProxy */;
+			targetProxy = CD2272053D2EFA11BE5267AAB0152E57 /* PBXContainerItemProxy */;
 		};
 		F5A0331082E1B5E6A069F0E70DF7E15C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

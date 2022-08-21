@@ -52,7 +52,6 @@ class Server {
 
 		// create the request
 		var request = URLRequest(url: requestURL)
-		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		request.timeoutInterval = 60.0
 		request.httpMethod = "POST"
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")

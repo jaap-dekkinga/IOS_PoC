@@ -30,7 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // reporting init
     private var matchedItem: MatchedItem?
-    private let reportingManager = ReportingManager()
 
 	// MARK: -
 
@@ -106,7 +105,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			// audio was successfully matched
 			if let matchedItem = MatchedItemCollection.shared.addItem(with: match) {
 				AppDelegate.notify.notifyMatch(matchedItem)
-				self.reportingManager.captureUserAction(for: matchedItem, interestAction: "heard")
+				Reporting.shared.report(action: .heard, for: matchedItem)
 			}
 		}
 	}

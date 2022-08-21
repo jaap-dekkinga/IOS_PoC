@@ -18,7 +18,6 @@ class PollViewController: UIViewController, DMSwipeCardsViewDelegate {
 	// private
 	private var matchedItem: MatchedItem?
 	private let pollManager = PollManager()
-    private let reportingManager = ReportingManager()
 	private var swipeView: DMSwipeCardsView<String>!
 	private var voted = false
 
@@ -298,7 +297,7 @@ class PollViewController: UIViewController, DMSwipeCardsViewDelegate {
 		// cast the vote
 		pollManager.castVote(userResponse: false, for: item)
 		voted = true
-        reportingManager.captureUserAction(for: item, interestAction: "acted")
+		Reporting.shared.report(action: .acted, for: item)
 	}
 
 	func swipedRight(_ object: Any)
@@ -317,7 +316,7 @@ class PollViewController: UIViewController, DMSwipeCardsViewDelegate {
 		// cast the vote
 		pollManager.castVote(userResponse: true, for: item)
 		voted = true
-        reportingManager.captureUserAction(for: item, interestAction: "acted")
+		Reporting.shared.report(action: .acted, for: item)
 	}
 
 	func cardTapped(_ object: Any)

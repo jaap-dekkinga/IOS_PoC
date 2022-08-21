@@ -18,7 +18,6 @@ class InterestViewController: UIViewController, DMSwipeCardsViewDelegate {
     // private
     private var matchedItem: MatchedItem?
     //private let pollManager = PollManager()
-    private let reportingManager = ReportingManager()
     private var swipeView: DMSwipeCardsView<String>!
     private var voted = false
 
@@ -299,7 +298,7 @@ class InterestViewController: UIViewController, DMSwipeCardsViewDelegate {
         // cast the vote
         //pollManager.castVote(userResponse: false, for: item)
         voted = true
-        reportingManager.captureUserAction(for: item, interestAction: "acted")
+		Reporting.shared.report(action: .acted, for: item)
         
         self.view.backgroundColor = UIColor(red: (240.0 / 255.0), green: (83.0 / 255.0), blue: (73.0 / 255.0), alpha: 0.5)
         // This is the end - close the pop-up
@@ -324,7 +323,7 @@ class InterestViewController: UIViewController, DMSwipeCardsViewDelegate {
         //pollManager.castVote(userResponse: true, for: item)
         
         voted = true
-        reportingManager.captureUserAction(for: item, interestAction: "acted")
+		Reporting.shared.report(action: .acted, for: item)
         
         self.view.backgroundColor = UIColor(red: (35.0 / 255.0), green: (188.0 / 255.0), blue: (73.0 / 255.0), alpha: 0.5)
 
@@ -347,7 +346,7 @@ class InterestViewController: UIViewController, DMSwipeCardsViewDelegate {
     private func handleItem(_ item: MatchedItem, wasUserInitiated: Bool = false)
     {
         //reporting
-        reportingManager.captureUserAction(for: item, interestAction: "interested")
+		Reporting.shared.report(action: .interested, for: item)
         switch (item.action) {
             // Immediate action items - phone number, text message, open web page
             // Save items - coupons, save web page

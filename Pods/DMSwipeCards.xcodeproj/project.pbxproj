@@ -137,8 +137,8 @@
 		D13CF8D27EB4DC5A0CB58B71A6E78BDF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastSwiftUpdateCheck = 1300;
+				LastUpgradeCheck = 1300;
 			};
 			buildConfigurationList = 526B0BDF777F3DFB6303B89D96BD2A10 /* Build configuration list for PBXProject "DMSwipeCards" */;
 			compatibilityVersion = "Xcode 12.0";
