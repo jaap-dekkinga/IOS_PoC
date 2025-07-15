@@ -16,7 +16,7 @@ public class Listener {
 	public typealias AudioBufferHandler = (AVAudioPCMBuffer) -> Void
 	public typealias MatchHandler = (Match) -> Void
 
-	// MARK: -
+	// MARK: - Properties
 
 	public static var isListening: Bool {
 		get {
@@ -33,8 +33,12 @@ public class Listener {
 		}
 	}
 
-	// MARK: -
-
+	// MARK: - Functions
+    public static func setTrigger(_ audioFileURL: URL)
+    {
+        AudioMatcher.shared.privateSetTrigger(from: audioFileURL)
+    }
+    
 	public static func startListening(matchHandler: @escaping (Match) -> Void)
 	{
 		AudioMatcher.shared.start(matchHandler: matchHandler)

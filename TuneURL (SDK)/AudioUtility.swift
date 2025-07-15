@@ -9,7 +9,7 @@
 
 import AudioToolbox
 import AVFoundation
-import Fingerprint_Private
+@_implementationOnly import Fingerprint_Private
 import Foundation
 
 

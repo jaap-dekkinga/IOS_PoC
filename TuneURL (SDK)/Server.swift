@@ -7,7 +7,7 @@
 //
 
 
-import Fingerprint_Private
+@_implementationOnly import Fingerprint_Private
 import Foundation
 
 

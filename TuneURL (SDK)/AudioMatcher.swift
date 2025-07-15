@@ -8,7 +8,7 @@
 
 
 import AVFoundation
-import Fingerprint_Private
+@_implementationOnly import Fingerprint_Private
 import Foundation
 
 
@@ -21,9 +21,9 @@ class AudioMatcher {
 	var audioBufferDelegate: Listener.AudioBufferHandler?
 
 	// public (read-only)
-	public private(set) var audioCapture: AudioCapture?
-	public private(set) var isRunning = false
-	public private(set) var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
+	internal private(set) var audioCapture: AudioCapture?
+	internal private(set) var isRunning = false
+	internal private(set) var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
 
 	// private
 	private let audioBuffer: AudioBuffer
@@ -36,9 +36,6 @@ class AudioMatcher {
 		// setup the audio buffer
 		audioBuffer = AudioBuffer(captureDuration: 10.0, sampleRate: 44100.0)
 		audioBuffer.reset()
-
-		// setup the audio trigger
-		prepareAudioTrigger()
 	}
 
 	deinit
@@ -48,6 +45,16 @@ class AudioMatcher {
 	}
 
 	// MARK: - Public
+    func privateSetTrigger(from triggerFileURL: URL)
+    {
+        FingerprintFree(triggerFingerprint)
+        triggerFingerprint = nil
+        
+        // create the fingerprint
+        if let fingerprint = AudioUtility.generateFingerprint(for: triggerFileURL) {
+            triggerFingerprint = fingerprint
+        }
+    }
 
 	func start(matchHandler: @escaping Listener.MatchHandler)
 	{
@@ -167,20 +174,6 @@ class AudioMatcher {
 	}
 
 	// MARK: - Private
-
-	private func prepareAudioTrigger()
-	{
-		// get the url for the trigger audio file
-		guard let triggerFileURL = Bundle.main.url(forResource: "Trigger-Audio", withExtension: "wav") else {
-			return
-		}
-
-		// create the fingerprint
-		if let fingerprint = AudioUtility.generateFingerprint(for: triggerFileURL) {
-			triggerFingerprint = fingerprint
-		}
-	}
-
 	private func startMatching()
 	{
 		DispatchQueue.main.async {
