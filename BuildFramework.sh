@@ -22,5 +22,7 @@ xcodebuild archive \
 # build the xcframework
 xcodebuild -create-xcframework \
  -framework "${FRAMEWORK_OUTPUT_FOLDER}/TuneURL-iphoneos.xcarchive/Products/Library/Frameworks/TuneURL.framework" \
+ -debug-symbols "$(pwd -P)/${FRAMEWORK_OUTPUT_FOLDER}/TuneURL-iphoneos.xcarchive/dSYMs/TuneURL.framework.dSYM" \
  -framework "${FRAMEWORK_OUTPUT_FOLDER}/TuneURL-iphonesimulator.xcarchive/Products/Library/Frameworks/TuneURL.framework" \
+ -debug-symbols "$(pwd -P)/${FRAMEWORK_OUTPUT_FOLDER}/TuneURL-iphonesimulator.xcarchive/dSYMs/TuneURL.framework.dSYM" \
  -output "${FRAMEWORK_OUTPUT_FOLDER}/TuneURL.xcframework"
