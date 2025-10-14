@@ -6,19 +6,17 @@
 //  Copyright © 2021-2022 TuneURL Inc. All rights reserved.
 //
 
-
+import Foundation
 import AVFoundation
 @_implementationOnly import Fingerprint_Private
-import Foundation
-
 
 public class Detector {
-
-	// types
-	public typealias CompletionHandler = ([Match]) -> Void
-
-	private class DetectRequest {
-		let completionHandler: CompletionHandler
+    
+    // MARK: - Types
+    public typealias CompletionHandler = ([Match]) -> Void
+    
+    private class DetectRequest {
+        let completionHandler: CompletionHandler
 		var possibleMatches = [PossibleMatch]()
 		var matches = [Match]()
 
@@ -32,31 +30,26 @@ public class Detector {
 		var time: Float
 	}
 
-	// private
+	// MARK: - Private props
 	private static let dispatchQueue = DispatchQueue(label: "TuneURL Detector")
 	private static var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
 	private static let triggerWindowDuration = 4.0
 
-	// MARK: - Public
-
-	public static func setTrigger(_ audioFileURL: URL)
-	{
+	// MARK: - Public static funcs
+	public static func setTrigger(_ audioFileURL: URL) {
 		dispatchQueue.async {
 			privateSetTrigger(audioFileURL)
 		}
 	}
 
-	public static func processAudio(for audioFileURL: URL, completionHandler: @escaping CompletionHandler)
-	{
+	public static func processAudio(for audioFileURL: URL, completionHandler: @escaping CompletionHandler) {
 		dispatchQueue.async {
 			privateProcessAudio(for: audioFileURL, completionHandler: completionHandler)
 		}
 	}
 
-	// MARK: - Private
-
-	public static func privateSetTrigger(_ audioFileURL: URL)
-	{
+    // MARK: - Private funcs
+    private static func privateSetTrigger(_ audioFileURL: URL) {
 		// clear any current trigger
 		FingerprintFree(triggerFingerprint)
 		triggerFingerprint = nil
@@ -67,8 +60,7 @@ public class Detector {
 		}
 	}
 
-	private static func privateProcessAudio(for audioFileURL: URL, completionHandler: @escaping CompletionHandler)
-	{
+	private static func privateProcessAudio(for audioFileURL: URL, completionHandler: @escaping CompletionHandler) {
 		// safety check
 		guard (triggerFingerprint != nil) else {
 			NSLog("TuneURL: Error: No audio trigger has been set.")
@@ -168,8 +160,7 @@ public class Detector {
 		requestNext(detectRequest)
 	}
 
-	private static func requestNext(_ detectRequest: DetectRequest)
-	{
+	private static func requestNext(_ detectRequest: DetectRequest) {
 		// pop the last possible match
 		guard let possibleMatch = detectRequest.possibleMatches.popLast() else {
 			// sort the results
@@ -194,5 +185,4 @@ public class Detector {
 			requestNext(detectRequest)
 		}
 	}
-
 }

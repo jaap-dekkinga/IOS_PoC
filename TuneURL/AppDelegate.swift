@@ -95,6 +95,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func startListening()
 	{
 		// start listening
+        guard let audioFileURL = Bundle.main.url(forResource: "Trigger-Audio", withExtension: "mp3") else { return }
+        TuneURL.Listener.setTrigger(audioFileURL)
 		TuneURL.Listener.startListening() {
 			(match) in
 

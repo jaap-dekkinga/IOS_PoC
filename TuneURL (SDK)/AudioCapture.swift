@@ -7,22 +7,17 @@
 //
 
 
+import Foundation
 import AVFoundation
 @_implementationOnly import Fingerprint_Private
-import Foundation
-
 
 protocol AudioCaptureDelegate {
-
 	func audioCaptureStatusChanged()
-
 }
-
-// MARK: -
 
 class AudioCapture: NSObject {
 
-	// private
+	// MARK: - Private props
 	private let audioBuffer: AudioBuffer
 	private var audioConverter: AVAudioConverter?
 	private let audioEngine = AVAudioEngine()
@@ -33,15 +28,17 @@ class AudioCapture: NSObject {
 	private let triggerWindowDuration = 4.0
 	private var useBufferConversion = false
 
-	// computed
-	var isRunning: Bool {
-		return audioEngine.isRunning
-	}
-
-	// MARK: -
-
-	init(audioBuffer buffer: AudioBuffer, sampleRate rate: Double, delegate: AudioCaptureDelegate?)
-	{
+	// MARK: - Copmuted props
+    var isRunning: Bool {
+        return audioEngine.isRunning
+    }
+    
+	// MARK: - Init/deinit
+    init(
+        audioBuffer buffer: AudioBuffer,
+        sampleRate rate: Double,
+        delegate: AudioCaptureDelegate?
+    ) {
 		// save the audio buffer
 		audioBuffer = buffer
 		sampleRate = rate
@@ -54,23 +51,20 @@ class AudioCapture: NSObject {
 		bufferFormat = format
 	}
 
-	deinit
-	{
+	deinit {
 		// make sure recording has stopped
 		stop()
 	}
 
-	// MARK: -
-
-	func start() -> Bool
-	{
+// MARK: - Public funcs
+	func start() -> Bool {
 		// safety check
 		if self.isRunning {
 			return true
 		}
 
-		// start the audio buffer
-		audioBuffer.startRecording()
+		// reset the audio buffer before recording
+		audioBuffer.reset()
 
 		// setup the audio session
 		setupAudioSession()
@@ -82,21 +76,22 @@ class AudioCapture: NSObject {
 
 		// setup the configuration change notification
 		let notificationCenter = NotificationCenter.default
-		notificationCenter.addObserver(self, selector: #selector(audioEngineConfigurationChange), name: .AVAudioEngineConfigurationChange, object: audioEngine)
+        notificationCenter.addObserver(
+            self,
+            selector: #selector(audioEngineConfigurationChange),
+            name: .AVAudioEngineConfigurationChange,
+            object: audioEngine
+        )
 
 		return true
 	}
 
-	func stop()
-	{
+	func stop() {
 		// stop notifications
 		NotificationCenter.default.removeObserver(self, name: nil, object: audioEngine)
 
 		// stop the audio engine
 		stopAudioEngine()
-
-		// stop the audio buffer
-		audioBuffer.stopRecording()
 
 		// stop the audio session
 		_ = try? audioSession.setActive(false)
@@ -105,12 +100,9 @@ class AudioCapture: NSObject {
 		delegate?.audioCaptureStatusChanged()
 	}
 
-	// MARK: - Private
-
-	private func checkForTriggerSound()
-	{
+	// MARK: - Private funcs
+	private func checkForTriggerSound() {
 		// TODO: move this into the audio matcher
-
 		audioBuffer.resetUntestedSize()
 
 		// copy the sound data from the buffer
@@ -164,15 +156,17 @@ class AudioCapture: NSObject {
 		}
 	}
 
-	private func convertAudioBuffer(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer?
-	{
+	private func convertAudioBuffer(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer? {
 		// setup the converted audio buffer
-		guard let converter = audioConverter,
-			let convertedBuffer = AVAudioPCMBuffer(pcmFormat: bufferFormat, frameCapacity: AVAudioFrameCount(bufferFormat.sampleRate) * buffer.frameLength / AVAudioFrameCount(buffer.format.sampleRate)) else {
-			return nil
-		}
-
-		// process the buffer with the audio converter
+        guard
+            let converter = audioConverter,
+            let convertedBuffer = AVAudioPCMBuffer(
+                pcmFormat: bufferFormat,
+                frameCapacity: AVAudioFrameCount(bufferFormat.sampleRate) * buffer.frameLength / AVAudioFrameCount(buffer.format.sampleRate)
+            )
+        else { return nil }
+        
+        // process the buffer with the audio converter
 		var error: NSError?
 		var newBufferAvailable = true
 		converter.convert(to: convertedBuffer, error: &error) {
@@ -195,8 +189,7 @@ class AudioCapture: NSObject {
 		return convertedBuffer
 	}
 
-	private func setupAudioSession()
-	{
+	private func setupAudioSession() {
 		do {
 			try audioSession.setCategory(.playAndRecord, mode: .default)
 			try audioSession.setActive(true)
@@ -210,8 +203,7 @@ class AudioCapture: NSObject {
 		}
 	}
 
-	private func startAudioEngine() -> Bool
-	{
+	private func startAudioEngine() -> Bool {
 		// setup the input node
 		let inputNode = audioEngine.inputNode
 		let inputFormat = inputNode.inputFormat(forBus: 0)
@@ -271,8 +263,7 @@ class AudioCapture: NSObject {
 		return true
 	}
 
-	private func stopAudioEngine()
-	{
+	private func stopAudioEngine() {
 		// stop the audio engine
 		audioEngine.stop()
 		audioEngine.inputNode.removeTap(onBus: 0)
@@ -283,9 +274,7 @@ class AudioCapture: NSObject {
 	}
 
 	// MARK: - AVAudioEngine notifications
-
-	@objc func audioEngineConfigurationChange(_ notification: Notification)
-	{
+	@objc private func audioEngineConfigurationChange(_ notification: Notification) {
 #if DEBUG
 		print("TuneURL: audioEngineConfigurationChange")
 #endif // DEBUG
@@ -301,5 +290,4 @@ class AudioCapture: NSObject {
 		// notify the delegate
 		delegate?.audioCaptureStatusChanged()
 	}
-
 }

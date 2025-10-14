@@ -6,47 +6,41 @@
 //  Copyright © 2019-2022 TuneURL Inc. All rights reserved.
 //
 
-
+import Foundation
 import AVFoundation
 @_implementationOnly import Fingerprint_Private
-import Foundation
-
 
 class AudioMatcher {
 
-	// static
+    // MARK: - Static props
 	static let shared = AudioMatcher()
 
-	// public
+    // MARK: - Internal props
 	var audioBufferDelegate: Listener.AudioBufferHandler?
 
-	// public (read-only)
+	// MARK: - Internal (read-only) props
 	internal private(set) var audioCapture: AudioCapture?
 	internal private(set) var isRunning = false
 	internal private(set) var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
 
-	// private
+	// MARK: - Private props
 	private let audioBuffer: AudioBuffer
 	private var matchHandler: Listener.MatchHandler?
 
-	// MARK: -
-
-	init()
-	{
+	// MARK: - Init/deinit
+	init() {
 		// setup the audio buffer
 		audioBuffer = AudioBuffer(captureDuration: 10.0, sampleRate: 44100.0)
 		audioBuffer.reset()
 	}
 
-	deinit
-	{
+	deinit {
 		FingerprintFree(triggerFingerprint)
 		triggerFingerprint = nil
 	}
 
-	// MARK: - Public
-    func privateSetTrigger(from triggerFileURL: URL)
-    {
+	// MARK: - Public funcs
+    func privateSetTrigger(from triggerFileURL: URL) {
         FingerprintFree(triggerFingerprint)
         triggerFingerprint = nil
         
@@ -56,8 +50,10 @@ class AudioMatcher {
         }
     }
 
-	func start(matchHandler: @escaping Listener.MatchHandler)
-	{
+	func start(matchHandler: @escaping Listener.MatchHandler) {
+        #if DEBUG
+        Debug.prepareRecordingsFolder()
+        #endif // DEBUG
 		// save the match handler
 		self.matchHandler = matchHandler
 
@@ -79,8 +75,7 @@ class AudioMatcher {
 		}
 	}
 
-	func stop()
-	{
+	func stop() {
 		// stop audio capture
 		audioCapture?.stop()
 		audioCapture = nil
@@ -90,10 +85,8 @@ class AudioMatcher {
 		isRunning = false
 	}
 
-	// MARK: -
-
-	func recognizedTrigger(timeRelativeToNow: Float)
-	{
+	// MARK: - Recognition
+	func recognizedTrigger(timeRelativeToNow: Float) {
 		let formatter = DateFormatter()
 		formatter.dateStyle = .none
 		formatter.timeStyle = .medium
@@ -150,6 +143,8 @@ class AudioMatcher {
 			// write the tuneurl audio
 			let fingerprintFileURL = recordingFolderURL.appendingPathComponent(filename + ".aif")
 			_ = try? AudioUtility.writeAudioFile(to: fingerprintFileURL, buffer: matchAudioBuffer, sampleRate: 44100.0)
+            
+            print("TuneURL: Match audio written to: \(fingerprintFileURL)")
 #endif // DEBUG
 
 			// create the match fingerprint data
@@ -173,9 +168,8 @@ class AudioMatcher {
 		}
 	}
 
-	// MARK: - Private
-	private func startMatching()
-	{
+	// MARK: - Private funcs
+	private func startMatching() {
 		DispatchQueue.main.async {
 			// start audio capture
 			if (self.audioCapture == nil) {
@@ -187,5 +181,4 @@ class AudioMatcher {
 
 		isRunning = true
 	}
-
 }

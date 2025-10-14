@@ -6,10 +6,8 @@
 //  Copyright © 2021-2022 TuneURL Inc. All rights reserved.
 //
 
-
 import AVFoundation
 import Foundation
-
 
 public class Listener {
 
@@ -34,19 +32,15 @@ public class Listener {
 	}
 
 	// MARK: - Functions
-    public static func setTrigger(_ audioFileURL: URL)
-    {
+    public static func setTrigger(_ audioFileURL: URL) {
         AudioMatcher.shared.privateSetTrigger(from: audioFileURL)
     }
     
-	public static func startListening(matchHandler: @escaping (Match) -> Void)
-	{
+	public static func startListening(matchHandler: @escaping (Match) -> Void) {
 		AudioMatcher.shared.start(matchHandler: matchHandler)
 	}
 
-	public static func stopListening()
-	{
+	public static func stopListening() {
 		AudioMatcher.shared.stop()
 	}
-
 }

@@ -10,11 +10,9 @@
 import AVFoundation
 import Foundation
 
-
 enum AudioBufferError: Error {
 	case internalError
 }
-
 
 class AudioBuffer {
 
@@ -46,64 +44,37 @@ class AudioBuffer {
 		return ((Double(untestedSize) / Double(sampleSize)) / sampleRate)
 	}
 
-	// MARK: -
-
-	static func dataSizeForRecordingTime(_ seconds: Double, sampleRate: Double, sampleSize: Int) -> Int
-	{
-		// calculate the bytes required to save the recording time
-		return Int(ceil((seconds * sampleRate) * Double(sampleSize)))
-	}
-
-	// MARK: -
-
-	init(captureDuration: Double, sampleRate rate: Double)
-	{
+	// MARK: - Initializer
+	init(captureDuration: Double, sampleRate rate: Double) {
 		// save the sample rate
 		sampleRate = rate
 
 		// setup the audio buffer queue
-		bufferQueue = DispatchQueue(label: "com.TuneURL.AudioBuffer")
+        bufferQueue = DispatchQueue(label: "com.TuneURL.AudioBuffer-\(UUID().uuidString)")
 
 		// setup the memory buffer
 		memoryBufferMaxSize = AudioBuffer.dataSizeForRecordingTime(captureDuration, sampleRate: sampleRate, sampleSize: sampleSize)
 		memoryBuffer = Data(count: memoryBufferMaxSize)
 	}
 
-	deinit
-	{
-		stopRecording()
+	deinit {
+		reset()
 	}
 
 	// MARK: - Public
-
-	func reset()
-	{
+	func reset() {
 		bufferQueue.async {
-
 			// reset the buffer
 			self.memoryBufferCurrentOffset = 0
 			self.memoryBufferCurrentSize = 0
 
 			// reset fingerprint detection
 			self.untestedSize = 0
-
 		}
 	}
 
-	func startRecording()
-	{
-		// reset recording
-		self.reset()
-	}
-
-	func stopRecording()
-	{
-	}
-
-	// MARK: -
-
-	func appendSampleBuffer(_ sampleBuffer: AVAudioPCMBuffer)
-	{
+	// MARK: - Helpers
+	func appendSampleBuffer(_ sampleBuffer: AVAudioPCMBuffer) {
 		// get the sample buffer data length
 		let sampleBufferDataLength = (Int(sampleBuffer.frameLength) * sampleSize)
 		guard (sampleBufferDataLength != 0) else {
@@ -112,7 +83,6 @@ class AudioBuffer {
 		}
 
 		bufferQueue.async {
-
 			var sampleBufferOffset = 0
 			var copyLength = sampleBufferDataLength
 
@@ -124,7 +94,12 @@ class AudioBuffer {
 				// write the first part of a wrapping copy
 				if (availableSize > 0) {
 					// copy to the end of the memory buffer
-					self.copyToMemoryBuffer(from: sampleBuffer, atOffset: sampleBufferOffset, toOffset: self.memoryBufferCurrentOffset, length: availableSize)
+                    self.copyToMemoryBuffer(
+                        from: sampleBuffer,
+                        atOffset: sampleBufferOffset,
+                        toOffset: self.memoryBufferCurrentOffset,
+                        length: availableSize
+                    )
 					// update the buffer sizes
 					self.memoryBufferCurrentSize += availableSize
 					self.memoryBufferCurrentSize = min(self.memoryBufferCurrentSize, self.memoryBufferMaxSize)
@@ -143,8 +118,13 @@ class AudioBuffer {
 			}
 
 			// copy the remaining sample buffer data
-			self.copyToMemoryBuffer(from: sampleBuffer, atOffset: sampleBufferOffset, toOffset: self.memoryBufferCurrentOffset, length: copyLength)
-
+            self.copyToMemoryBuffer(
+                from: sampleBuffer,
+                atOffset: sampleBufferOffset,
+                toOffset: self.memoryBufferCurrentOffset,
+                length: copyLength
+            )
+            
 			// update the memory buffer offset
 			self.memoryBufferCurrentOffset += copyLength
 			if (self.memoryBufferCurrentOffset >= self.memoryBufferMaxSize) {
@@ -158,10 +138,8 @@ class AudioBuffer {
 		}
 	}
 
-	func copyBufferData(maxDuration: Double) -> [Int16]?
-	{
+	func copyBufferData(maxDuration: Double) -> [Int16]? {
 		return bufferQueue.sync {
-
 			// safety check
 			guard (maxDuration > 1.0) else {
 				NSLog("TuneURL: Attempting to create sample buffer that's too short.")
@@ -217,10 +195,8 @@ class AudioBuffer {
 		}
 	}
 
-	func export(to fileURL: URL, maxDuration: Double, completion: @escaping ((Bool, Double) -> Void))
-	{
+	func export(to fileURL: URL, maxDuration: Double, completion: @escaping ((Bool, Double) -> Void)) {
 		bufferQueue.async {
-
 			var recordingDuration = 0.0
 			var success = false
 
@@ -234,19 +210,28 @@ class AudioBuffer {
 
 			// call the completion handler
 			completion(success, recordingDuration)
-
 		}
 	}
 
-	func resetUntestedSize()
-	{
-		untestedSize = 0
-	}
+    func resetUntestedSize() {
+        bufferQueue.async {
+            self.untestedSize = 0
+        }
+    }
 
+    // MARK: - Utils
+    static func dataSizeForRecordingTime(_ seconds: Double, sampleRate: Double, sampleSize: Int) -> Int {
+        // calculate the bytes required to save the recording time
+        return Int(ceil((seconds * sampleRate) * Double(sampleSize)))
+    }
+    
 	// MARK: - Private
-
-	private func copyToMemoryBuffer(from sampleBuffer: AVAudioPCMBuffer, atOffset sampleBufferOffset: Int, toOffset memoryOffset: Int, length copyLength: Int)
-	{
+    private func copyToMemoryBuffer(
+        from sampleBuffer: AVAudioPCMBuffer,
+        atOffset sampleBufferOffset: Int,
+        toOffset memoryOffset: Int,
+        length copyLength: Int
+    ) {
 		if let int16Data = sampleBuffer.int16ChannelData {
 			let sourcePointer = int16Data[0].advanced(by: (sampleBufferOffset >> 1))
 
@@ -256,15 +241,12 @@ class AudioBuffer {
 		}
 	}
 
-	private func durationForDataSize(_ dataSize: Int) -> Double
-	{
+	private func durationForDataSize(_ dataSize: Int) -> Double {
 		return (Double(dataSize / sampleSize) / sampleRate)
 	}
 
-	// MARK: -
-
-	private func writeAudioFile(to fileURL: URL, maxDuration: Double) throws -> Double
-	{
+	// MARK: - File Handling
+	private func writeAudioFile(to fileURL: URL, maxDuration: Double) throws -> Double {
 		// safety check
 		guard (maxDuration > 1.0) else {
 			NSLog("TuneURL: Attempting to export audio that's too short.")
@@ -378,5 +360,4 @@ class AudioBuffer {
 		// return the duration of the audio file written
 		return durationForDataSize(totalDataSize)
 	}
-
 }

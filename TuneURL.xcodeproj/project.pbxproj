@@ -20,6 +20,10 @@
 		60D361E720CDC17C0079C14C /* PollManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E620CDC17C0079C14C /* PollManager.swift */; };
 		60D361E920D164540079C14C /* PollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D361E820D164540079C14C /* PollViewController.swift */; };
 		6D9F1B12258188BC004C4E29 /* InterestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D9F1B11258188BC004C4E29 /* InterestViewController.swift */; };
+		8101015F2E40CFC000166AEA /* AudioRecordingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8101015E2E40CFBD00166AEA /* AudioRecordingsView.swift */; };
+		810101DD2E40D7BC00166AEA /* Trigger-Audio.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 810101DC2E40D7BC00166AEA /* Trigger-Audio.mp3 */; };
+		81746B6C2E9E4C16006981AE /* StreamDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81746B6B2E9E4C10006981AE /* StreamDetector.swift */; };
+		81746B6D2E9E4C16006981AE /* StreamDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81746B6B2E9E4C10006981AE /* StreamDetector.swift */; };
 		DCC3A21648720C0E8D25B72B /* Pods_TuneURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */; };
 		EC244B9B2702561E002D4D94 /* TuneURL.h in Headers */ = {isa = PBXBuildFile; fileRef = EC244B9A2702561E002D4D94 /* TuneURL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EC244B9E2702561E002D4D94 /* TuneURL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC244B982702561E002D4D94 /* TuneURL.framework */; };
@@ -38,7 +42,7 @@
 		EC2CA86B24F93B8700443202 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86A24F93B8700443202 /* UIViewExtensions.swift */; };
 		EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86C24F93D8500443202 /* SavedItemCollectionLayout.swift */; };
 		EC2CA86F24F9537600443202 /* RecentItemCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2CA86E24F9537600443202 /* RecentItemCollectionLayout.swift */; };
-		EC30069723317E8E0013B8F8 /* Trigger-Audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = EC30069623317E8E0013B8F8 /* Trigger-Audio.wav */; };
+		EC30069723317E8E0013B8F8 /* Trigger-Audio1.wav in Resources */ = {isa = PBXBuildFile; fileRef = EC30069623317E8E0013B8F8 /* Trigger-Audio1.wav */; };
 		EC3FC8052729E42800869D88 /* Detector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3FC8042729E42800869D88 /* Detector.swift */; };
 		EC3FC80D2729EFA500869D88 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3FC80C2729EFA500869D88 /* main.swift */; };
 		EC3FC8112729F0A700869D88 /* AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E097E231EDF8300445E52 /* AudioBuffer.swift */; };
@@ -120,6 +124,9 @@
 		60D361E620CDC17C0079C14C /* PollManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollManager.swift; sourceTree = "<group>"; };
 		60D361E820D164540079C14C /* PollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PollViewController.swift; sourceTree = "<group>"; };
 		6D9F1B11258188BC004C4E29 /* InterestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterestViewController.swift; sourceTree = "<group>"; };
+		8101015E2E40CFBD00166AEA /* AudioRecordingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecordingsView.swift; sourceTree = "<group>"; };
+		810101DC2E40D7BC00166AEA /* Trigger-Audio.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Trigger-Audio.mp3"; sourceTree = "<group>"; };
+		81746B6B2E9E4C10006981AE /* StreamDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDetector.swift; sourceTree = "<group>"; };
 		BBCE85622A4AC53FBFA986B1 /* Pods-TuneURL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.debug.xcconfig"; sourceTree = "<group>"; };
 		BDE2CA3B2B257A37E40EE614 /* Pods-TuneURL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TuneURL.release.xcconfig"; path = "Pods/Target Support Files/Pods-TuneURL/Pods-TuneURL.release.xcconfig"; sourceTree = "<group>"; };
 		D2B422BDFF2F9DB84C9FB29E /* Pods_TuneURL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TuneURL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,7 +145,7 @@
 		EC2CA86E24F9537600443202 /* RecentItemCollectionLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentItemCollectionLayout.swift; sourceTree = "<group>"; };
 		EC2FDA6D2339BABF0011DE7A /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		EC30067F23317E6D0013B8F8 /* AudioUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioUtility.swift; sourceTree = "<group>"; };
-		EC30069623317E8E0013B8F8 /* Trigger-Audio.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Trigger-Audio.wav"; sourceTree = "<group>"; };
+		EC30069623317E8E0013B8F8 /* Trigger-Audio1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Trigger-Audio1.wav"; sourceTree = "<group>"; };
 		EC3FC8042729E42800869D88 /* Detector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Detector.swift; sourceTree = "<group>"; };
 		EC3FC80A2729EFA500869D88 /* TuneURL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TuneURL; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC3FC80C2729EFA500869D88 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -231,11 +238,13 @@
 		6052363C201FE51900B65A72 /* TuneURL */ = {
 			isa = PBXGroup;
 			children = (
+				8101015E2E40CFBD00166AEA /* AudioRecordingsView.swift */,
 				60523646201FE51900B65A72 /* Assets.xcassets */,
 				6052364B201FE51900B65A72 /* Info.plist */,
 				60523648201FE51900B65A72 /* LaunchScreen.storyboard */,
 				60523643201FE51900B65A72 /* Main.storyboard */,
-				EC30069623317E8E0013B8F8 /* Trigger-Audio.wav */,
+				810101DC2E40D7BC00166AEA /* Trigger-Audio.mp3 */,
+				EC30069623317E8E0013B8F8 /* Trigger-Audio1.wav */,
 				6052363D201FE51900B65A72 /* AppDelegate.swift */,
 				ECB9166824F5D2170091C76B /* BasePageViewController.swift */,
 				60D361E220CB40380079C14C /* EncodableExtension.swift */,
@@ -306,6 +315,7 @@
 				EC30067F23317E6D0013B8F8 /* AudioUtility.swift */,
 				EC244BB527027BEB002D4D94 /* Debug.swift */,
 				EC3FC8042729E42800869D88 /* Detector.swift */,
+				81746B6B2E9E4C10006981AE /* StreamDetector.swift */,
 				EC244BB3270273AC002D4D94 /* Listener.swift */,
 				6024B74020606C8D0005A984 /* Match.swift */,
 				EC2FDA6D2339BABF0011DE7A /* Server.swift */,
@@ -453,6 +463,8 @@
 				Base,
 			);
 			mainGroup = 60523631201FE51800B65A72;
+			packageReferences = (
+			);
 			productRefGroup = 6052363B201FE51900B65A72 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -470,8 +482,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC30069723317E8E0013B8F8 /* Trigger-Audio.wav in Resources */,
+				EC30069723317E8E0013B8F8 /* Trigger-Audio1.wav in Resources */,
 				60523647201FE51900B65A72 /* Assets.xcassets in Resources */,
+				810101DD2E40D7BC00166AEA /* Trigger-Audio.mp3 in Resources */,
 				6052364A201FE51900B65A72 /* LaunchScreen.storyboard in Resources */,
 				60523645201FE51900B65A72 /* Main.storyboard in Resources */,
 			);
@@ -576,6 +589,7 @@
 				ECB9164324F5C92C0091C76B /* SavedContentViewController.swift in Sources */,
 				EC2CA86D24F93D8500443202 /* SavedItemCollectionLayout.swift in Sources */,
 				EC2CA86B24F93B8700443202 /* UIViewExtensions.swift in Sources */,
+				8101015F2E40CFC000166AEA /* AudioRecordingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,6 +612,7 @@
 				EC244BB627027BEB002D4D94 /* Debug.swift in Sources */,
 				EC3FC8052729E42800869D88 /* Detector.swift in Sources */,
 				EC244BB4270273AC002D4D94 /* Listener.swift in Sources */,
+				81746B6D2E9E4C16006981AE /* StreamDetector.swift in Sources */,
 				EC244BB22702736E002D4D94 /* Match.swift in Sources */,
 				EC244BA9270258A2002D4D94 /* Server.swift in Sources */,
 			);
@@ -612,6 +627,7 @@
 				EC3FC8142729F0AD00869D88 /* AudioUtility.swift in Sources */,
 				EC3FC8152729F0AF00869D88 /* Debug.swift in Sources */,
 				EC3FC8162729F0B000869D88 /* Detector.swift in Sources */,
+				81746B6C2E9E4C16006981AE /* StreamDetector.swift in Sources */,
 				EC3FC8182729F0B400869D88 /* Match.swift in Sources */,
 				ECA8C139272D147000045723 /* Server.swift in Sources */,
 			);
@@ -781,7 +797,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A63XWBVGEW;
+				DEVELOPMENT_TEAM = 24F7LAMPJN;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -789,12 +805,13 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/DMSwipeCards/DMSwipeCards.framework/Headers\"",
 				);
 				INFOPLIST_FILE = TuneURL/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.iOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.iOS.alex;
 				PRODUCT_MODULE_NAME = TuneURLApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -810,7 +827,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A63XWBVGEW;
+				DEVELOPMENT_TEAM = 24F7LAMPJN;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -818,12 +835,13 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/DMSwipeCards/DMSwipeCards.framework/Headers\"",
 				);
 				INFOPLIST_FILE = TuneURL/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.iOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.iOS.alex;
 				PRODUCT_MODULE_NAME = TuneURLApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -839,6 +857,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B74A3WDYVP;
 				INFOPLIST_FILE = TuneURLTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -859,6 +878,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B74A3WDYVP;
 				INFOPLIST_FILE = TuneURLTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -877,11 +897,12 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = A63XWBVGEW;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -893,6 +914,7 @@
 				);
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 TuneURL Inc. All rights reserved.";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -901,8 +923,9 @@
 				MARKETING_VERSION = 1.1.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK.alex;
 				PRODUCT_NAME = TuneURL;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = "non-global";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -920,11 +943,12 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = A63XWBVGEW;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -936,6 +960,7 @@
 				);
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 TuneURL Inc. All rights reserved.";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -943,8 +968,9 @@
 				);
 				MARKETING_VERSION = 1.1.1;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TuneURL.SDK.alex;
 				PRODUCT_NAME = TuneURL;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
 				STRIP_STYLE = "non-global";
 				SWIFT_EMIT_LOC_STRINGS = YES;

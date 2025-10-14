@@ -51,7 +51,7 @@ class PollManager: NSObject {
 		}
 
 		// perform the vote post request
-		Alamofire.request(serverURL, method: .post, parameters: pollData.parameters, encoding: JSONEncoding.default).response {
+        Session.default.request(serverURL, method: .post, parameters: pollData.parameters, encoding: JSONEncoding.default).response {
 			(response) in
 
 			// get the response data

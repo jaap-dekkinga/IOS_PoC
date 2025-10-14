@@ -6,22 +6,19 @@
 //  Copyright © 2019-2022 TuneURL Inc. All rights reserved.
 //
 
-
+import Foundation
 import AudioToolbox
 import AVFoundation
 @_implementationOnly import Fingerprint_Private
-import Foundation
-
 
 enum AudioUtilityError: Error {
 	case internalError
 }
 
-
 class AudioUtility {
 
-	static func changeSampleRate(sampleRate: Double, buffer1: [Int16]) -> [Int16]?
-	{
+    // MARK: - Resampling
+	static func changeSampleRate(sampleRate: Double, buffer1: [Int16]) -> [Int16]? {
 		guard let inputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: 44100.0, channels: 1, interleaved: false) else {
 			NSLog("TuneURL: Error creating audio format for sample rate conversion.")
 			return nil
@@ -119,10 +116,11 @@ class AudioUtility {
 		return resultBuffer
 	}
 
-	// MARK: -
-
-	static func convertFormat(of inputBuffer: AVAudioPCMBuffer, to outputFormat: AVAudioFormat) -> AVAudioPCMBuffer?
-	{
+    // MARK: - Convertion
+    static func convertFormat(
+        of inputBuffer: AVAudioPCMBuffer,
+        to outputFormat: AVAudioFormat
+    ) -> AVAudioPCMBuffer? {
 		// create the output buffer
 		guard let outputBuffer = AVAudioPCMBuffer(pcmFormat: outputFormat, frameCapacity: inputBuffer.frameLength) else {
 			NSLog("TuneURL: Error creating audio output buffer for format conversion.")
@@ -146,8 +144,11 @@ class AudioUtility {
 		return outputBuffer
 	}
 
-	static func convertSampleRate(of inputBuffer: AVAudioPCMBuffer, to sampleRate: Double, asFloat: Bool) -> AVAudioPCMBuffer?
-	{
+    static func convertSampleRate(
+        of inputBuffer: AVAudioPCMBuffer,
+        to sampleRate: Double,
+        asFloat: Bool
+    ) -> AVAudioPCMBuffer? {
 		// get the input format
 		let inputFormat = inputBuffer.format
 		let inputIsFloat = (inputFormat.commonFormat == .pcmFormatFloat32)
@@ -182,8 +183,10 @@ class AudioUtility {
 		var error: NSError?
 
 		// convert the buffer
-		let result = converter.convert(to: outputBuffer, error: &error, withInputFrom: {
-			(packetCount, status) -> AVAudioBuffer? in
+        let result = converter.convert(
+            to: outputBuffer,
+            error: &error,
+            withInputFrom: { (packetCount, status) -> AVAudioBuffer? in
 
 			// calculate the copy count
 			let copySampleCount = min(Int(packetCount), remainingSamples)
@@ -248,8 +251,8 @@ class AudioUtility {
 		return outputBuffer
 	}
 
-	static func generateFingerprint(for fileURL: URL) -> UnsafeMutablePointer<Fingerprint>?
-	{
+    // MARK: - Fingerprints
+	static func generateFingerprint(for fileURL: URL) -> UnsafeMutablePointer<Fingerprint>? {
 		// prepare the audio file buffer
 		guard let audioFileBuffer = AudioUtility.prepareAudioForProcessing(fileURL, asFloat: false) else {
 			NSLog("TuneURL: Error preparing audio file buffer for processing.")
@@ -266,8 +269,8 @@ class AudioUtility {
 		return fingerprint
 	}
 
-	static func prepareAudioForProcessing(_ fileURL: URL, asFloat: Bool) -> AVAudioPCMBuffer?
-	{
+    // MARK: - Buffers
+	static func prepareAudioForProcessing(_ fileURL: URL, asFloat: Bool) -> AVAudioPCMBuffer? {
 		do {
 			// open the audio file
 			let audioFile = try AVAudioFile(forReading: fileURL)
@@ -308,10 +311,8 @@ class AudioUtility {
 		}
 	}
 
-	static func writeAudioBuffer(_ audioBuffer: AVAudioPCMBuffer, to fileURL: URL) -> Bool
-	{
+    static func writeAudioBuffer(_ audioBuffer: AVAudioPCMBuffer, to fileURL: URL) -> Bool {
 		// Note: The audio buffer format must be .pcmFormatFloat32.
-
 		do {
 			// write the audio file
 			let settings: [String : Any] = [
@@ -328,8 +329,7 @@ class AudioUtility {
 		}
 	}
 
-	static func writeAudioFile(to fileURL: URL, buffer: [Int16], sampleRate: Double) throws
-	{
+	static func writeAudioFile(to fileURL: URL, buffer: [Int16], sampleRate: Double) throws {
 		// safety check
 		guard (buffer.count > 0) else {
 			NSLog("TuneURL: Attempting to write audio file with audio that's too short.")
@@ -412,5 +412,4 @@ class AudioUtility {
 			throw AudioUtilityError.internalError
 		}
 	}
-
 }

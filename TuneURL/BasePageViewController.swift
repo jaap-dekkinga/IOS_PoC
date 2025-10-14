@@ -8,7 +8,7 @@
 
 
 import UIKit
-
+import SwiftUI
 
 final class BasePageViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
@@ -17,7 +17,11 @@ final class BasePageViewController: UIPageViewController, UIPageViewControllerDa
 	private var pageControllers = [UIViewController]()
 
 	// MARK: - UIViewController
-
+    static var recordingFolderURL: URL {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return documentsDirectory.appendingPathComponent("Recordings/")
+    }
+    
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
@@ -29,6 +33,7 @@ final class BasePageViewController: UIPageViewController, UIPageViewControllerDa
 		let storyboard = UIStoryboard(name: "Main", bundle: nil)
 		pageControllers.append(storyboard.instantiateViewController(withIdentifier: "ListenViewController"))
 		pageControllers.append(storyboard.instantiateViewController(withIdentifier: "SavedContentViewController"))
+        pageControllers.append(UIHostingController(rootView: AudioRecordingsView(folderURL: Self.recordingFolderURL)))
 		self.setViewControllers([pageControllers[0]], direction: .forward, animated: false)
 
 		// setup the page control

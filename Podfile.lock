@@ -1,9 +1,9 @@
 PODS:
-  - Alamofire (4.9.1)
+  - Alamofire (5.10.2)
   - DMSwipeCards (1.0.3)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.9.0)
+  - Alamofire
   - DMSwipeCards
 
 SPEC REPOS:
@@ -12,9 +12,9 @@ SPEC REPOS:
     - DMSwipeCards
 
 SPEC CHECKSUMS:
-  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   DMSwipeCards: 0f2488120c13eb73366f01e87d1423495cde8ed4
 
-PODFILE CHECKSUM: 77d45f112be3dae22feb6fea65c355305ceb0590
+PODFILE CHECKSUM: dcc9a898a8540c19e5104e0c12515f8fdc5ef5e3
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.16.2

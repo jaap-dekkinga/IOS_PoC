@@ -15,7 +15,7 @@ final class ListenViewController: UIViewController {
 
 	// interface
 	@IBOutlet var enableSwitch: UISwitch!
-
+    
 	// MARK: - UIViewController
 
 	override func viewWillAppear(_ animated: Bool)
@@ -34,5 +34,4 @@ final class ListenViewController: UIViewController {
 			AppDelegate.shared.stopListening()
 		}
 	}
-
 }
