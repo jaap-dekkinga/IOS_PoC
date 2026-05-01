@@ -14,7 +14,7 @@ import Foundation
 fileprivate func extractFingerprint(audioData: [Int16]) -> [UInt8]?
 {
 	// generate the fingerprint
-	guard let fingerprint = ExtractFingerprint(audioData, Int32(audioData.count)) else {
+	guard let fingerprint = ExtractFingerprint(audioData, Int32(audioData.count), Int32(FORMAT_VERSION_V1)) else {
 		return nil
 	}
 
@@ -78,19 +78,19 @@ fileprivate func compareFiles(file1: String, file2: String)
 {
 	// extract the fingerprints from the audio files
 	guard let audioData1 = loadAudio(from: URL(fileURLWithPath: file1), resample: false),
-		  let fingerprint1 = ExtractFingerprint(audioData1, Int32(audioData1.count)) else {
+		  let fingerprint1 = ExtractFingerprint(audioData1, Int32(audioData1.count), Int32(FORMAT_VERSION_V1)) else {
 		print("Error loading audio file. ('\(file1)')")
 		return
 	}
 
 	guard let audioData2 = loadAudio(from: URL(fileURLWithPath: file2), resample: false),
-		  let fingerprint2 = ExtractFingerprint(audioData2, Int32(audioData2.count)) else {
+		  let fingerprint2 = ExtractFingerprint(audioData2, Int32(audioData2.count), Int32(FORMAT_VERSION_V1)) else {
 		print("Error loading audio file. ('\(file2)')")
 		return
 	}
 
 	// compare the fingerprints
-	let results = CompareFingerprints(fingerprint1, fingerprint2, true)
+	let results = CompareFingerprints(fingerprint1, fingerprint2)
 	print("mostSimilarFramePosition: \(results.mostSimilarFramePosition)")
 	print("mostSimilarStartTime: \(results.mostSimilarStartTime)")
 	print("score: \(results.score)")
