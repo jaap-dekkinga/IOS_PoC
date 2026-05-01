@@ -103,7 +103,7 @@ public class StreamDetector {
             return
         }
 
-        let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint, false)
+        let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint)
         FingerprintFree(bufferFingerprint)
         
         // check the match results
