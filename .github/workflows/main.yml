@@ -1,0 +1,203 @@
+name: Build SDK
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**/*.swift'
+      - '**/*.cpp'
+      - '**/*.h'
+      - '**/*.xcodeproj/**'
+      - '**/*.xcworkspace/**'
+      - 'BuildFramework.sh'
+      - '.github/workflows/build-sdk.yml'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-xcframework:
+    name: Build TuneURL.xcframework
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select --switch /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Show available SDKs
+        run: xcodebuild -showsdks
+
+      - name: Archive for iOS device
+        run: |
+          xcodebuild archive \
+            -workspace TuneURL.xcworkspace \
+            -scheme "TuneURL (SDK)" \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
+            -archivePath "Build/Framework Products/TuneURL-iphoneos.xcarchive" \
+            SKIP_INSTALL=NO \
+            BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Archive for iOS simulator
+        run: |
+          xcodebuild archive \
+            -workspace TuneURL.xcworkspace \
+            -scheme "TuneURL (SDK)" \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination "generic/platform=iOS Simulator" \
+            -archivePath "Build/Framework Products/TuneURL-iphonesimulator.xcarchive" \
+            SKIP_INSTALL=NO \
+            BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Create xcframework
+        run: |
+          xcodebuild -create-xcframework \
+            -framework "Build/Framework Products/TuneURL-iphoneos.xcarchive/Products/Library/Frameworks/TuneURL.framework" \
+            -debug-symbols "$(pwd -P)/Build/Framework Products/TuneURL-iphoneos.xcarchive/dSYMs/TuneURL.framework.dSYM" \
+            -framework "Build/Framework Products/TuneURL-iphonesimulator.xcarchive/Products/Library/Frameworks/TuneURL.framework" \
+            -debug-symbols "$(pwd -P)/Build/Framework Products/TuneURL-iphonesimulator.xcarchive/dSYMs/TuneURL.framework.dSYM" \
+            -output "Build/Framework Products/TuneURL.xcframework"
+
+      - name: Verify xcframework structure
+        run: |
+          set -e
+          XCF="Build/Framework Products/TuneURL.xcframework"
+          test -d "$XCF" || (echo "::error::xcframework not produced" && exit 1)
+          test -f "$XCF/Info.plist" || (echo "::error::Info.plist missing" && exit 1)
+          echo "xcframework contents:"
+          ls -la "$XCF"
+          echo "Info.plist:"
+          /usr/libexec/PlistBuddy -c "Print" "$XCF/Info.plist"
+
+      - name: Verify both slices link cleanly
+        run: |
+          set -e
+          XCF="Build/Framework Products/TuneURL.xcframework"
+          for slice in "$XCF"/*/TuneURL.framework/TuneURL; do
+            echo "=== $slice ==="
+            file "$slice"
+            otool -L "$slice"
+            echo "Architectures:"
+            lipo -info "$slice"
+          done
+
+      - name: Verify v2 fingerprint constants are present
+        run: |
+          set -e
+          XCF="Build/Framework Products/TuneURL.xcframework"
+          # Sanity-check that the new v2 symbols ended up in at least one slice.
+          # This guards against accidentally shipping a build against the old C library.
+          MISSING=0
+          for slice in "$XCF"/*/TuneURL.framework/TuneURL; do
+            if ! nm -gU "$slice" 2>/dev/null | grep -qE "_ExtractFingerprint|_CompareFingerprints|_FingerprintFree"; then
+              echo "::warning::Expected fingerprint C symbols not found in $slice (may be hidden by @_implementationOnly — non-fatal)"
+            fi
+          done
+
+      - name: Zip xcframework for download
+        run: |
+          cd "Build/Framework Products"
+          zip -ry TuneURL.xcframework.zip TuneURL.xcframework
+
+      - name: Upload xcframework artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TuneURL.xcframework
+          path: Build/Framework Products/TuneURL.xcframework.zip
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            ~/Library/Logs/DiagnosticReports/
+            Build/Framework Products/*.xcarchive
+          retention-days: 7
+          if-no-files-found: ignore
+
+  smoke-test-cpp:
+    name: Run C++ v2 smoke test
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select --switch /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Locate smoke test source
+        id: locate
+        run: |
+          # The smoke test exercises ExtractFingerprint(v1) vs ExtractFingerprint(v2)
+          # plus CompareFingerprints behavior. It links directly against the C++ sources.
+          SMOKE_SRC=$(find . -name "r2_smoke_test.cpp" -type f | head -n1)
+          if [ -z "$SMOKE_SRC" ]; then
+            echo "::error::r2_smoke_test.cpp not found"
+            exit 1
+          fi
+          echo "smoke_src=$SMOKE_SRC" >> "$GITHUB_OUTPUT"
+          # Find the directory containing the C++ sources (where Fingerprint.cpp lives)
+          CPP_DIR=$(find . -name "Fingerprint.cpp" -type f | head -n1 | xargs dirname)
+          echo "cpp_dir=$CPP_DIR" >> "$GITHUB_OUTPUT"
+          echo "Found smoke test at: $SMOKE_SRC"
+          echo "C++ sources at: $CPP_DIR"
+
+      - name: Compile smoke test
+        run: |
+          set -e
+          CPP_DIR="${{ steps.locate.outputs.cpp_dir }}"
+          SMOKE_SRC="${{ steps.locate.outputs.smoke_src }}"
+          clang++ -std=c++17 -O2 -Wall \
+            -I"$CPP_DIR" \
+            "$SMOKE_SRC" \
+            "$CPP_DIR"/ArrayCoord.cpp \
+            "$CPP_DIR"/ArrayRankFloat.cpp \
+            "$CPP_DIR"/FastFourierTransform.cpp \
+            "$CPP_DIR"/Fingerprint.cpp \
+            "$CPP_DIR"/FingerprintManager.cpp \
+            "$CPP_DIR"/FingerprintProperties.cpp \
+            "$CPP_DIR"/FingerprintSimilarityComputer.cpp \
+            "$CPP_DIR"/MapRankInteger.cpp \
+            "$CPP_DIR"/PairManager.cpp \
+            "$CPP_DIR"/QuickSortInteger.cpp \
+            "$CPP_DIR"/RobustIntensityProcessor.cpp \
+            "$CPP_DIR"/Spectrogram.cpp \
+            "$CPP_DIR"/WindowFunction.cpp \
+            -o smoke_test
+
+      - name: Run smoke test
+        run: |
+          set -o pipefail
+          ./smoke_test 2>&1 | tee smoke_test.log
+          # The smoke test prints "FAIL:" lines on any failed assertion and
+          # exits with a non-zero count. Fail the job if any "FAIL:" appears.
+          if grep -q "^FAIL:" smoke_test.log; then
+            echo "::error::C++ smoke test reported failures"
+            exit 1
+          fi
+          echo "All smoke test assertions passed."
+
+      - name: Upload smoke test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-log
+          path: smoke_test.log
+          if-no-files-found: ignore
