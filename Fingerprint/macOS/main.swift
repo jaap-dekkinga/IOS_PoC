@@ -11,7 +11,7 @@ import AVFoundation
 import Foundation
 
 
-fileprivate func extractFingerprint(audioData: [Int16]) -> [UInt8]?
+fileprivate func extractFingerprint(audioData: [Int16], emitVersion: Int32) -> [UInt8]?
 {
 	// generate the fingerprint
 	guard let fingerprint = ExtractFingerprint(audioData, Int32(audioData.count), Int32(FORMAT_VERSION_V1)) else {
@@ -132,7 +132,7 @@ while index < arguments.count {
 			let filePath2 = arguments[index + 2]
 			// compare the files
 			print("Comparing fingerprints: '\(filePath1)' to '\(filePath2)'")
-			compareFiles(file1: filePath1, file2: filePath2)
+			compareFiles(file1: filePath1, file2: filePath2, emitVersion: emitVersion)
 		}
 		index += 2
 	}
