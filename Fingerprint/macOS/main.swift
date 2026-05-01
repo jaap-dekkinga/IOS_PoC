@@ -74,17 +74,17 @@ fileprivate func loadAudio(from fileURL: URL, resample: Bool) -> [Int16]?
 	return dataBuffer
 }
 
-fileprivate func compareFiles(file1: String, file2: String)
+fileprivate func compareFiles(file1: String, file2: String, emitVersion: Int32)
 {
 	// extract the fingerprints from the audio files
 	guard let audioData1 = loadAudio(from: URL(fileURLWithPath: file1), resample: false),
-		  let fingerprint1 = ExtractFingerprint(audioData1, Int32(audioData1.count), Int32(FORMAT_VERSION_V1)) else {
+		  let fingerprint1 = ExtractFingerprint(audioData1, Int32(audioData1.count), emitVersion) else {
 		print("Error loading audio file. ('\(file1)')")
 		return
 	}
 
 	guard let audioData2 = loadAudio(from: URL(fileURLWithPath: file2), resample: false),
-		  let fingerprint2 = ExtractFingerprint(audioData2, Int32(audioData2.count), Int32(FORMAT_VERSION_V1)) else {
+		  let fingerprint2 = ExtractFingerprint(audioData2, Int32(audioData2.count), emitVersion) else {
 		print("Error loading audio file. ('\(file2)')")
 		return
 	}
@@ -102,8 +102,9 @@ fileprivate func compareFiles(file1: String, file2: String)
 }
 
 // MARK: -
-
 let arguments = CommandLine.arguments
+let emitVersion: Int32 = arguments.contains("v2") ? Int32(FORMAT_VERSION_V2) : Int32(FORMAT_VERSION_V1)
+print("Emit version: \(emitVersion == Int32(FORMAT_VERSION_V2) ? "v2" : "v1")")
 var index = 0
 
 while index < arguments.count {
