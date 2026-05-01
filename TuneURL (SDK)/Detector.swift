@@ -89,7 +89,7 @@ public class Detector {
 			var windowFingerprint = Fingerprint(data: fileFingerprint.pointee.data.advanced(by: currentIndex), dataSize: Int32(windowSize))
 
 			// compare the fingerprints
-			let matchResults = CompareFingerprints(&windowFingerprint, triggerFingerprint, false)
+			let matchResults = CompareFingerprints(&windowFingerprint, triggerFingerprint)
 
 			// Note: This uses a very high similarity because the audio should really
 			// be an almost exact match from a podcast.
