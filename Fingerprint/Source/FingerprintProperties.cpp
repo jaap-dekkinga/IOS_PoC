@@ -3,7 +3,7 @@
 //  TuneURL
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 5/4/21.
-//  Copyright (c) 2021-2022 TuneURL Inc. All rights reserved.
+//  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
 
@@ -49,3 +49,9 @@ int FingerprintProperties::maxTargetZoneDistance = 4;
 
 // num frequency units
 int FingerprintProperties::numFrequencyUnits = (upperBoundedFrequency - lowerBoundedFrequency + 1) / fps + 1;
+
+// R2: number of per-frame intensity quartile tiers
+int FingerprintProperties::numIntensityTiers = 4;
+
+// default emission/match hash protocol version (1 = legacy, 2 = R2 with intensity tier)
+int FingerprintProperties::defaultHashProtocolVersion = 1;

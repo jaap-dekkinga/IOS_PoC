@@ -3,11 +3,14 @@
 //  TuneURL
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 5/4/21.
-//  Copyright (c) 2021-2022 TuneURL Inc. All rights reserved.
+//  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
 
 #include "MapRankInteger.h"
+#include <stdint.h>
+#include <cstring>
+#include <algorithm>
 
 
 MapRankInteger::MapRankInteger(const map<int, int> &_map, bool ascending) : _map(_map), ascending(ascending), array(_map.size())

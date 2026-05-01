@@ -3,7 +3,7 @@
 //  TuneURL
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 5/4/21.
-//  Copyright (c) 2021-2022 TuneURL Inc. All rights reserved.
+//  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
 
@@ -15,7 +15,7 @@
 #include "PairManager.h"
 
 
-FingerprintSimilarityComputer::FingerprintSimilarityComputer(const vector<uint8_t> &fingerprint1, const vector<uint8_t> &fingerprint2) : fingerprint1(fingerprint1), fingerprint2(fingerprint2)
+FingerprintSimilarityComputer::FingerprintSimilarityComputer(const vector<uint8_t> &fingerprint1, const vector<uint8_t> &fingerprint2, int hashProtocolVersion) : fingerprint1(fingerprint1), fingerprint2(fingerprint2), hashProtocolVersion(hashProtocolVersion)
 {
 }
 
@@ -40,6 +40,7 @@ FingerprintSimilarity FingerprintSimilarityComputer::getMatchResults()
 
 	// get the pairs
 	PairManager pairManager;
+	pairManager.setHashProtocolVersion(hashProtocolVersion);
 	map<int, vector<int>> this_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint1);
 	map<int, vector<int>> compareWave_Pair_PositionList_Table = pairManager.getPair_PositionList_Table(fingerprint2);
 
@@ -96,11 +97,14 @@ FingerprintSimilarity FingerprintSimilarityComputer::getMatchResults()
 		}
 	}
 
-	results.score /= (float)numFrames;
-	results.similarity = results.score;
-	if (results.similarity > 1.0f) {
-		// similarity > 1.0 means in average there is at least one match in every frame
-		results.similarity = 1.0f;
+	// prevent division by zero
+	if (numFrames > 0) {
+		results.score /= (float)numFrames;
+		results.similarity = results.score;
+		if (results.similarity > 1.0f) {
+			// similarity > 1.0 means in average there is at least one match in every frame
+			results.similarity = 1.0f;
+		}
 	}
 
 	// calculate the most similar start time

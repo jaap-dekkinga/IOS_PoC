@@ -3,12 +3,15 @@
 //  TuneURL
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 5/4/21.
-//  Copyright (c) 2021-2022 TuneURL Inc. All rights reserved.
+//  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
 
 #include <math.h>
 #include "FastFourierTransform.h"
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 
 
 FastFourierTransform::FastFourierTransform(int numberOfSamples)

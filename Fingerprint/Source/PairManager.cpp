@@ -3,10 +3,11 @@
 //  TuneURL
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 5/4/21.
-//  Copyright (c) 2021-2022 TuneURL Inc. All rights reserved.
+//  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
 
+#include <algorithm>
 #include "FingerprintManager.h"
 #include "PairManager.h"
 #include "QuickSortInteger.h"
@@ -67,7 +68,7 @@ vector<PairPosition> PairManager::getPairPositionList(const vector<uint8_t> &fin
 
 	// each second has numAnchorPointsPerSecond pairs only
 	vector<PairPosition> pairList;
-	vector<ArrayCoord> sortedCoordinateList = getSortedCoordinateList(fingerprint);
+	vector<ArrayCoordTiered> sortedCoordinateList = getSortedCoordinateList(fingerprint);
 
 	for (auto& anchorPoint : sortedCoordinateList) {
 		int numPairs = 0;
@@ -115,7 +116,15 @@ vector<PairPosition> PairManager::getPairPositionList(const vector<uint8_t> &fin
 				continue;
 			}
 
-			int pairHashcode = (x2 - x1) * numFrequencyUnits * numFrequencyUnits + y2 * numFrequencyUnits + y1;
+			int landmarkHash = (x2 - x1) * numFrequencyUnits * numFrequencyUnits + y2 * numFrequencyUnits + y1;
+
+			int pairHashcode;
+			if (hashProtocolVersion == 2) {
+				// pack anchor intensity tier into bits 28-29 (avoid sign bit 31)
+				pairHashcode = (int)(((uint32_t)(anchorPoint.tier & 0x3) << 28) | (uint32_t)landmarkHash);
+			} else {
+				pairHashcode = landmarkHash;
+			}
 
 			// stop list applied on sample pairing only
 			if (!isReferencePairing && (stopPairTable.find(pairHashcode) != stopPairTable.end())) {
@@ -133,7 +142,7 @@ vector<PairPosition> PairManager::getPairPositionList(const vector<uint8_t> &fin
 	return pairList;
 }
 
-vector<ArrayCoord> PairManager::getSortedCoordinateList(const vector<uint8_t> &fingerprint)
+vector<ArrayCoordTiered> PairManager::getSortedCoordinateList(const vector<uint8_t> &fingerprint)
 {
 	// each point data is 8 bytes
 	// x: 2 byte integer
@@ -150,17 +159,44 @@ vector<ArrayCoord> PairManager::getSortedCoordinateList(const vector<uint8_t> &f
 		intensities[i] = intensity;
 	}
 
+	// compute per-frame intensity quartile tier for each coordinate.
+	// group coordinate indices by x (frame), rank within the group, assign 0..3.
+	vector<uint8_t> tiers(numCoordinates, 0);
+	{
+		map<int, vector<int>> indicesByFrame;
+		for (int i = 0; i < numCoordinates; i++) {
+			int pointer = (i * 8);
+			int x = (((int)fingerprint[pointer + 0] << 8) | (int)fingerprint[pointer + 1]);
+			indicesByFrame[x].push_back(i);
+		}
+		for (auto& kv : indicesByFrame) {
+			vector<int>& frameIdx = kv.second;
+			// sort frame's indices ascending by intensity
+			std::sort(frameIdx.begin(), frameIdx.end(), [&intensities](int a, int b) {
+				return intensities[a] < intensities[b];
+			});
+			int n = (int)frameIdx.size();
+			for (int rank = 0; rank < n; rank++) {
+				// map rank position to quartile tier 0..3
+				uint8_t tier = (n > 1) ? (uint8_t)((rank * 4) / n) : 0;
+				if (tier > 3) tier = 3;
+				tiers[frameIdx[rank]] = tier;
+			}
+		}
+	}
+
 	QuickSortInteger quicksort(intensities);
 	vector<int> sortIndexes = quicksort.getSortIndexes();
 
-	vector<ArrayCoord> sortedCoordinateList;
+	vector<ArrayCoordTiered> sortedCoordinateList;
 	int i = ((int)sortIndexes.size() - 1);
 
 	while (i >= 0) {
-		int pointer = (sortIndexes[i] * 8);
+		int origIndex = sortIndexes[i];
+		int pointer = (origIndex * 8);
 		int x = (((int)fingerprint[pointer + 0] << 8) | (int)fingerprint[pointer + 1]);
 		int y = (((int)fingerprint[pointer + 2] << 8) | (int)fingerprint[pointer + 3]);
-		sortedCoordinateList.push_back(ArrayCoord(x, y));
+		sortedCoordinateList.push_back(ArrayCoordTiered(x, y, tiers[origIndex]));
 		i -= 1;
 	}
 

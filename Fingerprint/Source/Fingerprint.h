@@ -2,15 +2,15 @@
 //  Fingerprint.h
 //  TuneURL
 //
-//  Created by Gerrit Goossen <developer@gerrit.email> on 5/4/21.
-//  Copyright © 2021-2022 TuneURL Inc. All rights reserved.
+//  Created by Gerrit on 5/4/21.
+//  Copyright © 2021 TuneURL Inc. All rights reserved.
 //
 
 #ifndef FINGERPRINT_H
 #define FINGERPRINT_H
 
-#include <stdbool.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,6 +18,15 @@ extern "C" {
 
 // the audio sample rate required for fingerprinting
 #define FINGERPRINT_SAMPLE_RATE		10240.0
+
+// versioning
+#define FINGERPRINT_MAGIC			0xFF
+#define FORMAT_VERSION_V1			1
+#define FORMAT_VERSION_V2			2
+#define HASH_PROTOCOL_V1			1
+#define HASH_PROTOCOL_V2			2
+#define CALIBRATION_VERSION_V2		1
+#define FINGERPRINT_HEADER_SIZE		4
 
 
 typedef struct Fingerprint {
@@ -38,9 +47,9 @@ typedef struct FingerprintSimilarity {
 } FingerprintSimilarity;
 
 
-FingerprintSimilarity CompareFingerprints(const Fingerprint *fingerprint1, const Fingerprint *fingerprint2, bool truncating);
-Fingerprint *ExtractFingerprint(const int16_t *wave, int waveLength);
-Fingerprint *ExtractFingerprintFromRawFile(const char *filePath);
+FingerprintSimilarity CompareFingerprints(const Fingerprint *fingerprint1, const Fingerprint *fingerprint2);
+Fingerprint *ExtractFingerprint(const int16_t *wave, int waveLength, int emitVersion);
+Fingerprint *ExtractFingerprintFromRawFile(const char *filePath, int emitVersion);
 void FingerprintFree(Fingerprint *fingerprint);
 
 #ifdef __cplusplus

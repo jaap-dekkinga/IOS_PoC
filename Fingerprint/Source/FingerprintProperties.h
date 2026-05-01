@@ -3,7 +3,7 @@
 //  TuneURL
 //
 //  Created by Gerrit Goossen <developer@gerrit.email> on 5/4/21.
-//  Copyright (c) 2021-2022 TuneURL Inc. All rights reserved.
+//  Copyright (c) 2021 TuneURL Inc. All rights reserved.
 //
 
 #ifndef FINGERPRINTPROPERTIES_H
@@ -27,6 +27,10 @@ public:
 	static int anchorPointsIntervalLength;
 	static int maxTargetZoneDistance;
 	static int numFrequencyUnits;
+
+	// R2: intensity tier packing
+	static int numIntensityTiers;
+	static int defaultHashProtocolVersion;
 
 };
 
