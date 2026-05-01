@@ -117,15 +117,15 @@ class AudioCapture: NSObject {
 		}
 
 		// generate a fingerprint
-		guard let bufferFingerprint = ExtractFingerprint(resampledData, Int32(resampledData.count)) else {
-			return
+		guard let bufferFingerprint = ExtractFingerprint(resampledData, Int32(resampledData.count), Int32(FORMAT_VERSION_V1)) else {
+		    return
 		}
 
 		// get the trigger fingerprint
 		let triggerFingerprint = AudioMatcher.shared.triggerFingerprint
 
 		// calculate the fingerprint match results
-		let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint, false)
+		let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint)
 		FingerprintFree(bufferFingerprint)
 
 		// check the match results
