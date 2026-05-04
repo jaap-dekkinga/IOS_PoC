@@ -117,7 +117,7 @@ class AudioCapture: NSObject {
 		}
 
 		// generate a fingerprint
-		guard let bufferFingerprint = ExtractFingerprint(resampledData, Int32(resampledData.count), Int32(FORMAT_VERSION_V1)) else {
+		guard let bufferFingerprint = ExtractFingerprint(resampledData, Int32(resampledData.count), Int32(FORMAT_VERSION_V2)) else {
 		    return
 		}
 

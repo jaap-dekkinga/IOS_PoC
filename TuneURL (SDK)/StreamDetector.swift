@@ -99,7 +99,7 @@ public class StreamDetector {
         }
         
         // generate a fingerprint
-        guard let bufferFingerprint = ExtractFingerprint(resampledData, Int32(resampledData.count), Int32(FORMAT_VERSION_V1)) else {
+        guard let bufferFingerprint = ExtractFingerprint(resampledData, Int32(resampledData.count), Int32(FORMAT_VERSION_V2)) else {
             return
         }
 
@@ -157,7 +157,7 @@ public class StreamDetector {
             guard
                 let matchAudioBuffer = self.audioBuffer.copyBufferData(maxDuration: identifiableAudioDuration),
                 let matchResampledBuffer = AudioUtility.changeSampleRate(sampleRate: FINGERPRINT_SAMPLE_RATE, buffer1: matchAudioBuffer),
-                let matchFingerprint = ExtractFingerprint(matchResampledBuffer, Int32(matchResampledBuffer.count), Int32(FORMAT_VERSION_V1))
+                let matchFingerprint = ExtractFingerprint(matchResampledBuffer, Int32(matchResampledBuffer.count), Int32(FORMAT_VERSION_V2))
             else {
                 return
             }
