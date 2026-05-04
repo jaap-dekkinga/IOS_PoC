@@ -261,7 +261,7 @@ class AudioUtility {
 
 		// extract the fingerprint
 		guard let bufferData = audioFileBuffer.int16ChannelData?.pointee,
-    		let fingerprint = ExtractFingerprint(bufferData, Int32(audioFileBuffer.frameLength), Int32(FORMAT_VERSION_V1)) else {
+    		let fingerprint = ExtractFingerprint(bufferData, Int32(audioFileBuffer.frameLength), Int32(FORMAT_VERSION_V2)) else {
 				NSLog("TuneURL: Error extracting fingerprint from audio file.")
 			return nil
 		}

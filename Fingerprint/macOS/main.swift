@@ -14,7 +14,7 @@ import Foundation
 fileprivate func extractFingerprint(audioData: [Int16], emitVersion: Int32) -> [UInt8]?
 {
 	// generate the fingerprint
-	guard let fingerprint = ExtractFingerprint(audioData, Int32(audioData.count), Int32(FORMAT_VERSION_V1)) else {
+	guard let fingerprint = ExtractFingerprint(audioData, Int32(audioData.count), Int32(FORMAT_VERSION_V2)) else {
 		return nil
 	}
 

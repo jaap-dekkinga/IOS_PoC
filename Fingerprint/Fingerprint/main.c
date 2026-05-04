@@ -19,7 +19,7 @@ int main(int argc, const char* argv[])
 			printf("Extracting fingerprint: '%s'\n", filePath);
 
 			// generate the fingerprint
-			Fingerprint *fingerprint = ExtractFingerprintFromRawFile(filePath, FORMAT_VERSION_V1);
+			Fingerprint *fingerprint = ExtractFingerprintFromRawFile(filePath, FORMAT_VERSION_V2);
 			if (fingerprint == NULL) {
 				printf("Error generating fingerprint.\n");
 				continue;
