@@ -203,14 +203,41 @@ public class StreamDetector {
             // cleanup
             FingerprintFree(matchFingerprint)
             
-            // ask the server to match the audio
+// ask the server to match the audio (V2 primary, V1 fallback)
             Server.shared.matchFingerprint(for: matchFingerprintData, queue: nil) { [weak self] match in
-                guard
-                    let self,
-                    let match,
-                    let matchCallback
-                else { return }
-                matchCallback(match)
+                guard let self else { return }
+
+                if let match {
+                    match.fingerprintVersion = "V2"
+                    self.matchCallback?(match)
+                    return
+                }
+
+                // V2 returned no match — fall back to V1 once
+#if DEBUG
+                print("TuneURL: V2 match returned nil, retrying with V1 fingerprint.")
+#endif
+
+                guard let v1Fingerprint = ExtractFingerprint(
+                    matchResampledBuffer,
+                    Int32(matchResampledBuffer.count),
+                    Int32(FORMAT_VERSION_V1)
+                ) else {
+                    return
+                }
+
+                var v1Data = [UInt8]()
+                let v1Pointer = v1Fingerprint.pointee.data!
+                for x in 0 ..< Int(v1Fingerprint.pointee.dataSize) {
+                    v1Data.append(v1Pointer[x])
+                }
+                FingerprintFree(v1Fingerprint)
+
+                Server.shared.matchFingerprint(for: v1Data, queue: nil) { [weak self] fallbackMatch in
+                    guard let self, let fallbackMatch, let matchCallback = self.matchCallback else { return }
+                    fallbackMatch.fingerprintVersion = "V1"
+                    matchCallback(fallbackMatch)
+                }
             }
         }
     }
