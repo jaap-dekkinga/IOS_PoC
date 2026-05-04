@@ -17,6 +17,10 @@ public class Match: Codable {
 	public let name: String
 	public let time: Float
 	public let type: String
+
+	/// Fingerprint version that produced this match ("V2" or "V1"). Set by the SDK after a successful match.
+	/// Not part of the server payload; not encoded.
+	public var fingerprintVersion: String?
     
     // MARK: - Init
     init(match: Match, time: Float) {
@@ -26,6 +30,7 @@ public class Match: Codable {
         self.matchPercentage = match.matchPercentage
         self.name = match.name
         self.type = match.type
+		self.fingerprintVersion = match.fingerprintVersion 
         
         self.time = time
     }
@@ -62,5 +67,6 @@ public class Match: Codable {
 			"type: \(type)\n" +
 			"info: \(info)\n" +
 			"matchPercentage: \(matchPercentage)\n"
+			"fingerprintVersion: \(fingerprintVersion ?? "unknown")\n"
 	}
 }
