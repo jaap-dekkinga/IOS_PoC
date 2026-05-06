@@ -248,7 +248,9 @@ jobs:
     needs: [build-xcframework, smoke-test-cpp]
     # Only on pushes to main (not PRs, not manual runs against branches).
     # Avoids opening PRs for every feature branch build.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # TEMPORARY for testing — remove the main-only restriction
+    if: github.event_name == 'push'
     runs-on: macos-15
 
     env:
