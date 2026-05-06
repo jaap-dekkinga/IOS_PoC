@@ -242,3 +242,132 @@ jobs:
           name: smoke-test-log
           path: smoke_test.log
           if-no-files-found: ignore
+
+  publish-to-ios-app:
+    name: Open PR to update iOS app SDK
+    needs: [build-xcframework, smoke-test-cpp]
+    # Only on pushes to main (not PRs, not manual runs against branches).
+    # Avoids opening PRs for every feature branch build.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: macos-15
+
+    env:
+      # ── EDIT THESE TWO TO MATCH YOUR REPO ──
+      IOS_REPO: your-org/tuneurl_radio_app_ota
+      IOS_XCFRAMEWORK_PATH: Dependencies/TuneURL.xcframework
+      # ───────────────────────────────────────
+
+    steps:
+      - name: Download xcframework artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: TuneURL.xcframework
+          path: artifact
+
+      - name: Unzip xcframework
+        run: |
+          set -e
+          cd artifact
+          unzip -q TuneURL.xcframework.zip
+          test -d TuneURL.xcframework || (echo "::error::xcframework missing after unzip" && exit 1)
+
+      - name: Checkout iOS app repo
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ env.IOS_REPO }}
+          token: ${{ secrets.IOS_REPO_TOKEN }}
+          path: ios-app
+          # Need full history so we can branch and push.
+          fetch-depth: 0
+
+      - name: Replace xcframework in iOS repo
+        run: |
+          set -e
+          DEST="ios-app/${IOS_XCFRAMEWORK_PATH}"
+          PARENT_DIR=$(dirname "$DEST")
+
+          if [ ! -d "$PARENT_DIR" ]; then
+            echo "::error::Destination parent dir does not exist in iOS repo: $PARENT_DIR"
+            echo "Check IOS_XCFRAMEWORK_PATH is correct for the iOS app repo layout."
+            exit 1
+          fi
+
+          echo "Removing old xcframework at $DEST"
+          rm -rf "$DEST"
+
+          echo "Copying new xcframework"
+          cp -R artifact/TuneURL.xcframework "$DEST"
+
+          echo "New xcframework contents:"
+          ls -la "$DEST"
+
+      - name: Detect changes
+        id: detect
+        working-directory: ios-app
+        run: |
+          set -e
+          # `git status` shows nothing if the xcframework is byte-identical
+          # to what's already there — common when re-running CI on a no-op
+          # SDK change.
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit. SDK binary already up to date."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure git
+        if: steps.detect.outputs.changed == 'true'
+        working-directory: ios-app
+        run: |
+          git config user.name "tuneurl-sdk-bot"
+          git config user.email "tuneurl-sdk-bot@users.noreply.github.com"
+
+      - name: Create branch and commit
+        if: steps.detect.outputs.changed == 'true'
+        working-directory: ios-app
+        run: |
+          set -e
+          BRANCH="sdk-update/${GITHUB_SHA::7}"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+
+          git checkout -b "$BRANCH"
+          git add "${IOS_XCFRAMEWORK_PATH}"
+          git commit -m "Update TuneURL SDK to ${GITHUB_SHA::7}
+
+          Auto-generated from SDK repo commit ${GITHUB_SHA}.
+          Source: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
+
+          git push --force-with-lease origin "$BRANCH"
+
+      - name: Open pull request
+        if: steps.detect.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.IOS_REPO_TOKEN }}
+        working-directory: ios-app
+        run: |
+          set -e
+          PR_TITLE="Update TuneURL SDK to ${GITHUB_SHA::7}"
+          PR_BODY=$(cat <<EOF
+          Auto-generated from [SDK commit ${GITHUB_SHA::7}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}).
+
+          - SDK repo: \`${GITHUB_REPOSITORY}\`
+          - SDK commit: \`${GITHUB_SHA}\`
+          - SDK build run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+          Merge after iOS CI passes.
+          EOF
+          )
+
+          # If a PR for this branch is already open (e.g., re-run), update it
+          # in place rather than creating a duplicate.
+          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' || echo "")
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #$EXISTING_PR already exists for branch $BRANCH; leaving it as-is."
+          else
+            gh pr create \
+              --title "$PR_TITLE" \
+              --body "$PR_BODY" \
+              --base main \
+              --head "$BRANCH"
+          fi
