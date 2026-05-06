@@ -66,7 +66,7 @@ public class Match: Codable {
 			"description: \(description)\n" +
 			"type: \(type)\n" +
 			"info: \(info)\n" +
-			"matchPercentage: \(matchPercentage)\n"
+			"matchPercentage: \(matchPercentage)\n" +
 			"fingerprintVersion: \(fingerprintVersion ?? "unknown")\n"
 	}
 }
