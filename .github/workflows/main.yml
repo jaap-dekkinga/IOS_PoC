@@ -255,7 +255,7 @@ jobs:
 
     env:
       # ── EDIT THESE TWO TO MATCH YOUR REPO ──
-      IOS_REPO: your-org/tuneurl_radio_app_ota
+      IOS_REPO: jaap-dekkinga/tuneurl_radio_app_ota
       IOS_XCFRAMEWORK_PATH: Dependencies/TuneURL.xcframework
       # ───────────────────────────────────────
 
