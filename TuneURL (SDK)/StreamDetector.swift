@@ -251,6 +251,18 @@ public class StreamDetector {
         // create the trigger fingerprint
         if let fingerprint = AudioUtility.generateFingerprint(for: audioFileURL) {
             triggerFingerprint = fingerprint
+            
+            #if DEBUG
+            if let data = fingerprint.pointee.data {
+                let size = Int(fingerprint.pointee.dataSize)
+                let bytes = (0..<size).map { data[$0] }
+                let versionLabel = bytes.first == UInt8(FINGERPRINT_MAGIC) ? "V2" : "V1"
+                let hexPreview = bytes.prefix(16).map { String(format: "%02X", $0) }.joined(separator: " ")
+                print("TuneURL: Stream trigger fingerprint loaded (\(versionLabel), \(size) bytes)")
+                print("TuneURL: Stream trigger first bytes: \(hexPreview)...")
+                print("TuneURL: Stream trigger full bytes: \(bytes)")
+            }
+            #endif
         }
     }
     
