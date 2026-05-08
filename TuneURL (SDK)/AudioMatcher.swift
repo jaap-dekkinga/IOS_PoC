@@ -40,15 +40,27 @@ class AudioMatcher {
 	}
 
 	// MARK: - Public funcs
-    func privateSetTrigger(from triggerFileURL: URL) {
-        FingerprintFree(triggerFingerprint)
-        triggerFingerprint = nil
-        
-        // create the fingerprint
-        if let fingerprint = AudioUtility.generateFingerprint(for: triggerFileURL) {
-            triggerFingerprint = fingerprint
-        }
-    }
+	func privateSetTrigger(from triggerFileURL: URL) {
+	    FingerprintFree(triggerFingerprint)
+	    triggerFingerprint = nil
+	    
+	    // create the fingerprint
+	    if let fingerprint = AudioUtility.generateFingerprint(for: triggerFileURL) {
+	        triggerFingerprint = fingerprint
+	        
+	        #if DEBUG
+	        if let data = fingerprint.pointee.data {
+	            let size = Int(fingerprint.pointee.dataSize)
+	            let bytes = (0..<size).map { data[$0] }
+	            let versionLabel = bytes.first == UInt8(FINGERPRINT_MAGIC) ? "V2" : "V1"
+	            let hexPreview = bytes.prefix(16).map { String(format: "%02X", $0) }.joined(separator: " ")
+	            print("TuneURL: OTA trigger fingerprint loaded (\(versionLabel), \(size) bytes)")
+	            print("TuneURL: OTA trigger first bytes: \(hexPreview)...")
+	            print("TuneURL: OTA trigger full bytes: \(bytes)")
+	        }
+	        #endif
+	    }
+	}
 
 	func start(matchHandler: @escaping Listener.MatchHandler) {
         #if DEBUG
