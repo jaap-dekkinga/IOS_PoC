@@ -41,6 +41,7 @@ class AudioMatcher {
 
 	// MARK: - Public funcs
 	func privateSetTrigger(from triggerFileURL: URL) {
+		NSLog("privateSetTrigger called with %@",triggerFileURL.absoluteString)
 	    FingerprintFree(triggerFingerprint)
 	    triggerFingerprint = nil
 	    
