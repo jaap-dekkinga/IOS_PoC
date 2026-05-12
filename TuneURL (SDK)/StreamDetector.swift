@@ -245,7 +245,7 @@ public class StreamDetector {
     // MARK: - Private funcs
     private func privateSetTrigger(_ audioFileURL: URL) {
         // clear any current trigger
-        NSLog("TuneURL: privateSetTrigger called with %@", triggerFileURL.absoluteString)
+        NSLog("TuneURL: privateSetTrigger called with %@", audioFileURL.absoluteString)
         FingerprintFree(triggerFingerprint)
         triggerFingerprint = nil
         
