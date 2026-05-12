@@ -106,6 +106,10 @@ public class StreamDetector {
         let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint)
         FingerprintFree(bufferFingerprint)
         
+        // Diagnostic — visible in Release builds, remove after measurement
+        NSLog("TuneURL_DIAG: local v2 similarity=%.4f score=%d mostSimilarStartTime=%.3f",
+              matchResults.similarity, matchResults.score, matchResults.mostSimilarStartTime)
+        
         // check the match results
         if (matchResults.similarity > 0.1) {
             
