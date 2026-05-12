@@ -49,17 +49,19 @@ class AudioMatcher {
 	    if let fingerprint = AudioUtility.generateFingerprint(for: triggerFileURL) {
 	        triggerFingerprint = fingerprint
 	        
-	        #if DEBUG
+	        // Unconditional version log — runs in any build config
 	        if let data = fingerprint.pointee.data {
-	            let size = Int(fingerprint.pointee.dataSize)
-	            let bytes = (0..<size).map { data[$0] }
-	            let versionLabel = bytes.first == UInt8(FINGERPRINT_MAGIC) ? "V2" : "V1"
-	            let hexPreview = bytes.prefix(16).map { String(format: "%02X", $0) }.joined(separator: " ")
-	            print("TuneURL: OTA trigger fingerprint loaded (\(versionLabel), \(size) bytes)")
-	            print("TuneURL: OTA trigger first bytes: \(hexPreview)...")
-	            print("TuneURL: OTA trigger full bytes: \(bytes)")
+	            let firstByte = data[0]
+	            let isV2 = (firstByte == UInt8(FINGERPRINT_MAGIC))
+	            NSLog("TuneURL: TRIGGER VERSION = %@ (first byte 0x%02X, size %d)",
+	                  isV2 ? "V2" : "V1",
+	                  firstByte,
+	                  fingerprint.pointee.dataSize)
+	        } else {
+	            NSLog("TuneURL: TRIGGER fingerprint has nil data pointer")
 	        }
-	        #endif
+	    } else {
+	        NSLog("TuneURL: TRIGGER generateFingerprint returned nil")
 	    }
 	}
 
