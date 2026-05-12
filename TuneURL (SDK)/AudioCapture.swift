@@ -191,7 +191,11 @@ class AudioCapture: NSObject {
 
 	private func setupAudioSession() {
 		do {
-			try audioSession.setCategory(.playAndRecord, mode: .default)
+			try audioSession.setCategory(
+			    .playAndRecord,
+			    mode: .default,
+			    options: [.mixWithOthers, .defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
+			)
 			try audioSession.setActive(true)
 			try audioSession.setPreferredSampleRate(44100.0)
 			try audioSession.setPreferredInputNumberOfChannels(1)
