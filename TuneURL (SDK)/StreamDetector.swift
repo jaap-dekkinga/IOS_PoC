@@ -69,6 +69,7 @@ public class StreamDetector {
             }
 
             self.audioBuffer.appendSampleBuffer(normalizedBuffer)
+            NSLog("TuneURL_DIAG: self.audioBuffer.untestedTime > 2.0")
             if self.audioBuffer.untestedTime > 2.0 {
                 self.dispatchQueue.async {
                     self.checkForTriggerSound()
