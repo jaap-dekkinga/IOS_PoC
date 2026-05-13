@@ -69,7 +69,7 @@ public class StreamDetector {
             }
 
             self.audioBuffer.appendSampleBuffer(normalizedBuffer)
-            if self.audioBuffer.untestedTime > 5.0 {
+            if self.audioBuffer.untestedTime > 2.0 {
                 self.dispatchQueue.async {
                     self.checkForTriggerSound()
                 }
