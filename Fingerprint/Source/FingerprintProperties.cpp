@@ -34,7 +34,9 @@ int FingerprintProperties::fps = 5;
 float FingerprintProperties::sampleRate = (float)(sampleSizePerFrame * fps);
 
 // max active pairs per anchor point for reference songs
-int FingerprintProperties::refMaxActivePairs = 1;
+// changed on 5/14 from 1 to 5 as an experiment to improve the triggersound fingerprint recognition
+//int FingerprintProperties::refMaxActivePairs = 1;
+int FingerprintProperties::refMaxActivePairs = 5;
 
 // max active pairs per anchor point for sample clip
 int FingerprintProperties::sampleMaxActivePairs = 10;
