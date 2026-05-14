@@ -236,17 +236,17 @@ class AudioCapture: NSObject {
 			}
 
 			if let buffer = buffer {
-				// add the audio to the audio buffer
-				self.audioBuffer.appendSampleBuffer(buffer)
-				// check if we have 5 seconds of data to test
-				if (self.audioBuffer.untestedTime > 5.0) {
-					// reset immediately to prevent next frame from trigger detection
-					self.audioBuffer.resetUntestedSize()
-					DispatchQueue.main.async {
-						// run detection
-						self.checkForTriggerSound()
-					}
-				}
+			    // add the audio to the audio buffer
+			    self.audioBuffer.appendSampleBuffer(buffer)
+			    // check every 2s with the 4s window → 2s overlap, no trigger falls in a gap
+			    if (self.audioBuffer.untestedTime > 2.0) {
+			        // reset immediately to prevent next frame from trigger detection
+			        self.audioBuffer.resetUntestedSize()
+			        DispatchQueue.main.async {
+			            // run detection
+			            self.checkForTriggerSound()
+			        }
+			    }
 			}
 
 			// pass the buffer to speech recognition
