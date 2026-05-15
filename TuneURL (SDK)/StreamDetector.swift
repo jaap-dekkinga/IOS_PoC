@@ -208,20 +208,20 @@ public class StreamDetector {
             // cleanup
             FingerprintFree(matchFingerprint)
             
-// ask the server to match the audio (V2 primary, V1 fallback)
-            Server.shared.matchFingerprint(for: matchFingerprintData, queue: nil) { [weak self] match in
-                guard let self else { return }
+//// ask the server to match the audio (V2 primary, V1 fallback)
+//            Server.shared.matchFingerprint(for: matchFingerprintData, queue: nil) { [weak self] match in
+//                guard let self else { return }
+//
+//                if let match {
+//                    match.fingerprintVersion = "V2"
+//                    self.matchCallback?(match)
+//                    return
+//                }
 
-                if let match {
-                    match.fingerprintVersion = "V2"
-                    self.matchCallback?(match)
-                    return
-                }
-
-                // V2 returned no match — fall back to V1 once
-#if DEBUG
-                print("TuneURL: V2 match returned nil, retrying with V1 fingerprint.")
-#endif
+//                // V2 returned no match — fall back to V1 once
+//#if DEBUG
+//                print("TuneURL: V2 match returned nil, retrying with V1 fingerprint.")
+//#endif
 
                 guard let v1Fingerprint = ExtractFingerprint(
                     matchResampledBuffer,
