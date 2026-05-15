@@ -243,7 +243,7 @@ public class StreamDetector {
                     fallbackMatch.fingerprintVersion = "V1"
                     matchCallback(fallbackMatch)
                 }
-            }
+//            }
         }
     }
     
