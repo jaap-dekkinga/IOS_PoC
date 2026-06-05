@@ -239,13 +239,14 @@ jobs:
     needs: [build-xcframework, smoke-test-cpp]
     if: github.event_name == 'push'
     runs-on: macos-15
+    # pp_turl_iOS uses CocoaPods (pod 'TuneURL') — no committed xcframework
+    # to replace, so it is intentionally absent from this matrix.
+    # The radio app uses a committed xcframework at Dependencies/TuneURL.xcframework.
     strategy:
       fail-fast: false
       matrix:
         include:
           - repo: jaap-dekkinga/tuneurl_radio_app_ota
-            xcframework_path: Dependencies/TuneURL.xcframework
-          - repo: jaap-dekkinga/pp_turl_iOS
             xcframework_path: Dependencies/TuneURL.xcframework
     steps:
       - name: Download xcframework artifact
