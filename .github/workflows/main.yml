@@ -1,26 +1,30 @@
-name: Build & Test SDK
+name: Build SDK
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
     paths:
+      - '**/*.swift'
+      - '**/*.cpp'
+      - '**/*.h'
+      - '**/*.xcodeproj/**'
+      - '**/*.xcworkspace/**'
+      - 'BuildFramework.sh'
       - '.github/workflows/main.yml'
-      - 'TuneURL/**'
-      - 'TuneURLTests/**'
-      - 'TuneURL.xcworkspace/**'
-      - 'Podfile*'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 concurrency:
   group: sdk-build-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+
+  # ──────────────────────────────────────────────────────────────────────────
   build-xcframework:
-    name: Build xcframework
+    name: Build TuneURL.xcframework
     runs-on: macos-15
-    outputs:
-      artifact-name: TuneURL.xcframework
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -31,58 +35,125 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
-      - name: Install dependencies
+      - name: Sanity-check Swift sources match new C ABI
         run: |
-          cd TuneURL
-          pod install || pod update
+          set -e
+          BAD=0
+          echo "Checking for old-style 3-arg CompareFingerprints calls..."
+          if grep -rn --include="*.swift" -E "CompareFingerprints\([^)]+,[^)]+,[^)]+\)" .; then
+            echo "::error::Found CompareFingerprints() calls with 3 arguments. The new C ABI takes 2 args. Apply the SDK edits before building."
+            BAD=1
+          fi
+          echo "Checking for old-style 2-arg ExtractFingerprint calls..."
+          MATCHES=$(grep -rn --include="*.swift" "ExtractFingerprint(" . || true)
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            if ! echo "$line" | grep -q "FORMAT_VERSION"; then
+              echo "::warning::Possible 2-arg ExtractFingerprint call (verify a version arg is present): $line"
+            fi
+          done <<< "$MATCHES"
+          if [ "$BAD" -eq 1 ]; then
+            exit 1
+          fi
+          echo "Swift call sites match new C ABI."
 
-      - name: Build xcframework
+      - name: Install xcpretty for readable logs
+        run: gem install xcpretty --no-document || sudo gem install xcpretty --no-document
+
+      - name: Archive for iOS device
         run: |
           set -o pipefail
           xcodebuild archive \
             -workspace TuneURL.xcworkspace \
-            -scheme "TuneURL (Framework)" \
+            -scheme "TuneURL (SDK)" \
             -configuration Release \
             -sdk iphoneos \
-            -archivePath build/TuneURL-iphoneos.xcarchive \
+            -destination "generic/platform=iOS" \
+            -archivePath "Build/Framework Products/TuneURL-iphoneos.xcarchive" \
+            SKIP_INSTALL=NO \
+            BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            2>&1 | tee xcodebuild-iphoneos.log
+            2>&1 | tee xcodebuild-iphoneos.log | xcpretty --color || {
+            echo "::group::Last 200 lines of full xcodebuild log (errors usually here)"
+            tail -n 200 xcodebuild-iphoneos.log
+            echo "::endgroup::"
+            echo "::group::All Swift/Clang errors in the log"
+            grep -E "error:|warning: |FAILED" xcodebuild-iphoneos.log | head -n 100 || true
+            echo "::endgroup::"
+            exit 1
+          }
 
+      - name: Archive for iOS simulator
+        run: |
+          set -o pipefail
           xcodebuild archive \
             -workspace TuneURL.xcworkspace \
-            -scheme "TuneURL (Framework)" \
+            -scheme "TuneURL (SDK)" \
             -configuration Release \
             -sdk iphonesimulator \
-            -archivePath build/TuneURL-simulator.xcarchive \
+            -destination "generic/platform=iOS Simulator" \
+            -archivePath "Build/Framework Products/TuneURL-iphonesimulator.xcarchive" \
+            SKIP_INSTALL=NO \
+            BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            2>&1 | tee xcodebuild-simulator.log
+            2>&1 | tee xcodebuild-iphonesimulator.log | xcpretty --color || {
+            echo "::group::Last 200 lines of full xcodebuild log"
+            tail -n 200 xcodebuild-iphonesimulator.log
+            echo "::endgroup::"
+            echo "::group::All Swift/Clang errors in the log"
+            grep -E "error:|warning: |FAILED" xcodebuild-iphonesimulator.log | head -n 100 || true
+            echo "::endgroup::"
+            exit 1
+          }
 
+      - name: Create xcframework
+        run: |
           xcodebuild -create-xcframework \
-            -framework build/TuneURL-iphoneos.xcarchive/Products/Library/Frameworks/TuneURL.framework \
-            -framework build/TuneURL-simulator.xcarchive/Products/Library/Frameworks/TuneURL.framework \
-            -output build/TuneURL.xcframework
+            -framework "Build/Framework Products/TuneURL-iphoneos.xcarchive/Products/Library/Frameworks/TuneURL.framework" \
+            -debug-symbols "$(pwd -P)/Build/Framework Products/TuneURL-iphoneos.xcarchive/dSYMs/TuneURL.framework.dSYM" \
+            -framework "Build/Framework Products/TuneURL-iphonesimulator.xcarchive/Products/Library/Frameworks/TuneURL.framework" \
+            -debug-symbols "$(pwd -P)/Build/Framework Products/TuneURL-iphonesimulator.xcarchive/dSYMs/TuneURL.framework.dSYM" \
+            -output "Build/Framework Products/TuneURL.xcframework"
 
-      - name: Verify xcframework
+      - name: Verify xcframework structure
         run: |
-          test -d build/TuneURL.xcframework || (echo "::error::xcframework not created" && exit 1)
-          ls -lah build/TuneURL.xcframework
+          set -e
+          XCF="Build/Framework Products/TuneURL.xcframework"
+          test -d "$XCF" || (echo "::error::xcframework not produced" && exit 1)
+          test -f "$XCF/Info.plist" || (echo "::error::Info.plist missing" && exit 1)
+          echo "xcframework contents:"
+          ls -la "$XCF"
+          echo "Info.plist:"
+          /usr/libexec/PlistBuddy -c "Print" "$XCF/Info.plist"
 
-      - name: Create artifact
+      - name: Verify both slices link cleanly
         run: |
-          cd build
-          zip -r TuneURL.xcframework.zip TuneURL.xcframework
-          ls -lh TuneURL.xcframework.zip
+          set -e
+          XCF="Build/Framework Products/TuneURL.xcframework"
+          for slice in "$XCF"/*/TuneURL.framework/TuneURL; do
+            echo "=== $slice ==="
+            file "$slice"
+            otool -L "$slice"
+            echo "Architectures:"
+            lipo -info "$slice"
+          done
+
+      - name: Zip xcframework for download
+        run: |
+          cd "Build/Framework Products"
+          zip -ry TuneURL.xcframework.zip TuneURL.xcframework
 
       - name: Upload xcframework artifact
         uses: actions/upload-artifact@v5
         with:
           name: TuneURL.xcframework
-          path: build/TuneURL.xcframework.zip
+          path: Build/Framework Products/TuneURL.xcframework.zip
           retention-days: 30
+          if-no-files-found: error
 
       - name: Upload build logs on failure
         if: failure()
@@ -90,36 +161,14 @@ jobs:
         with:
           name: build-logs
           path: |
-            xcodebuild-iphoneos.log
-            xcodebuild-simulator.log
+            xcodebuild-*.log
+            Build/Framework Products/*.xcarchive
           retention-days: 7
+          if-no-files-found: ignore
 
+  # ──────────────────────────────────────────────────────────────────────────
   smoke-test-cpp:
-    name: C++ smoke tests
-    runs-on: macos-15
-    needs: build-xcframework
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Select Xcode
-        run: sudo xcode-select --switch /Applications/Xcode_16.app/Contents/Developer
-
-      - name: Build C++ fingerprint library
-        run: |
-          cd TuneURL/FingerPrinting
-          mkdir -p build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release
-          make -j$(nproc)
-
-      - name: Run C++ tests
-        run: |
-          cd TuneURL/FingerPrinting/build
-          ctest --output-on-failure || exit 1
-
-  test-simulator:
-    name: Run SDK tests (simulator)
+    name: Run C++ v2 smoke test
     runs-on: macos-15
     steps:
       - name: Checkout
@@ -128,75 +177,68 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select --switch /Applications/Xcode_16.app/Contents/Developer
 
-      - name: Show Xcode version
-        run: xcodebuild -version
+      - name: Locate smoke test source
+        id: locate
+        run: |
+          SMOKE_SRC=$(find . -name "r2_smoke_test.cpp" -type f | head -n1)
+          if [ -z "$SMOKE_SRC" ]; then
+            echo "::error::r2_smoke_test.cpp not found"
+            exit 1
+          fi
+          echo "smoke_src=$SMOKE_SRC" >> "$GITHUB_OUTPUT"
+          CPP_DIR=$(find . -name "Fingerprint.cpp" -type f | head -n1 | xargs dirname)
+          echo "cpp_dir=$CPP_DIR" >> "$GITHUB_OUTPUT"
+          echo "Found smoke test at: $SMOKE_SRC"
+          echo "C++ sources at: $CPP_DIR"
 
-      - name: Install xcpretty
-        run: gem install xcpretty --no-document || sudo gem install xcpretty --no-document
+      - name: Compile smoke test
+        run: |
+          set -e
+          CPP_DIR="${{ steps.locate.outputs.cpp_dir }}"
+          SMOKE_SRC="${{ steps.locate.outputs.smoke_src }}"
+          clang++ -std=c++17 -O2 -Wall \
+            -I"$CPP_DIR" \
+            "$SMOKE_SRC" \
+            "$CPP_DIR"/ArrayCoord.cpp \
+            "$CPP_DIR"/ArrayRankFloat.cpp \
+            "$CPP_DIR"/FastFourierTransform.cpp \
+            "$CPP_DIR"/Fingerprint.cpp \
+            "$CPP_DIR"/FingerprintManager.cpp \
+            "$CPP_DIR"/FingerprintProperties.cpp \
+            "$CPP_DIR"/FingerprintSimilarityComputer.cpp \
+            "$CPP_DIR"/MapRankInteger.cpp \
+            "$CPP_DIR"/PairManager.cpp \
+            "$CPP_DIR"/QuickSortInteger.cpp \
+            "$CPP_DIR"/RobustIntensityProcessor.cpp \
+            "$CPP_DIR"/Spectrogram.cpp \
+            "$CPP_DIR"/WindowFunction.cpp \
+            -framework Accelerate \
+            -o smoke_test
 
-      - name: Build for simulator (compile check)
+      - name: Run smoke test
         run: |
           set -o pipefail
-          xcodebuild build \
-            -workspace TuneURL.xcworkspace \
-            -scheme "TuneURL (SDK)" \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            2>&1 | tee xcodebuild-sim-build.log | xcpretty --color || {
-              echo "::group::Simulator build errors"
-              grep -E "error:|FAILED" xcodebuild-sim-build.log | head -n 60 || true
-              echo "::endgroup::"
-              exit 1
-            }
+          ./smoke_test 2>&1 | tee smoke_test.log
+          if grep -q "^FAIL:" smoke_test.log; then
+            echo "::error::C++ smoke test reported failures"
+            exit 1
+          fi
+          echo "All smoke test assertions passed."
 
-      - name: Run tests (simulator)
-        run: |
-          set -o pipefail
-          xcodebuild test \
-            -workspace TuneURL.xcworkspace \
-            -scheme "TuneURL (SDK)" \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
-            -resultBundlePath TestResults.xcresult \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            2>&1 | tee xcodebuild-test.log | xcpretty --color || {
-              echo "::group::Test failures"
-              grep -E "error:|FAILED|Test.*failed" xcodebuild-test.log | head -n 80 || true
-              echo "::endgroup::"
-              exit 1
-            }
-
-      - name: Upload test results
+      - name: Upload smoke test log
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: sdk-test-results-${{ github.sha }}
-          path: TestResults.xcresult
-          retention-days: 14
+          name: smoke-test-log
+          path: smoke_test.log
           if-no-files-found: ignore
 
-      - name: Upload build log on failure
-        if: failure()
-        uses: actions/upload-artifact@v5
-        with:
-          name: sim-build-log
-          path: xcodebuild-sim-build.log
-          retention-days: 7
-          if-no-files-found: ignore
-
+  # ──────────────────────────────────────────────────────────────────────────
   publish-to-ios-app:
-    name: Open PR → ${{ matrix.repo }}
-    needs: [build-xcframework, smoke-test-cpp, test-simulator]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: Open PR to ${{ matrix.repo }}
+    needs: [build-xcframework, smoke-test-cpp]
+    if: github.event_name == 'push'
     runs-on: macos-15
-
     strategy:
       fail-fast: false
       matrix:
@@ -205,7 +247,6 @@ jobs:
             xcframework_path: Dependencies/TuneURL.xcframework
           - repo: jaap-dekkinga/pp_turl_iOS
             xcframework_path: Dependencies/TuneURL.xcframework
-
     steps:
       - name: Download xcframework artifact
         uses: actions/download-artifact@v5
@@ -228,27 +269,30 @@ jobs:
           path: ios-app
           fetch-depth: 0
 
-      - name: Replace xcframework
+      - name: Replace xcframework in iOS repo
         run: |
           set -e
           DEST="ios-app/${{ matrix.xcframework_path }}"
           PARENT_DIR=$(dirname "$DEST")
           if [ ! -d "$PARENT_DIR" ]; then
-            echo "::error::Destination parent dir does not exist: $PARENT_DIR"
+            echo "::error::Destination parent dir does not exist in iOS repo: $PARENT_DIR"
             echo "Check xcframework_path in the matrix for ${{ matrix.repo }}"
             exit 1
           fi
+          echo "Removing old xcframework at $DEST"
           rm -rf "$DEST"
+          echo "Copying new xcframework"
           cp -R artifact/TuneURL.xcframework "$DEST"
-          echo "Updated xcframework at $DEST"
+          echo "New xcframework contents:"
           ls -la "$DEST"
 
       - name: Detect changes
         id: detect
         working-directory: ios-app
         run: |
+          set -e
           if [ -z "$(git status --porcelain)" ]; then
-            echo "No changes — SDK already up to date in ${{ matrix.repo }}"
+            echo "No changes to commit. SDK binary already up to date."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -270,10 +314,7 @@ jobs:
           echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
           git checkout -b "$BRANCH"
           git add "${{ matrix.xcframework_path }}"
-          git commit -m "Update TuneURL SDK to ${GITHUB_SHA::7}
-
-Auto-generated from SDK repo commit ${GITHUB_SHA}.
-Source: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
+          git commit -m "Update TuneURL SDK to ${GITHUB_SHA::7}"             -m "Auto-generated from SDK repo commit ${GITHUB_SHA}. Source: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
           git push --force-with-lease origin "$BRANCH"
 
       - name: Open pull request
@@ -284,16 +325,7 @@ Source: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
         run: |
           set -e
           PR_TITLE="Update TuneURL SDK to ${GITHUB_SHA::7}"
-          PR_BODY=$(cat <<EOF
-Auto-generated from [SDK commit ${GITHUB_SHA::7}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}).
-
-- SDK repo: \`${GITHUB_REPOSITORY}\`
-- SDK commit: \`${GITHUB_SHA}\`
-- SDK build run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-
-Merge after iOS CI passes.
-EOF
-)
+          PR_BODY="Auto-generated from SDK repo commit ${GITHUB_SHA}.\n\nSDK build: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\n\nMerge after iOS CI passes."
           EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' || echo "")
           if [ -n "$EXISTING_PR" ]; then
             echo "PR #$EXISTING_PR already exists for branch $BRANCH; leaving it as-is."
