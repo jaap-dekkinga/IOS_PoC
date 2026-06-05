@@ -1,47 +1,126 @@
-# Changes to IOS_PoC/.github/workflows/main.yml
-# These are ADDITIONS to the existing file — do not replace anything that already works.
-# Three targeted changes, described below with the exact insertion points.
+name: Build & Test SDK
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# CHANGE 1 — Add concurrency guard (insert after line 3, before `jobs:`)
-# Prevents two overlapping builds when commits land close together.
-# ═══════════════════════════════════════════════════════════════════════════════
-
-# ADD after the `on:` block, before `jobs:`:
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/main.yml'
+      - 'TuneURL/**'
+      - 'TuneURLTests/**'
+      - 'TuneURL.xcworkspace/**'
+      - 'Podfile*'
 
 concurrency:
   group: sdk-build-${{ github.ref }}
   cancel-in-progress: true
 
+jobs:
+  build-xcframework:
+    name: Build xcframework
+    runs-on: macos-15
+    outputs:
+      artifact-name: TuneURL.xcframework
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# CHANGE 2 — Fix the self-referencing path filter (line 13 in existing file)
-# The existing paths filter references 'build-sdk.yml' but the file is 'main.yml'.
-# ═══════════════════════════════════════════════════════════════════════════════
+      - name: Select Xcode
+        run: sudo xcode-select --switch /Applications/Xcode_16.app/Contents/Developer
 
-# REPLACE this line:
-#   - '.github/workflows/build-sdk.yml'
-# WITH:
-#   - '.github/workflows/main.yml'
+      - name: Show Xcode version
+        run: xcodebuild -version
 
+      - name: Install dependencies
+        run: |
+          cd TuneURL
+          pod install || pod update
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# CHANGE 3 — Add a test job between smoke-test-cpp and publish-to-ios-app
-#
-# The existing file has NO xcodebuild test step at all.
-# Add this new job. It runs in parallel with smoke-test-cpp, and
-# publish-to-ios-app's `needs:` array should be updated to include it.
-# ═══════════════════════════════════════════════════════════════════════════════
+      - name: Build xcframework
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -workspace TuneURL.xcworkspace \
+            -scheme "TuneURL (Framework)" \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath build/TuneURL-iphoneos.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee xcodebuild-iphoneos.log
 
-# ADD this job after the `smoke-test-cpp` job block:
+          xcodebuild archive \
+            -workspace TuneURL.xcworkspace \
+            -scheme "TuneURL (Framework)" \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -archivePath build/TuneURL-simulator.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee xcodebuild-simulator.log
+
+          xcodebuild -create-xcframework \
+            -framework build/TuneURL-iphoneos.xcarchive/Products/Library/Frameworks/TuneURL.framework \
+            -framework build/TuneURL-simulator.xcarchive/Products/Library/Frameworks/TuneURL.framework \
+            -output build/TuneURL.xcframework
+
+      - name: Verify xcframework
+        run: |
+          test -d build/TuneURL.xcframework || (echo "::error::xcframework not created" && exit 1)
+          ls -lah build/TuneURL.xcframework
+
+      - name: Create artifact
+        run: |
+          cd build
+          zip -r TuneURL.xcframework.zip TuneURL.xcframework
+          ls -lh TuneURL.xcframework.zip
+
+      - name: Upload xcframework artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: TuneURL.xcframework
+          path: build/TuneURL.xcframework.zip
+          retention-days: 30
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: build-logs
+          path: |
+            xcodebuild-iphoneos.log
+            xcodebuild-simulator.log
+          retention-days: 7
+
+  smoke-test-cpp:
+    name: C++ smoke tests
+    runs-on: macos-15
+    needs: build-xcframework
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Select Xcode
+        run: sudo xcode-select --switch /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Build C++ fingerprint library
+        run: |
+          cd TuneURL/FingerPrinting
+          mkdir -p build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          make -j$(nproc)
+
+      - name: Run C++ tests
+        run: |
+          cd TuneURL/FingerPrinting/build
+          ctest --output-on-failure || exit 1
 
   test-simulator:
     name: Run SDK tests (simulator)
     runs-on: macos-15
-    # Run in parallel with smoke-test-cpp — both gate publish-to-ios-app.
-    # No dependency on build-xcframework: testing against the workspace
-    # source directly is faster and doesn't need the packaged xcframework.
-
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -56,8 +135,6 @@ concurrency:
         run: gem install xcpretty --no-document || sudo gem install xcpretty --no-document
 
       - name: Build for simulator (compile check)
-        # Separate build step gives a clean error if the test target won't compile,
-        # without wading through the longer test output.
         run: |
           set -o pipefail
           xcodebuild build \
@@ -95,11 +172,6 @@ concurrency:
               echo "::endgroup::"
               exit 1
             }
-        # NOTE: If the SDK has no test target yet, xcodebuild exits non-zero with
-        # "does not contain a test target". Add a Unit Testing Bundle target in
-        # Xcode (File → New → Target → Unit Testing Bundle) to make this step active.
-        # Until then, you can add `|| true` above to keep CI green while the test
-        # target is being set up — but remove it once real tests exist.
 
       - name: Upload test results
         if: always()
@@ -119,21 +191,6 @@ concurrency:
           retention-days: 7
           if-no-files-found: ignore
 
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# CHANGE 4 — Update publish-to-ios-app to also target pp_turl_iOS
-#
-# The existing job only updates tuneurl_radio_app_ota.
-# Use a matrix to update both app repos in parallel from the same artifact.
-# ═══════════════════════════════════════════════════════════════════════════════
-
-# REPLACE the existing `publish-to-ios-app` job with this matrix version.
-# The only functional differences from the existing job are:
-#   1. `needs:` now includes `test-simulator`
-#   2. A matrix drives two repos instead of hardcoded env vars
-#   3. IOS_XCFRAMEWORK_PATH is per-repo (the two repos may store the
-#      xcframework at different paths — adjust as needed)
-
   publish-to-ios-app:
     name: Open PR → ${{ matrix.repo }}
     needs: [build-xcframework, smoke-test-cpp, test-simulator]
@@ -141,15 +198,13 @@ concurrency:
     runs-on: macos-15
 
     strategy:
-      fail-fast: false   # if one app PR fails, still try the other
+      fail-fast: false
       matrix:
         include:
           - repo: jaap-dekkinga/tuneurl_radio_app_ota
             xcframework_path: Dependencies/TuneURL.xcframework
           - repo: jaap-dekkinga/pp_turl_iOS
             xcframework_path: Dependencies/TuneURL.xcframework
-            # ↑ Adjust xcframework_path to match where pp_turl_iOS
-            #   actually stores the framework (check the repo layout).
 
     steps:
       - name: Download xcframework artifact
