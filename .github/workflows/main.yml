@@ -248,6 +248,8 @@ jobs:
         include:
           - repo: jaap-dekkinga/tuneurl_radio_app_ota
             xcframework_path: Dependencies/TuneURL.xcframework
+          - repo: jaap-dekkinga/CYON
+            xcframework_path: Dependencies/TuneURL.xcframework
     steps:
       - name: Download xcframework artifact
         uses: actions/download-artifact@v5
