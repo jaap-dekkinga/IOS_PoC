@@ -155,6 +155,31 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
+      - name: Publish to latest-sdk release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.IOS_REPO_TOKEN }}
+        run: |
+          set -e
+          ASSET="Build/Framework Products/TuneURL.xcframework.zip"
+
+          # Delete and recreate the rolling release so the download URL
+          # always points to the most recent successful build.
+          gh release delete "latest-sdk" \
+            --yes \
+            --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+
+          git push origin ":refs/tags/latest-sdk" 2>/dev/null || true
+
+          gh release create "latest-sdk" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Latest SDK build (${GITHUB_SHA::7})" \
+            --notes "Auto-published from commit ${GITHUB_SHA}. Build: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            --prerelease \
+            "$ASSET"
+
+          echo "Published TuneURL.xcframework.zip to latest-sdk release"
+
       - name: Upload build logs on failure
         if: failure()
         uses: actions/upload-artifact@v5
@@ -239,9 +264,6 @@ jobs:
     needs: [build-xcframework, smoke-test-cpp]
     if: github.event_name == 'push'
     runs-on: macos-15
-    # pp_turl_iOS uses CocoaPods (pod 'TuneURL') — no committed xcframework
-    # to replace, so it is intentionally absent from this matrix.
-    # The radio app uses a committed xcframework at Dependencies/TuneURL.xcframework.
     strategy:
       fail-fast: false
       matrix:
