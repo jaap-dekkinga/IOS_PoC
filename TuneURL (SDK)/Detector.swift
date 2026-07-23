@@ -79,7 +79,7 @@ public class Detector {
 		let matchDuration: Float = 5.0
 		let triggerDuration: Float = 2.0
 		let triggerWindowDuration: Float = 4.0
-		let fingerprintBytesPerSecond = 640	// TODO: confirm this
+		let fingerprintBytesPerSecond = 160   // 5 fps × 4 landmarks/frame × 8 bytes/landmark
 		let windowSize = (fingerprintBytesPerSecond * Int(triggerWindowDuration))
 		let fileFingerprintSize = Int(fileFingerprint.pointee.dataSize)
 		let totalMatchSize = Int((triggerDuration + matchDuration) * Float(fingerprintBytesPerSecond))
