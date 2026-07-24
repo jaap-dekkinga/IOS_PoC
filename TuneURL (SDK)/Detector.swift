@@ -56,6 +56,7 @@ public class Detector {
 
 		// create the trigger fingerprint
 		if let fingerprint = AudioUtility.generateFingerprint(for: audioFileURL) {
+			NSLog("[SDK-DIAG] trigger fingerprint set july 24 2026")
 			triggerFingerprint = fingerprint
 		}
 	}
