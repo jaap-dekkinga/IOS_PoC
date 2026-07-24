@@ -54,9 +54,6 @@ public class Detector {
 	// MARK: - Private funcs
 
 	private static func privateSetTrigger(_ audioFileURL: URL) {
-		// Log which SDK build is running (helps distinguish CI vs local builds)
-		NSLog("[SDK-INFO] TuneURL SDK build=\(SDK_BUILD_TIMESTAMP) commit=\(SDK_BUILD_COMMIT)")
-
 		// clear any current trigger
 		FingerprintFree(triggerFingerprint)
 		triggerFingerprint = nil
@@ -85,10 +82,12 @@ public class Detector {
 		}
 
 		// >>> SDK-DIAG: header + whole-file comparison sanity check ------------
-		// This block is a diagnostic added to isolate whether the zero-similarity
-		// bug lives in (a) fingerprint generation, (b) CompareFingerprints itself,
-		// or (c) the sliding-window slice construction below. Safe to leave in;
-		// remove once detection is validated end-to-end.
+		// Diagnostic: logs the first 8 bytes of both fingerprints (to see if both
+		// carry a valid v2 header FF 02 02 01 ...), and runs one comparison of the
+		// entire file fingerprint against the trigger (bypassing the sliding-window
+		// slicing below). Uses only Fingerprint / CompareFingerprints from
+		// Fingerprint_Private, which are already imported at the top of this file
+		// — no external symbols added, no risk of "cannot find in scope".
 		if let tp = triggerFingerprint {
 			let tb = tp.pointee.data!
 			NSLog("[SDK-DIAG] trigger size=\(tp.pointee.dataSize) first8=\(String(format: "%02X %02X %02X %02X %02X %02X %02X %02X", tb[0], tb[1], tb[2], tb[3], tb[4], tb[5], tb[6], tb[7]))")
