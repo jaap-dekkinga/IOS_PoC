@@ -82,12 +82,6 @@ public class Detector {
 		}
 
 		// >>> SDK-DIAG: header + whole-file comparison sanity check ------------
-		// Diagnostic: logs the first 8 bytes of both fingerprints (to see if both
-		// carry a valid v2 header FF 02 02 01 ...), and runs one comparison of the
-		// entire file fingerprint against the trigger (bypassing the sliding-window
-		// slicing below). Uses only Fingerprint / CompareFingerprints from
-		// Fingerprint_Private, which are already imported at the top of this file
-		// — no external symbols added, no risk of "cannot find in scope".
 		if let tp = triggerFingerprint {
 			let tb = tp.pointee.data!
 			NSLog("[SDK-DIAG] trigger size=\(tp.pointee.dataSize) first8=\(String(format: "%02X %02X %02X %02X %02X %02X %02X %02X", tb[0], tb[1], tb[2], tb[3], tb[4], tb[5], tb[6], tb[7]))")
@@ -119,7 +113,11 @@ public class Detector {
 
 		NSLog("[SDK-DIAG] scan start fileFingerprintSize=\(fileFingerprintSize) windowSize=\(windowSize) totalMatchSize=\(totalMatchSize)")
 
-		while (currentIndex <= (fileFingerprintSize - totalMatchSize)) {
+		// FIX #1: scan every window that fits, instead of stopping
+		// `totalMatchSize` early — the old bound silently skipped the last
+		// ~3 seconds of every file (and made short test clips scan zero
+		// windows at all).
+		while ((currentIndex + windowSize) <= fileFingerprintSize) {
 			// create the window fingerprint
 			var windowFingerprint = Fingerprint(data: fileFingerprint.pointee.data.advanced(by: currentIndex), dataSize: Int32(windowSize))
 
@@ -153,8 +151,15 @@ public class Detector {
 				var matchEndBytes = (matchStartBytes + Int(matchDuration * Float(fingerprintBytesPerSecond)))
 				matchEndBytes = (matchEndBytes - (matchEndBytes % 32))
 
+				// FIX #2: clamp to whatever audio actually exists instead of
+				// dropping the match entirely when it's near the end of the
+				// file — losing the CTA silently is worse than identifying
+				// off slightly less trailing audio.
+				let clampedFileSize = (fileFingerprintSize - (fileFingerprintSize % 32))
+				matchEndBytes = min(matchEndBytes, clampedFileSize)
+
 				// create the possible match
-				if (matchEndBytes < fileFingerprint.pointee.dataSize) {
+				if (matchEndBytes > matchStartBytes) {
 					// copy the possible match fingerprint data
 					var fingerprintData = [UInt8]()
 					let fingerprintDataSize = (matchEndBytes - matchStartBytes)
