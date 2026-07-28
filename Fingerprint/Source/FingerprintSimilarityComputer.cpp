@@ -108,7 +108,9 @@ FingerprintSimilarity FingerprintSimilarityComputer::getMatchResults()
 	}
 
 	// calculate the most similar start time
-	results.mostSimilarStartTime = ((float)results.mostSimilarFramePosition / (float)FingerprintProperties::numRobustPointsPerFrame / (float)FingerprintProperties::fps);
-
-	return results;
-}
+	if (results.mostSimilarFramePosition != INT_MIN) {
+	    results.mostSimilarStartTime = ((float)results.mostSimilarFramePosition / (float)FingerprintProperties::numRobustPointsPerFrame / (float)FingerprintProperties::fps);
+	}
+	// else: leave the 1.0f default set above — or pick whatever sentinel your caller checks for "no match"
+		return results;
+	}
