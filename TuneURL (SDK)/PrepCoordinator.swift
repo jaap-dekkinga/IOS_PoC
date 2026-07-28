@@ -2,166 +2,76 @@
 //  PrepCoordinator.swift
 //  TuneURL (SDK)
 //
-//  Wires PodcastPrepDetector into the app: decodes a completed download
-//  (BatchDecodeFeed) into append(_:) calls, and reacts to resolved
-//  TuneUrlMoments (PrepCoordinator), including recursive prep for CYON
-//  default branches.
+//  Prep-phase coordinator for podcast episodes/branches. Since DownloadCache
+//  only ever hands back a complete local file (no partial/progressive
+//  access), this is just a thin wrapper around Detector.processAudio —
+//  no chunk-accumulation or decode-ahead machinery needed.
 //
-//  Built against DownloadCache.swift's real API (Alamofire-based,
-//  full-download-then-local-URL — no partial/progressive file access).
+//  Requires the two Detector.swift fixes in Detector-fix.md (loop bound +
+//  end-of-file match extraction) to correctly scan a whole episode.
 //
-//  STAND-INS STILL TO SWAP FOR YOUR REAL EQUIVALENTS:
-//   - AudioUtility.convertToFingerprintSamples(_:) — whatever StreamDetector
-//     already uses to get mic input into fingerprint format (mono, Int16,
-//     FINGERPRINT_SAMPLE_RATE) — reuse that, don't rewrite it.
-//   - TriggerStore.shared.fingerprint — the one global trigger, per your
-//     earlier answer that it's a single fixed clip for the whole app.
-//   - PrepStore.shared — wherever TuneUrlMoments/PrepStatus get persisted
-//     per branch (per the Data Model in the design doc).
-//   - CYONOption needs a `playerItem: PlayerItem` field (not a raw audioURL)
-//     to match DownloadCache.cachedFile(for:completion:)'s signature.
+//  STILL BLOCKED ON: how CYON options are represented — Match.swift has no
+//  `options` field, so `isChooseYourOwnNarrative` / default-branch lookup
+//  below is a placeholder until that's answered.
 //
 
 import Foundation
-import AVFoundation
-@_implementationOnly import Fingerprint_Private
 
-// MARK: - Decode feed
-
-protocol DecodeAheadFeedDelegate: AnyObject {
-    func decodeAheadFeed(_ feed: BatchDecodeFeed, didDecode samples: [Int16])
-    func decodeAheadFeedReachedEnd(_ feed: BatchDecodeFeed)
+public struct TuneUrlMoment {
+    public let timestamp: TimeInterval   // == Match.time
+    public let match: Match
 }
 
-/// DownloadCache (Alamofire's AF.download) only hands back a URL once the
-/// file is FULLY downloaded — there's no partial/growing file to poll, so
-/// this decodes the complete local file in chunks. Still feeds the detector
-/// progressively (not one giant blocking call) so moments resolve as
-/// scanning proceeds and CYON-default prep can start before the whole
-/// episode finishes scanning. "Ahead of the playhead" now means starting
-/// this whole pipeline as early as possible (e.g. when an episode is
-/// queued), not racing partial download bytes.
-final class BatchDecodeFeed {
-
-    weak var delegate: DecodeAheadFeedDelegate?
-
-    private let fileURL: URL
-    private let chunkDuration: Double = 2.0
-    private let queue = DispatchQueue(label: "com.TuneURL.BatchDecodeFeed-\(UUID().uuidString)")
-
-    init(fileURL: URL) {
-        self.fileURL = fileURL
-    }
-
-    func start() {
-        queue.async { self.decodeAll() }
-    }
-
-    private func decodeAll() {
-        guard let audioFile = try? AVAudioFile(forReading: fileURL) else {
-            NSLog("TuneURL: Unable to open downloaded file for Prep scanning. (\(fileURL.lastPathComponent))")
-            delegate?.decodeAheadFeedReachedEnd(self)
-            return
-        }
-
-        let frameCount = AVAudioFrameCount(chunkDuration * audioFile.processingFormat.sampleRate)
-        while audioFile.framePosition < audioFile.length {
-            guard let buffer = AVAudioPCMBuffer(pcmFormat: audioFile.processingFormat, frameCapacity: frameCount) else { break }
-            do {
-                try audioFile.read(into: buffer, frameCount: frameCount)
-            } catch {
-                break   // stop on read error rather than looping forever
-            }
-            guard let samples = AudioUtility.convertToFingerprintSamples(buffer) else { continue }
-            delegate?.decodeAheadFeed(self, didDecode: samples)
-        }
-
-        delegate?.decodeAheadFeedReachedEnd(self)
-    }
-}
-
-// MARK: - Prep coordinator (delegate hookup)
-
-final class PrepCoordinator: PodcastPrepDetectorDelegate, DecodeAheadFeedDelegate {
+final class PrepCoordinator {
 
     let branchId: String
-    private let detector: PodcastPrepDetector
-    private let feed: BatchDecodeFeed
-    private let settings: PrepSettings
 
-    // recursive prep for CYON default branches — keyed by option id so we
-    // don't kick off the same branch's prep twice
     private static var activeCoordinators: [String: PrepCoordinator] = [:]
-    private static let activeCoordinatorsQueue = DispatchQueue(label: "com.TuneURL.PrepCoordinator.registry")
+    private static let registryQueue = DispatchQueue(label: "com.TuneURL.PrepCoordinator.registry")
 
-    /// fileURL must already be a completed local download (e.g. from
-    /// DownloadCache.cachedFile / DownloadCache.download's completion).
-    init(branchId: String, fileURL: URL, settings: PrepSettings = PrepSettings()) {
+    private init(branchId: String) {
         self.branchId = branchId
-        self.settings = settings
-        self.detector = PodcastPrepDetector(triggerFingerprint: TriggerStore.shared.fingerprint, settings: settings)
-        self.feed = BatchDecodeFeed(fileURL: fileURL)
-        detector.delegate = self
-        feed.delegate = self
     }
 
-    func start() {
-        feed.start()
-    }
-
-    // MARK: - DecodeAheadFeedDelegate — just bridges into the detector
-
-    func decodeAheadFeed(_ feed: BatchDecodeFeed, didDecode samples: [Int16]) {
-        detector.append(samples)
-    }
-
-    func decodeAheadFeedReachedEnd(_ feed: BatchDecodeFeed) {
-        detector.markEndOfStream()
-    }
-
-    // MARK: - PodcastPrepDetectorDelegate
-
-    func prepDetector(_ detector: PodcastPrepDetector, didResolve moment: TuneUrlMoment) {
-        PrepStore.shared.save(moment, forBranch: branchId)
-
-        // CYON moment — kick off prep for the default option's audio now,
-        // in the background, well ahead of the listener reaching this point
-        if let options = moment.match.options, !options.isEmpty,
-           let defaultOption = options.first(where: { $0.isDefault }) {
-            beginPrepForDefaultBranch(defaultOption)
+    /// Entry point — call once you have a complete local file (from
+    /// DownloadCache.cachedFile / DownloadCache.download's completion).
+    static func beginPrep(branchId: String, fileURL: URL) {
+        registryQueue.async {
+            guard activeCoordinators[branchId] == nil else { return }   // already prepping/prepped
+            let coordinator = PrepCoordinator(branchId: branchId)
+            activeCoordinators[branchId] = coordinator
+            coordinator.start(fileURL: fileURL)
         }
     }
 
-    func prepDetector(_ detector: PodcastPrepDetector, scannedUpTo time: TimeInterval) {
-        PrepStore.shared.updateScannedUpTo(time, forBranch: branchId)
-        // Playback side should check PrepStore's scannedUpTo vs. its own
-        // currentTime + leadTimeSeconds before trusting a moment is resolved —
-        // that lead-time check belongs in the player, not here.
-    }
+    private func start(fileURL: URL) {
+        Detector.processAudio(for: fileURL) { [weak self] matches in
+            guard let self else { return }
 
-    func prepDetectorReachedEndOfStream(_ detector: PodcastPrepDetector) {
-        PrepStore.shared.markComplete(forBranch: branchId)
-        Self.activeCoordinatorsQueue.async {
-            Self.activeCoordinators[self.branchId] = nil
-        }
-    }
+            for match in matches {
+                self.resolve(match)
+            }
 
-    /// option must resolve to a PlayerItem (podcast + episode) — CYONOption
-    /// needs a playerItem field rather than a raw audioURL, to match
-    /// DownloadCache's actual API.
-    private func beginPrepForDefaultBranch(_ option: CYONOption) {
-        Self.activeCoordinatorsQueue.async {
-            guard Self.activeCoordinators[option.id] == nil else { return }   // already prepping
-
-            // cachedFile evicts older non-user-download cache entries past
-            // maxCachedItems (5) — worth revisiting whether Prep-prefetched
-            // branches need protection from eviction before they're played
-            DownloadCache.shared.cachedFile(for: option.playerItem) { localURL in
-                guard let localURL else { return }
-                let coordinator = PrepCoordinator(branchId: option.id, fileURL: localURL, settings: self.settings)
-                Self.activeCoordinators[option.id] = coordinator
-                coordinator.start()
+            PrepStore.shared.markComplete(forBranch: self.branchId)
+            Self.registryQueue.async {
+                Self.activeCoordinators[self.branchId] = nil
             }
         }
+    }
+
+    private func resolve(_ match: Match) {
+        let moment = TuneUrlMoment(timestamp: TimeInterval(match.time), match: match)
+        PrepStore.shared.save(moment, forBranch: branchId)
+
+        // TODO: CYON detection + recursive default-branch prep.
+        // Blocked on knowing how CYON options are represented — Match has no
+        // `options` field. Once known, something like:
+        //
+        // if let defaultOption = cyonOptions(for: match)?.first(where: { $0.isDefault }) {
+        //     DownloadCache.shared.cachedFile(for: defaultOption.playerItem) { localURL in
+        //         guard let localURL else { return }
+        //         PrepCoordinator.beginPrep(branchId: defaultOption.id, fileURL: localURL)
+        //     }
+        // }
     }
 }
