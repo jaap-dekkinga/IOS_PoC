@@ -108,21 +108,30 @@ class Server {
                 
                 // check the http response status code
                 guard ((response.statusCode >= 200) && (response.statusCode <= 299)) else {
-                    NSLog("TuneURL: Server returned unhandled status code: \(response.statusCode)")
+                    // SDK-DIAG: log the body on non-2xx too — many APIs put
+                    // useful error detail in the body even on 4xx/5xx
+                    let bodyString = String(data: data, encoding: .utf8) ?? "(non-utf8 body, \(data.count) bytes)"
+                    NSLog("[SDK-DIAG] Server returned status \(response.statusCode). Body: \(bodyString)")
                     completion?(nil)
                     return
                 }
                 
-                // decode the response
+                // SDK-DIAG: log the raw body every time, so we can see the
+                // actual shape of a successful response while debugging
+                let bodyString = String(data: data, encoding: .utf8) ?? "(non-utf8 body, \(data.count) bytes)"
+                NSLog("[SDK-DIAG] Server response body: \(bodyString)")
+                
+                // decode the response — use do/catch instead of try? so we
+                // can see WHY decoding failed (missing key, type mismatch,
+                // wrapped-object-vs-bare-array, etc.) instead of just "it failed"
                 let decoder = JSONDecoder()
-                guard let object = try? decoder.decode(T.self, from: data) else {
-                    NSLog("TuneURL: Error decoding server response.")
+                do {
+                    let object = try decoder.decode(T.self, from: data)
+                    completion?(object)
+                } catch {
+                    NSLog("[SDK-DIAG] Error decoding server response as \(T.self): \(error)")
                     completion?(nil)
-                    return
                 }
-                
-                // call the completion handler
-                completion?(object)
             }
         }
         
