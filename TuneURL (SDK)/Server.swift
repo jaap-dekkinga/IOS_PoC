@@ -1,285 +1,141 @@
 //
-//  Detector.swift
+//  Server.swift
 //  TuneURL (SDK)
 //
-//  Created by Gerrit Goossen <developer@gerrit.email> on 10/27/21.
-//  Copyright © 2021-2022 TuneURL Inc. All rights reserved.
+//  Created by Gerrit Goossen <developer@gerrit.email> on 9/23/19.
+//  Copyright © 2019-2022 TuneURL Inc. All rights reserved.
 //
 
 import Foundation
-import AVFoundation
 @_implementationOnly import Fingerprint_Private
 
-public class Detector {
-
-	// MARK: - Types
-
-	public typealias CompletionHandler = ([Match]) -> Void
-
-	private class DetectRequest {
-		let completionHandler: CompletionHandler
-		var possibleMatches = [PossibleMatch]()
-		var matches = [Match]()
-
-		init(completionHandler: @escaping CompletionHandler) {
-			self.completionHandler = completionHandler
-		}
-	}
-
-	private struct PossibleMatch {
-		var fingerprint: [UInt8]
-		var matchSamples: [Int16]   // raw audio for the match segment — kept for V1 fallback
-		var time: Float
-	}
-
-	// MARK: - Private props
-
-	private static let dispatchQueue = DispatchQueue(label: "TuneURL Detector")
-	private static var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
-	private static let triggerWindowDuration = 4.0
-
-	// MARK: - Public static funcs
-
-	public static func setTrigger(_ audioFileURL: URL) {
-		dispatchQueue.async {
-			privateSetTrigger(audioFileURL)
-		}
-	}
-
-	public static func processAudio(for audioFileURL: URL, completionHandler: @escaping CompletionHandler) {
-		dispatchQueue.async {
-			privateProcessAudio(for: audioFileURL, completionHandler: completionHandler)
-		}
-	}
-
-	// MARK: - Private funcs
-
-	private static func privateSetTrigger(_ audioFileURL: URL) {
-		// clear any current trigger
-		FingerprintFree(triggerFingerprint)
-		triggerFingerprint = nil
-
-		// create the trigger fingerprint
-		if let fingerprint = AudioUtility.generateFingerprint(for: audioFileURL) {
-			NSLog("[SDK-DIAG] trigger fingerprint set july 24 2026")
-			triggerFingerprint = fingerprint
-		} else {
-			NSLog("[SDK-DIAG] trigger fingerprint FAILED — generateFingerprint returned nil for \(audioFileURL.lastPathComponent)")
-		}
-	}
-
-	private static func privateProcessAudio(for audioFileURL: URL, completionHandler: @escaping CompletionHandler) {
-		// safety check
-		guard (triggerFingerprint != nil) else {
-			NSLog("TuneURL: Error: No audio trigger has been set.")
-			return
-		}
-
-		// decode + resample the whole file to raw audio (same decode path
-		// AudioUtility.generateFingerprint uses internally) — but instead of
-		// collapsing it into a single fingerprint and slicing its bytes for
-		// "windows" (which produced near-zero similarity even for a slice of
-		// the trigger against itself — see FIX #3 below), fingerprint each
-		// window FRESH from raw audio samples, exactly like
-		// AudioCapture.checkForTriggerSound() already does for the live/radio
-		// path. Same fingerprinting logic, just looped over a fully-decoded
-		// buffer instead of a live rolling one.
-		guard let audioBuffer = AudioUtility.prepareAudioForProcessing(audioFileURL, asFloat: false),
-			  let int16Data = audioBuffer.int16ChannelData else {
-			NSLog("[SDK-DIAG] file audio decode FAILED for \(audioFileURL.lastPathComponent)")
-			completionHandler([])
-			return
-		}
-
-		let totalSampleCount = Int(audioBuffer.frameLength)
-		let sampleRate = FINGERPRINT_SAMPLE_RATE   // already resampled to this by prepareAudioForProcessing
-
-		// >>> SDK-DIAG: header + whole-file comparison sanity check ------------
-		// whole-buffer fingerprint, for the sanity-check log only — the
-		// windowed scan below never slices this, it re-extracts per window.
-		let wholeSamples = Array(UnsafeBufferPointer(start: int16Data[0], count: totalSampleCount))
-		if let wholeFingerprint = ExtractFingerprint(wholeSamples, Int32(wholeSamples.count), Int32(FORMAT_VERSION_V2)) {
-			if let tp = triggerFingerprint {
-				let tb = tp.pointee.data!
-				NSLog("[SDK-DIAG] trigger size=\(tp.pointee.dataSize) first8=\(String(format: "%02X %02X %02X %02X %02X %02X %02X %02X", tb[0], tb[1], tb[2], tb[3], tb[4], tb[5], tb[6], tb[7]))")
-			}
-			let fb = wholeFingerprint.pointee.data!
-			NSLog("[SDK-DIAG] file    size=\(wholeFingerprint.pointee.dataSize) first8=\(String(format: "%02X %02X %02X %02X %02X %02X %02X %02X", fb[0], fb[1], fb[2], fb[3], fb[4], fb[5], fb[6], fb[7]))")
-
-			let wholeCompare = CompareFingerprints(wholeFingerprint, triggerFingerprint)
-			NSLog("[SDK-DIAG] whole-file compare similarity=\(wholeCompare.similarity) atTime=\(wholeCompare.mostSimilarStartTime)s score=\(wholeCompare.score)")
-			FingerprintFree(wholeFingerprint)
-		}
-		// <<< end SDK-DIAG ----------------------------------------------------
-
-		// process the audio in a sliding window, fingerprinting each window
-		// fresh from raw audio samples
-		var currentSample = 0
-		let detectRequest = DetectRequest(completionHandler: completionHandler)
-		let matchDuration: Double = 5.0
-		let triggerDuration: Double = 2.0
-		let triggerWindowDuration: Double = 4.0
-
-		let windowSampleCount = Int(triggerWindowDuration * sampleRate)
-		let stepSampleCount = (windowSampleCount / 2)   // 50% overlap
-		let matchSampleCount = Int((triggerDuration + matchDuration) * sampleRate)
-
-		// >>> SDK-DIAG: max-similarity trackers
-		var diagMaxSimilarity: Float = 0.0
-		var diagMaxSimilarityAt: Float = 0.0
-		var diagIterations = 0
-		// <<<
-
-		NSLog("[SDK-DIAG] scan start totalSamples=\(totalSampleCount) windowSamples=\(windowSampleCount) matchSamples=\(matchSampleCount)")
-
-		while ((currentSample + windowSampleCount) <= totalSampleCount) {
-			// fresh raw-audio window, fingerprinted from scratch — same as
-			// AudioCapture.checkForTriggerSound(), not a slice of a
-			// pre-existing fingerprint's bytes
-			let windowPointer = int16Data[0].advanced(by: currentSample)
-			let windowSamples = Array(UnsafeBufferPointer(start: windowPointer, count: windowSampleCount))
-
-			guard let windowFingerprint = ExtractFingerprint(windowSamples, Int32(windowSamples.count), Int32(FORMAT_VERSION_V2)) else {
-				currentSample += stepSampleCount
-				continue
-			}
-
-			// compare the fingerprints
-			let matchResults = CompareFingerprints(windowFingerprint, triggerFingerprint)
-			FingerprintFree(windowFingerprint)
-
-			// >>> SDK-DIAG: track the highest similarity seen
-			if matchResults.similarity > diagMaxSimilarity {
-				diagMaxSimilarity = matchResults.similarity
-				diagMaxSimilarityAt = matchResults.mostSimilarStartTime
-			}
-			diagIterations += 1
-			// <<<
-
-			// Note: This uses a very high similarity because the audio should really
-			// be an almost exact match from a podcast.
-			if (matchResults.similarity > 0.75) {
+class Server {
+    
+    // MARK: - Static props
+    static let shared = Server()
+    
+    // MARK: - Private props
+    // match server configuration
+    private let serverHost = "pnz3vadc52.execute-api.us-east-2.amazonaws.com"
+    private let serverMatchPath = "/dev/search-fingerprint"
+    
+    // MARK: - Public funcs
+    func matchFingerprint(
+        for fingerprintData: [UInt8],
+        queue: DispatchQueue?,
+        completion: ((Match?) -> Void)? = nil
+    ) {
 #if DEBUG
-				print("TuneURL: Trigger detected at: \(matchResults.mostSimilarStartTime) seconds (similarity: \(matchResults.similarity))")
-				print("\tTrigger fingerprint score: \(matchResults.score)")
-				print("\tTrigger fingerprint similarity: \(matchResults.similarity)")
-				print("\tTrigger fingerprint similar time: \(matchResults.mostSimilarStartTime)")
-				print("\tTrigger fingerprint most similar frame: \(matchResults.mostSimilarFramePosition)")
+        print("TuneURL: Requesting fingerprint match.")
 #endif // DEBUG
-
-				// absolute time of the hit within the whole file
-				let hitTime = (Double(currentSample) / sampleRate) + Double(matchResults.mostSimilarStartTime)
-
-				// extract raw audio for identification and fingerprint it
-				// fresh too — same reasoning as the window scan above
-				let matchStartSample = Int((hitTime + triggerDuration) * sampleRate)
-				let matchEndSample = min(matchStartSample + matchSampleCount, totalSampleCount)
-
-				if (matchEndSample > matchStartSample) && (matchStartSample >= 0) {
-					let matchPointer = int16Data[0].advanced(by: matchStartSample)
-					let matchSamples = Array(UnsafeBufferPointer(start: matchPointer, count: (matchEndSample - matchStartSample)))
-
-					if let matchFingerprint = ExtractFingerprint(matchSamples, Int32(matchSamples.count), Int32(FORMAT_VERSION_V2)) {
-						var fingerprintData = [UInt8]()
-						let pointer = matchFingerprint.pointee.data!
-						for x in 0 ..< Int(matchFingerprint.pointee.dataSize) {
-							fingerprintData.append(pointer[x])
-						}
-						FingerprintFree(matchFingerprint)
-
-						// add the possible match
-						let possibleMatch = PossibleMatch(fingerprint: fingerprintData, matchSamples: matchSamples, time: Float(hitTime))
-						// check if the possible match is too close to the last one
-						if let lastPossibleMatch = detectRequest.possibleMatches.last {
-							if (abs(Double(lastPossibleMatch.time) - hitTime) > 0.5) {
-								detectRequest.possibleMatches.append(possibleMatch)
-							} else {
-#if DEBUG
-								print("Ignoring possible match.")
-#endif // DEBUG
-							}
-						} else {
-							// there are no other possible matches
-							detectRequest.possibleMatches.append(possibleMatch)
-						}
-					}
-				} else {
-#if DEBUG
-					print("Error: Match is too close to the end of the file.")
-#endif // DEBUG
-				}
-			}
-
-			// advance, but overlap the trigger window
-			currentSample += stepSampleCount
-		}
-
-		// >>> SDK-DIAG: report what the scan actually saw
-		NSLog("[SDK-DIAG] scan complete iterations=\(diagIterations) maxSimilarity=\(diagMaxSimilarity) atTime=\(diagMaxSimilarityAt)s threshold=0.75 possibleMatches=\(detectRequest.possibleMatches.count)")
-		// <<<
-
-		// safety check
-		if (detectRequest.possibleMatches.count == 0) {
-			detectRequest.completionHandler([])
-		}
-
-		// start making server requests
-		requestNext(detectRequest)
-	}
-
-	private static func requestNext(_ detectRequest: DetectRequest) {
-		// pop the last possible match
-		guard let possibleMatch = detectRequest.possibleMatches.popLast() else {
-			// sort the results
-			detectRequest.matches.sort { (match1, match2) -> Bool in
-				return (match1.time < match2.time)
-			}
-			// call the completion handler
-			detectRequest.completionHandler(detectRequest.matches)
-			return
-		}
-
-		// ask the server to match the audio (V2 primary, V1 fallback —
-		// same pattern as AudioMatcher.recognizedTrigger())
-		Server.shared.matchFingerprint(for: possibleMatch.fingerprint, queue: dispatchQueue) {
-			match in
-
-			if let match = match {
-				match.fingerprintVersion = "V2"
-				detectRequest.matches.append(Match(match: match, time: possibleMatch.time))
-				requestNext(detectRequest)
-				return
-			}
-
-			// V2 returned no match — fall back to V1 once, same as the
-			// live/radio path already does
-#if DEBUG
-			print("TuneURL: V2 match returned nil, retrying with V1 fingerprint.")
-#endif
-			guard let v1Fingerprint = ExtractFingerprint(
-				possibleMatch.matchSamples,
-				Int32(possibleMatch.matchSamples.count),
-				Int32(FORMAT_VERSION_V1)
-			) else {
-				requestNext(detectRequest)
-				return
-			}
-
-			var v1Data = [UInt8]()
-			let v1Pointer = v1Fingerprint.pointee.data!
-			for x in 0 ..< Int(v1Fingerprint.pointee.dataSize) {
-				v1Data.append(v1Pointer[x])
-			}
-			FingerprintFree(v1Fingerprint)
-
-			Server.shared.matchFingerprint(for: v1Data, queue: dispatchQueue) { (fallbackMatch: Match?) in
-				if let fallbackMatch = fallbackMatch {
-					fallbackMatch.fingerprintVersion = "V1"
-					detectRequest.matches.append(Match(match: fallbackMatch, time: possibleMatch.time))
-				}
-				// process the next possible match either way
-				requestNext(detectRequest)
-			}
-		}
-	}
+        
+        // create the request url
+        guard let requestURL = URL(string: ("https://" + serverHost + serverMatchPath)) else {
+            NSLog("TuneURL: Error creating url for server request.")
+            return
+        }
+        
+        // create the request parameters
+        let fingerprintParameters: [String : Any] = [
+            "type" : "buffer",
+            "data" : fingerprintData
+        ]
+        let parameters = [
+            "fingerprint" : fingerprintParameters
+        ]
+        
+        // convert the parameters to json data
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted) else {
+            NSLog("TuneURL: Error creating json data for server request.")
+            completion?(nil)
+            return
+        }
+        
+        // create the request
+        var request = URLRequest(url: requestURL)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 60.0
+        request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        // make the request
+        makeRequest(request, queue: queue, responseType: [Match].self) {
+            responseObject in
+            
+            // get the response
+            guard let matchResponses = responseObject else {
+                completion?(nil)
+                return
+            }
+            
+            // find the best match response
+            var match: Match?
+            var bestPercentage = -1
+            
+            for item in matchResponses {
+                if (item.matchPercentage > bestPercentage) {
+                    bestPercentage = item.matchPercentage
+                    match = item
+                }
+            }
+            
+            // call the completion handler
+            completion?(match)
+        }
+    }
+    
+    // MARK: - Private funcs
+    private func makeRequest<T: Decodable>(
+        _ request: URLRequest,
+        queue: DispatchQueue?,
+        responseType: T.Type,
+        completion: ((T?) -> Void)? = nil
+    ) {
+        let dispatchQueue = queue ?? DispatchQueue.main
+        
+        let task = URLSession.shared.dataTask(with: request) {
+            (data: Data?, response: URLResponse?, error: Error?) in
+            
+            dispatchQueue.async {
+                // check for errors
+                guard (error == nil), let data = data, (data.count > 0),
+                      let response = response as? HTTPURLResponse else {
+                    NSLog("TuneURL: Server returned error: \(error?.localizedDescription ?? "(unknown error)")")
+                    completion?(nil)
+                    return
+                }
+                
+                // check the http response status code
+                guard ((response.statusCode >= 200) && (response.statusCode <= 299)) else {
+                    // SDK-DIAG: log the body on non-2xx too — many APIs put
+                    // useful error detail in the body even on 4xx/5xx
+                    let bodyString = String(data: data, encoding: .utf8) ?? "(non-utf8 body, \(data.count) bytes)"
+                    NSLog("[SDK-DIAG] Server returned status \(response.statusCode). Body: \(bodyString)")
+                    completion?(nil)
+                    return
+                }
+                
+                // SDK-DIAG: log the raw body every time, so we can see the
+                // actual shape of a successful response while debugging
+                let bodyString = String(data: data, encoding: .utf8) ?? "(non-utf8 body, \(data.count) bytes)"
+                NSLog("[SDK-DIAG] Server response body: \(bodyString)")
+                
+                // decode the response — use do/catch instead of try? so we
+                // can see WHY decoding failed (missing key, type mismatch,
+                // wrapped-object-vs-bare-array, etc.) instead of just "it failed"
+                let decoder = JSONDecoder()
+                do {
+                    let object = try decoder.decode(T.self, from: data)
+                    completion?(object)
+                } catch {
+                    NSLog("[SDK-DIAG] Error decoding server response as \(T.self): \(error)")
+                    completion?(nil)
+                }
+            }
+        }
+        
+        // start the request
+        task.resume()
+    }
 }
