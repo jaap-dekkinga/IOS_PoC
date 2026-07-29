@@ -28,6 +28,7 @@ public class Detector {
 
 	private struct PossibleMatch {
 		var fingerprint: [UInt8]
+		var matchSamples: [Int16]   // raw audio for the match segment — kept for V1 fallback
 		var time: Float
 	}
 
@@ -178,7 +179,7 @@ public class Detector {
 					let matchPointer = int16Data[0].advanced(by: matchStartSample)
 					let matchSamples = Array(UnsafeBufferPointer(start: matchPointer, count: (matchEndSample - matchStartSample)))
 
-					if let matchFingerprint = ExtractFingerprint(matchSamples, Int32(matchSamples.count), Int32(FORMAT_VERSION_V2)) {
+					if let matchFingerprint = ExtractFingerprint(matchSamples, Int32(matchSamples.count), Int32(FORMAT_VERSION_V1)) {
 						var fingerprintData = [UInt8]()
 						let pointer = matchFingerprint.pointee.data!
 						for x in 0 ..< Int(matchFingerprint.pointee.dataSize) {
@@ -186,8 +187,9 @@ public class Detector {
 						}
 						FingerprintFree(matchFingerprint)
 
-						// add the possible match
-						let possibleMatch = PossibleMatch(fingerprint: fingerprintData, time: Float(hitTime))
+						// add the possible match — V1 fingerprint primary,
+						// matchSamples kept for V2 fallback in requestNext
+						let possibleMatch = PossibleMatch(fingerprint: fingerprintData, matchSamples: matchSamples, time: Float(hitTime))
 						// check if the possible match is too close to the last one
 						if let lastPossibleMatch = detectRequest.possibleMatches.last {
 							if (abs(Double(lastPossibleMatch.time) - hitTime) > 0.5) {
@@ -238,17 +240,49 @@ public class Detector {
 			return
 		}
 
-		// make the server request
+		// ask the server to match the audio — V1 primary, V2 fallback.
+		// (Note: this is the opposite order from AudioMatcher's live/radio
+		// path, which is V2 primary/V1 fallback — intentional per app:
+		// the trigger sound itself stays V2, only match-segment
+		// identification here is V1-first.)
 		Server.shared.matchFingerprint(for: possibleMatch.fingerprint, queue: dispatchQueue) {
 			match in
 
-			// add the server match
 			if let match = match {
+				match.fingerprintVersion = "V1"
 				detectRequest.matches.append(Match(match: match, time: possibleMatch.time))
+				requestNext(detectRequest)
+				return
 			}
 
-			// process the next possible match
-			requestNext(detectRequest)
+			// V1 returned no match — fall back to V2 once
+#if DEBUG
+			print("TuneURL: V1 match returned nil, retrying with V2 fingerprint.")
+#endif
+			guard let v2Fingerprint = ExtractFingerprint(
+				possibleMatch.matchSamples,
+				Int32(possibleMatch.matchSamples.count),
+				Int32(FORMAT_VERSION_V2)
+			) else {
+				requestNext(detectRequest)
+				return
+			}
+
+			var v2Data = [UInt8]()
+			let v2Pointer = v2Fingerprint.pointee.data!
+			for x in 0 ..< Int(v2Fingerprint.pointee.dataSize) {
+				v2Data.append(v2Pointer[x])
+			}
+			FingerprintFree(v2Fingerprint)
+
+			Server.shared.matchFingerprint(for: v2Data, queue: dispatchQueue) { (fallbackMatch: Match?) in
+				if let fallbackMatch = fallbackMatch {
+					fallbackMatch.fingerprintVersion = "V2"
+					detectRequest.matches.append(Match(match: fallbackMatch, time: possibleMatch.time))
+				}
+				// process the next possible match either way
+				requestNext(detectRequest)
+			}
 		}
 	}
 }
