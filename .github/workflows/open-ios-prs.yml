@@ -59,6 +59,13 @@ jobs:
             echo "::error::Build SDK run $RUN_ID did not succeed"
             exit 1
           fi
+          # artifacts expire after 30 days, so make sure it's still there
+          ARTIFACT=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" \
+            --jq '[.artifacts[] | select(.name == "TuneURL.xcframework" and .expired == false)] | length')
+          if [ "$ARTIFACT" = "0" ]; then
+            echo "::error::Build SDK run $RUN_ID has no (unexpired) TuneURL.xcframework artifact. Pass the run_id of a more recent Build SDK run."
+            exit 1
+          fi
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
           echo "sha=$(echo "$INFO" | jq -r .headSha)" >> "$GITHUB_OUTPUT"
           echo "head_branch=$(echo "$INFO" | jq -r .headBranch)" >> "$GITHUB_OUTPUT"
