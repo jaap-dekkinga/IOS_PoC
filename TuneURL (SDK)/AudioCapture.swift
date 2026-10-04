@@ -128,6 +128,10 @@ class AudioCapture: NSObject {
 		let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint)
 		FingerprintFree(bufferFingerprint)
 
+		// Diagnostic — visible in Release builds, remove after measurement
+		NSLog("TuneURL_DIAG: ota local v2 similarity=%.4f score=%d mostSimilarStartTime=%.3f",
+		      matchResults.similarity, matchResults.score, matchResults.mostSimilarStartTime)
+
 		// check the match results
 		if (matchResults.similarity > 0.1) {
 
@@ -193,7 +197,9 @@ class AudioCapture: NSObject {
 		do {
 			try audioSession.setCategory(
 			    .playAndRecord,
-			    mode: .default,
+			    // .measurement disables iOS input processing (AGC etc.) so the
+			    // trigger sound reaches the fingerprinter unaltered
+			    mode: .measurement,
 			    options: [.mixWithOthers, .defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
 			)
 			try audioSession.setActive(true)
