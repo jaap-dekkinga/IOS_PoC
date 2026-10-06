@@ -162,51 +162,30 @@ class AudioMatcher {
             print("TuneURL: Match audio written to: \(fingerprintFileURL)")
 #endif // DEBUG
 
-			// create the match fingerprint data
-			var matchFingerprintData = [UInt8]()
-			let pointer = matchFingerprint.pointee.data!
-			for x in 0 ..< Int(matchFingerprint.pointee.dataSize) {
-				matchFingerprintData.append(pointer[x])
-			}
-
-			// cleanup
+			// cleanup (the V2 fingerprint is only used for the DEBUG dump above)
 			FingerprintFree(matchFingerprint)
 
-		// ask the server to match the audio (V2 primary, V1 fallback)
-			Server.shared.matchFingerprint(for: matchFingerprintData, queue: nil) { (match: Match?) in
-				if let match = match {
-					match.fingerprintVersion = "V2"
-					if let handler = self.matchHandler {
-						handler(match)
-					}
-					return
-				}
+			// ask the server to match the audio with the V1 fingerprint only,
+			// same as StreamDetector
+			guard let v1Fingerprint = ExtractFingerprint(
+				matchResampledBuffer,
+				Int32(matchResampledBuffer.count),
+				Int32(FORMAT_VERSION_V1)
+			) else {
+				return
+			}
 
-				// V2 returned no match — fall back to V1 once
-#if DEBUG
-				print("TuneURL: V2 match returned nil, retrying with V1 fingerprint.")
-#endif
+			var v1Data = [UInt8]()
+			let v1Pointer = v1Fingerprint.pointee.data!
+			for x in 0 ..< Int(v1Fingerprint.pointee.dataSize) {
+				v1Data.append(v1Pointer[x])
+			}
+			FingerprintFree(v1Fingerprint)
 
-				guard let v1Fingerprint = ExtractFingerprint(
-					matchResampledBuffer,
-					Int32(matchResampledBuffer.count),
-					Int32(FORMAT_VERSION_V1)
-				) else {
-					return
-				}
-
-				var v1Data = [UInt8]()
-				let v1Pointer = v1Fingerprint.pointee.data!
-				for x in 0 ..< Int(v1Fingerprint.pointee.dataSize) {
-					v1Data.append(v1Pointer[x])
-				}
-				FingerprintFree(v1Fingerprint)
-
-				Server.shared.matchFingerprint(for: v1Data, queue: nil) { (fallbackMatch: Match?) in
-					if let fallbackMatch = fallbackMatch, let handler = self.matchHandler {
-						fallbackMatch.fingerprintVersion = "V1"
-						handler(fallbackMatch)
-					}
+			Server.shared.matchFingerprint(for: v1Data, queue: nil) { (match: Match?) in
+				if let match = match, let handler = self.matchHandler {
+					match.fingerprintVersion = "V1"
+					handler(match)
 				}
 			}
 		}
