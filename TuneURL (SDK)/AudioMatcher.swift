@@ -22,6 +22,8 @@ class AudioMatcher {
 	internal private(set) var audioCapture: AudioCapture?
 	internal private(set) var isRunning = false
 	internal private(set) var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
+	/// Trigger length in samples at the fingerprint sample rate (for the sliding search).
+	internal private(set) var triggerSampleCount = 0
 
 	// MARK: - Private props
 	private let audioBuffer: AudioBuffer
@@ -44,10 +46,13 @@ class AudioMatcher {
 		NSLog("privateSetTrigger called with %@",triggerFileURL.absoluteString)
 	    FingerprintFree(triggerFingerprint)
 	    triggerFingerprint = nil
+	    triggerSampleCount = 0
 	    
 	    // create the fingerprint
-	    if let fingerprint = AudioUtility.generateFingerprint(for: triggerFileURL) {
+	    if let trigger = AudioUtility.generateTriggerFingerprint(for: triggerFileURL) {
+	        let fingerprint = trigger.fingerprint
 	        triggerFingerprint = fingerprint
+	        triggerSampleCount = trigger.sampleCount
 	        
 	        // Unconditional version log — runs in any build config
 	        if let data = fingerprint.pointee.data {
