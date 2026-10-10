@@ -269,6 +269,85 @@ class AudioUtility {
 		return fingerprint
 	}
 
+	/// Like `generateFingerprint(for:)`, but also returns the trigger's length
+	/// in samples at the fingerprint sample rate, which `slideTrigger` needs.
+	static func generateTriggerFingerprint(for fileURL: URL) -> (fingerprint: UnsafeMutablePointer<Fingerprint>, sampleCount: Int)? {
+		guard let audioFileBuffer = AudioUtility.prepareAudioForProcessing(fileURL, asFloat: false) else {
+			NSLog("TuneURL: Error preparing audio file buffer for processing.")
+			return nil
+		}
+
+		guard let bufferData = audioFileBuffer.int16ChannelData?.pointee,
+			let fingerprint = ExtractFingerprint(bufferData, Int32(audioFileBuffer.frameLength), Int32(FORMAT_VERSION_V2)) else {
+			NSLog("TuneURL: Error extracting fingerprint from audio file.")
+			return nil
+		}
+
+		return (fingerprint, Int(audioFileBuffer.frameLength))
+	}
+
+	// MARK: - Trigger search
+
+	/// Result of sliding the trigger across a window of audio.
+	struct SlidingMatch {
+		/// Best similarity found, 0.0 ... 1.0.
+		let similarity: Float
+		/// Where the trigger starts, in seconds from the start of the window.
+		/// Only meaningful when `similarity` is above the pass mark.
+		let startTime: Float
+		/// How many trigger-length slices were compared.
+		let positionsChecked: Int
+	}
+
+	/// Look for the trigger anywhere in `window` (16-bit samples at the
+	/// fingerprint sample rate) by comparing it with every trigger-length
+	/// slice of the window, `hopSeconds` apart.
+	///
+	/// Why: `CompareFingerprints` truncates both fingerprints to the size of
+	/// the smaller one. Comparing a 4 s window directly with the ~1.4 s
+	/// trigger therefore only examines the first ~1.3 s of the window, so a
+	/// trigger was only noticed 2.8-5 s after it played, and could be missed
+	/// in between checks. Slices of trigger length are not affected.
+	static func slideTrigger(
+		over window: [Int16],
+		triggerFingerprint: UnsafeMutablePointer<Fingerprint>,
+		triggerSampleCount: Int,
+		hopSeconds: Double
+	) -> SlidingMatch? {
+		guard triggerSampleCount > 0, window.count >= triggerSampleCount else {
+			return nil
+		}
+
+		let hop = max(1, Int(hopSeconds * FINGERPRINT_SAMPLE_RATE))
+		let triggerSeconds = Float(Double(triggerSampleCount) / FINGERPRINT_SAMPLE_RATE)
+		var best: Float = 0
+		var bestStart: Float = 0
+		var positions = 0
+
+		window.withUnsafeBufferPointer { samples in
+			guard let base = samples.baseAddress else { return }
+			var offset = 0
+			while offset + triggerSampleCount <= samples.count {
+				if let slice = ExtractFingerprint(base + offset, Int32(triggerSampleCount), Int32(FORMAT_VERSION_V2)) {
+					let result = CompareFingerprints(slice, triggerFingerprint)
+					FingerprintFree(slice)
+					if result.similarity > best {
+						best = result.similarity
+						// mostSimilarStartTime is the trigger's start relative to
+						// the slice, in seconds. It is unset (a huge negative
+						// number) when nothing matched, so ignore implausible values.
+						let inSlice = (abs(result.mostSimilarStartTime) <= triggerSeconds) ? result.mostSimilarStartTime : 0
+						bestStart = Float(Double(offset) / FINGERPRINT_SAMPLE_RATE) + inSlice
+					}
+				}
+				positions += 1
+				offset += hop
+			}
+		}
+
+		return SlidingMatch(similarity: best, startTime: bestStart, positionsChecked: positions)
+	}
+
     // MARK: - Buffers
 	static func prepareAudioForProcessing(_ fileURL: URL, asFloat: Bool) -> AVAudioPCMBuffer? {
 		do {
