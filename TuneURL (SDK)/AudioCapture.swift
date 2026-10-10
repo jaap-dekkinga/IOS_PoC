@@ -28,6 +28,21 @@ class AudioCapture: NSObject {
 	private let triggerWindowDuration = 4.0
 	private var useBufferConversion = false
 
+	// Trigger search: the trigger is slid across the window in steps of
+	// triggerSlideHop seconds (see AudioUtility.slideTrigger).
+	private let triggerSlideHop = 0.125
+	// Pass mark. Scores come in steps of 0.04, so "> 0.1" accepts 0.12 and up.
+	private let triggerThreshold: Float = 0.1
+	// With the sliding search one trigger is visible on 2-3 consecutive
+	// checks; ignore further hits for this long after a detection.
+	private let triggerCooldown: TimeInterval = 6.0
+	// After a first hit, look again this much later and keep the better match:
+	// the first hit often catches the trigger only partly inside the window,
+	// which places its start imprecisely.
+	private let triggerReLookDelay: TimeInterval = 1.0
+	private var lastTriggerTime = Date.distantPast
+	private var isConfirmingTrigger = false
+
 	// MARK: - Copmuted props
     var isRunning: Bool {
         return audioEngine.isRunning
@@ -101,59 +116,81 @@ class AudioCapture: NSObject {
 	}
 
 	// MARK: - Private funcs
+	/// One local search: how well the trigger matched and when it started.
+	private struct TriggerLook {
+		let similarity: Float
+		let triggerStart: Date
+	}
+
 	private func checkForTriggerSound() {
-		// TODO: move this into the audio matcher
 		audioBuffer.resetUntestedSize()
 
-		// copy the sound data from the buffer
-		guard let bufferData = audioBuffer.copyBufferData(maxDuration: triggerWindowDuration) else {
+		// one trigger is visible on several consecutive checks
+		if isConfirmingTrigger || Date().timeIntervalSince(lastTriggerTime) < triggerCooldown {
 			return
 		}
 
-		// resample the fingerprint
-		let sampleRate = FINGERPRINT_SAMPLE_RATE
-		guard let resampledData = AudioUtility.changeSampleRate(sampleRate: sampleRate, buffer1: bufferData) else {
+		guard let firstLook = searchForTrigger(label: ""), firstLook.similarity > triggerThreshold else {
 			return
 		}
 
-		// generate a fingerprint
-		guard let bufferFingerprint = ExtractFingerprint(resampledData, Int32(resampledData.count), Int32(FORMAT_VERSION_V2)) else {
-		    return
-		}
+		lastTriggerTime = Date()
+		isConfirmingTrigger = true
 
-		// get the trigger fingerprint
-		let triggerFingerprint = AudioMatcher.shared.triggerFingerprint
+		// look once more when the trigger is fully in view, keep the better match
+		DispatchQueue.main.asyncAfter(deadline: .now() + triggerReLookDelay) {
+			self.isConfirmingTrigger = false
+			guard self.isRunning else { return }
 
-		// calculate the fingerprint match results
-		let matchResults = CompareFingerprints(bufferFingerprint, triggerFingerprint)
-		FingerprintFree(bufferFingerprint)
+			var hit = firstLook
+			if let secondLook = self.searchForTrigger(label: " (re-look)"), secondLook.similarity > firstLook.similarity {
+				hit = secondLook
+			}
 
-		// check the match results
-		if (matchResults.similarity > 0.1) {
-
-			// TODO: Should check if this detection was already caught
-			// by the overlapping window.
-
-			// calculate the time of the sound relative to now
-			let mostSimilarStartingTime = matchResults.mostSimilarStartTime
-			let relativeTime = (Float(triggerWindowDuration) - mostSimilarStartingTime)
-
+			let secondsAgo = Float(Date().timeIntervalSince(hit.triggerStart))
 #if DEBUG
-			// dump the trigger match results
-			print("TuneURL: Trigger detected \(relativeTime) seconds ago. (similarity: \(matchResults.similarity))")
-			print("\tTrigger fingerprint score: \(matchResults.score)")
-			print("\tTrigger fingerprint similarity: \(matchResults.similarity)")
-			print("\tTrigger fingerprint similar time: \(matchResults.mostSimilarStartTime)")
-			print("\tTrigger fingerprint most similar frame: \(matchResults.mostSimilarFramePosition)")
+			print("TuneURL: Trigger detected \(secondsAgo) seconds ago. (similarity: \(hit.similarity))")
 #endif // DEBUG
 
 			// match the tuneurl
-			AudioMatcher.shared.recognizedTrigger(timeRelativeToNow: relativeTime)
-		} else {
-#if DEBUG
-			print("TuneURL: Trigger not detected. (similarity: \(matchResults.similarity))")
-#endif // DEBUG
+			AudioMatcher.shared.recognizedTrigger(timeRelativeToNow: secondsAgo)
 		}
+	}
+
+	/// Slide the trigger across the most recent triggerWindowDuration of audio.
+	private func searchForTrigger(label: String) -> TriggerLook? {
+		guard let triggerFingerprint = AudioMatcher.shared.triggerFingerprint,
+		      AudioMatcher.shared.triggerSampleCount > 0 else {
+			return nil
+		}
+
+		// copy the sound data from the buffer
+		guard let bufferData = audioBuffer.copyBufferData(maxDuration: triggerWindowDuration) else {
+			return nil
+		}
+		let now = Date()
+
+		// resample to the fingerprint sample rate
+		guard let resampledData = AudioUtility.changeSampleRate(sampleRate: FINGERPRINT_SAMPLE_RATE, buffer1: bufferData) else {
+			return nil
+		}
+		let windowSeconds = Double(resampledData.count) / FINGERPRINT_SAMPLE_RATE
+
+		guard let match = AudioUtility.slideTrigger(
+			over: resampledData,
+			triggerFingerprint: triggerFingerprint,
+			triggerSampleCount: AudioMatcher.shared.triggerSampleCount,
+			hopSeconds: triggerSlideHop
+		) else {
+			return nil
+		}
+
+		// Diagnostic — visible in Release builds
+		NSLog("TuneURL_DIAG: ota local v2 similarity=%.4f triggerStart=%.2fs window=%.2fs positions=%ld%@",
+		      match.similarity, match.startTime, windowSeconds, match.positionsChecked, label)
+
+		let secondsAgo = windowSeconds - Double(match.startTime)
+		return TriggerLook(similarity: match.similarity, triggerStart: now.addingTimeInterval(-secondsAgo))
 	}
 
 	private func convertAudioBuffer(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer? {
@@ -193,7 +230,9 @@ class AudioCapture: NSObject {
 		do {
 			try audioSession.setCategory(
 			    .playAndRecord,
-			    mode: .default,
+			    // .measurement turns off iOS input processing (automatic gain,
+			    // noise suppression) so the trigger reaches the fingerprinter unaltered
+			    mode: .measurement,
 			    options: [.mixWithOthers, .defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
 			)
 			try audioSession.setActive(true)
