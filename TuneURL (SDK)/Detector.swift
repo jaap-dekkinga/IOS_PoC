@@ -36,6 +36,12 @@ public class Detector {
 
 	private static let dispatchQueue = DispatchQueue(label: "TuneURL Detector")
 	private static var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
+	private static var triggerSampleCount = 0
+	// File scan: the trigger is slid across the decoded file in steps of this
+	// many seconds (see AudioUtility.slideTrigger), as the live/radio path does.
+	private static let triggerSlideHop = 0.25
+	// Pass mark for a file-scan hit. A trigger scores ~1.0; speech peaks ~0.5.
+	private static let fileTriggerThreshold: Float = 0.75
 	private static let triggerWindowDuration = 4.0
 
 	// MARK: - Public static funcs
@@ -60,9 +66,11 @@ public class Detector {
 		triggerFingerprint = nil
 
 		// create the trigger fingerprint
-		if let fingerprint = AudioUtility.generateFingerprint(for: audioFileURL) {
-			NSLog("[SDK-DIAG] trigger fingerprint set july 24 2026")
-			triggerFingerprint = fingerprint
+		triggerSampleCount = 0
+		if let trigger = AudioUtility.generateTriggerFingerprint(for: audioFileURL) {
+			NSLog("[SDK-DIAG] trigger fingerprint set (sliding file scan, \(trigger.sampleCount) samples)")
+			triggerFingerprint = trigger.fingerprint
+			triggerSampleCount = trigger.sampleCount
 		} else {
 			NSLog("[SDK-DIAG] trigger fingerprint FAILED — generateFingerprint returned nil for \(audioFileURL.lastPathComponent)")
 		}
@@ -112,116 +120,100 @@ public class Detector {
 		}
 		// <<< end SDK-DIAG ----------------------------------------------------
 
-		// process the audio in a sliding window, fingerprinting each window
-		// fresh from raw audio samples
-		var currentSample = 0
+		// Find triggers by sliding a trigger-length slice across the whole file
+		// in triggerSlideHop steps — the same search the live/radio path uses
+		// (AudioUtility.slideTrigger). The previous scan compared fixed 4 s
+		// windows, stepped every 2 s, against the ~1.4 s trigger; CompareFingerprints
+		// then only looked at the start of each window, so a trigger that began
+		// late in a window (e.g. 1.5 s in) scored ~0.35 and was missed.
 		let detectRequest = DetectRequest(completionHandler: completionHandler)
 		let matchDuration: Double = 5.0
 		let triggerDuration: Double = 2.0
-		let triggerWindowDuration: Double = 4.0
-
-		let windowSampleCount = Int(triggerWindowDuration * sampleRate)
-		let stepSampleCount = (windowSampleCount / 2)   // 50% overlap
 		let matchSampleCount = Int((triggerDuration + matchDuration) * sampleRate)
+		let sliceCount = triggerSampleCount
+		let hopSampleCount = max(1, Int(triggerSlideHop * sampleRate))
+		let triggerSeconds = Double(sliceCount) / sampleRate
 
-		// >>> SDK-DIAG: max-similarity trackers
+		guard sliceCount > 0, let triggerFingerprint, totalSampleCount >= sliceCount else {
+			NSLog("[SDK-DIAG] scan skipped: trigger samples=\(sliceCount) file samples=\(totalSampleCount)")
+			completionHandler([])
+			return
+		}
+
+		NSLog("[SDK-DIAG] scan start totalSamples=\(totalSampleCount) sliceSamples=\(sliceCount) hop=\(triggerSlideHop)s matchSamples=\(matchSampleCount)")
+
+		// (time, similarity) of each trigger found; neighbouring slices that see
+		// the same trigger are merged, keeping the best-scoring one
+		var hits = [(time: Double, similarity: Float)]()
 		var diagMaxSimilarity: Float = 0.0
-		var diagMaxSimilarityAt: Float = 0.0
-		var diagIterations = 0
-		// <<<
+		var diagMaxSimilarityAt: Double = 0.0
+		var positions = 0
+		var offset = 0
 
-		NSLog("[SDK-DIAG] scan start totalSamples=\(totalSampleCount) windowSamples=\(windowSampleCount) matchSamples=\(matchSampleCount)")
+		while (offset + sliceCount) <= totalSampleCount {
+			if let slice = ExtractFingerprint(int16Data[0].advanced(by: offset), Int32(sliceCount), Int32(FORMAT_VERSION_V2)) {
+				let result = CompareFingerprints(slice, triggerFingerprint)
+				FingerprintFree(slice)
 
-		while ((currentSample + windowSampleCount) <= totalSampleCount) {
-			// fresh raw-audio window, fingerprinted from scratch — same as
-			// AudioCapture.checkForTriggerSound(), not a slice of a
-			// pre-existing fingerprint's bytes
-			let windowPointer = int16Data[0].advanced(by: currentSample)
-			let windowSamples = Array(UnsafeBufferPointer(start: windowPointer, count: windowSampleCount))
+				// mostSimilarStartTime is relative to the slice; it is a huge
+				// negative number when nothing matched, so ignore implausible values
+				let inSlice = (abs(Double(result.mostSimilarStartTime)) <= triggerSeconds) ? Double(result.mostSimilarStartTime) : 0.0
+				let time = (Double(offset) / sampleRate) + inSlice
 
-			guard let windowFingerprint = ExtractFingerprint(windowSamples, Int32(windowSamples.count), Int32(FORMAT_VERSION_V2)) else {
-				currentSample += stepSampleCount
+				if result.similarity > diagMaxSimilarity {
+					diagMaxSimilarity = result.similarity
+					diagMaxSimilarityAt = time
+				}
+
+				if result.similarity > fileTriggerThreshold {
+					if let last = hits.last, (time - last.time) < (triggerSeconds + 1.0) {
+						if result.similarity > last.similarity {
+							hits[hits.count - 1] = (time, result.similarity)
+						}
+					} else {
+						hits.append((time, result.similarity))
+					}
+				}
+			}
+			positions += 1
+			offset += hopSampleCount
+		}
+
+		NSLog("[SDK-DIAG] scan complete positions=\(positions) maxSimilarity=\(diagMaxSimilarity) atTime=\(String(format: "%.2f", diagMaxSimilarityAt))s threshold=\(fileTriggerThreshold) triggers=\(hits.count)")
+
+		for hit in hits {
+#if DEBUG
+			print("TuneURL: Trigger detected at: \(hit.time) seconds (similarity: \(hit.similarity))")
+#endif // DEBUG
+			NSLog("[SDK-DIAG] trigger at \(String(format: "%.2f", hit.time))s similarity=\(hit.similarity)")
+
+			// the identifiable audio starts triggerDuration after the trigger starts
+			let matchStartSample = Int((hit.time + triggerDuration) * sampleRate)
+			let matchEndSample = min(matchStartSample + matchSampleCount, totalSampleCount)
+			guard (matchEndSample > matchStartSample), (matchStartSample >= 0) else {
+				NSLog("[SDK-DIAG] trigger at \(String(format: "%.2f", hit.time))s is too close to the end of the file")
 				continue
 			}
 
-			// compare the fingerprints
-			let matchResults = CompareFingerprints(windowFingerprint, triggerFingerprint)
-			FingerprintFree(windowFingerprint)
-
-			// >>> SDK-DIAG: track the highest similarity seen
-			if matchResults.similarity > diagMaxSimilarity {
-				diagMaxSimilarity = matchResults.similarity
-				diagMaxSimilarityAt = matchResults.mostSimilarStartTime
+			let matchSamples = Array(UnsafeBufferPointer(start: int16Data[0].advanced(by: matchStartSample), count: (matchEndSample - matchStartSample)))
+			guard let matchFingerprint = ExtractFingerprint(matchSamples, Int32(matchSamples.count), Int32(FORMAT_VERSION_V1)) else {
+				continue
 			}
-			diagIterations += 1
-			// <<<
-
-			// Note: This uses a very high similarity because the audio should really
-			// be an almost exact match from a podcast.
-			if (matchResults.similarity > 0.75) {
-#if DEBUG
-				print("TuneURL: Trigger detected at: \(matchResults.mostSimilarStartTime) seconds (similarity: \(matchResults.similarity))")
-				print("\tTrigger fingerprint score: \(matchResults.score)")
-				print("\tTrigger fingerprint similarity: \(matchResults.similarity)")
-				print("\tTrigger fingerprint similar time: \(matchResults.mostSimilarStartTime)")
-				print("\tTrigger fingerprint most similar frame: \(matchResults.mostSimilarFramePosition)")
-#endif // DEBUG
-
-				// absolute time of the hit within the whole file
-				let hitTime = (Double(currentSample) / sampleRate) + Double(matchResults.mostSimilarStartTime)
-
-				// extract raw audio for identification and fingerprint it
-				// fresh too — same reasoning as the window scan above
-				let matchStartSample = Int((hitTime + triggerDuration) * sampleRate)
-				let matchEndSample = min(matchStartSample + matchSampleCount, totalSampleCount)
-
-				if (matchEndSample > matchStartSample) && (matchStartSample >= 0) {
-					let matchPointer = int16Data[0].advanced(by: matchStartSample)
-					let matchSamples = Array(UnsafeBufferPointer(start: matchPointer, count: (matchEndSample - matchStartSample)))
-
-					if let matchFingerprint = ExtractFingerprint(matchSamples, Int32(matchSamples.count), Int32(FORMAT_VERSION_V1)) {
-						var fingerprintData = [UInt8]()
-						let pointer = matchFingerprint.pointee.data!
-						for x in 0 ..< Int(matchFingerprint.pointee.dataSize) {
-							fingerprintData.append(pointer[x])
-						}
-						FingerprintFree(matchFingerprint)
-
-						// add the possible match — V1 fingerprint primary,
-						// matchSamples kept for V2 fallback in requestNext
-						let possibleMatch = PossibleMatch(fingerprint: fingerprintData, matchSamples: matchSamples, time: Float(hitTime))
-						// check if the possible match is too close to the last one
-						if let lastPossibleMatch = detectRequest.possibleMatches.last {
-							if (abs(Double(lastPossibleMatch.time) - hitTime) > 0.5) {
-								detectRequest.possibleMatches.append(possibleMatch)
-							} else {
-#if DEBUG
-								print("Ignoring possible match.")
-#endif // DEBUG
-							}
-						} else {
-							// there are no other possible matches
-							detectRequest.possibleMatches.append(possibleMatch)
-						}
-					}
-				} else {
-#if DEBUG
-					print("Error: Match is too close to the end of the file.")
-#endif // DEBUG
-				}
+			var fingerprintData = [UInt8]()
+			let pointer = matchFingerprint.pointee.data!
+			for x in 0 ..< Int(matchFingerprint.pointee.dataSize) {
+				fingerprintData.append(pointer[x])
 			}
+			FingerprintFree(matchFingerprint)
 
-			// advance, but overlap the trigger window
-			currentSample += stepSampleCount
+			// V1 fingerprint primary, matchSamples kept for the V2 fallback in requestNext
+			detectRequest.possibleMatches.append(PossibleMatch(fingerprint: fingerprintData, matchSamples: matchSamples, time: Float(hit.time)))
 		}
 
-		// >>> SDK-DIAG: report what the scan actually saw
-		NSLog("[SDK-DIAG] scan complete iterations=\(diagIterations) maxSimilarity=\(diagMaxSimilarity) atTime=\(diagMaxSimilarityAt)s threshold=0.75 possibleMatches=\(detectRequest.possibleMatches.count)")
-		// <<<
-
-		// safety check
-		if (detectRequest.possibleMatches.count == 0) {
-			detectRequest.completionHandler([])
+		// nothing to look up: report no matches once (requestNext would report again)
+		if detectRequest.possibleMatches.isEmpty {
+			completionHandler([])
+			return
 		}
 
 		// start making server requests
