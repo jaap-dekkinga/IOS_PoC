@@ -7,6 +7,7 @@
 //
 
 
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include "Fingerprint.h"
@@ -148,4 +149,108 @@ void FingerprintFree(Fingerprint *fingerprint)
 		}
 		free(fingerprint);
 	}
+}
+
+// MARK: - Audio helpers for the local trigger check
+
+static inline int16_t clampToInt16(double value)
+{
+	if (value > 32767.0) return 32767;
+	if (value < -32768.0) return -32768;
+	return (int16_t)lround(value);
+}
+
+void FingerprintHighPass(int16_t *samples, int count, double sampleRate, double cutoffHz)
+{
+	if ((samples == NULL) || (count <= 0) || (sampleRate <= 0.0) || (cutoffHz <= 0.0) || (cutoffHz >= (sampleRate / 2.0))) {
+		return;
+	}
+
+	// two RBJ high-pass biquads with the Q values of a 4th-order Butterworth
+	const double qValues[2] = { 0.54119610, 1.30656296 };
+	const double w0 = 2.0 * M_PI * cutoffHz / sampleRate;
+	const double cosW0 = cos(w0);
+	const double sinW0 = sin(w0);
+
+	vector<double> signal(count);
+	for (int i = 0; i < count; i++) {
+		signal[i] = (double)samples[i];
+	}
+
+	for (int stage = 0; stage < 2; stage++) {
+		double alpha = sinW0 / (2.0 * qValues[stage]);
+		double a0 = 1.0 + alpha;
+		double b0 = ((1.0 + cosW0) / 2.0) / a0;
+		double b1 = (-(1.0 + cosW0)) / a0;
+		double b2 = b0;
+		double a1 = (-2.0 * cosW0) / a0;
+		double a2 = (1.0 - alpha) / a0;
+
+		double x1 = 0.0, x2 = 0.0, y1 = 0.0, y2 = 0.0;
+		for (int i = 0; i < count; i++) {
+			double x0 = signal[i];
+			double y0 = (b0 * x0) + (b1 * x1) + (b2 * x2) - (a1 * y1) - (a2 * y2);
+			x2 = x1; x1 = x0;
+			y2 = y1; y1 = y0;
+			signal[i] = y0;
+		}
+	}
+
+	for (int i = 0; i < count; i++) {
+		samples[i] = clampToInt16(signal[i]);
+	}
+}
+
+int FingerprintAddRoomEcho(const int16_t *input, int16_t *output, int count, double sampleRate, double rt60Seconds, uint32_t seed)
+{
+	if ((input == NULL) || (output == NULL) || (count <= 0) || (sampleRate <= 0.0) || (rt60Seconds <= 0.0)) {
+		return -1;
+	}
+
+	// room response: direct sound after 3 ms, plus noise decaying by 60 dB over rt60
+	int tailLength = (int)(rt60Seconds * 1.2 * sampleRate);
+	if (tailLength < 1) tailLength = 1;
+	vector<double> response(tailLength, 0.0);
+
+	uint32_t state = (seed != 0) ? seed : 0x9E3779B9u;
+	double tailEnergy = 0.0;
+	for (int i = 1; i < tailLength; i++) {
+		// xorshift32, mapped to [-1, 1)
+		state ^= state << 13; state ^= state >> 17; state ^= state << 5;
+		double noise = ((double)state / 2147483648.0) - 1.0;
+		double t = (double)i / sampleRate;
+		response[i] = noise * exp(-6.9 * t / rt60Seconds);
+		tailEnergy += response[i] * response[i];
+	}
+	double tailScale = (tailEnergy > 0.0) ? (0.7 / sqrt(tailEnergy)) : 0.0;
+	for (int i = 1; i < tailLength; i++) {
+		response[i] *= tailScale;
+	}
+	int directIndex = (int)lround(0.003 * sampleRate);
+	if (directIndex >= tailLength) directIndex = tailLength - 1;
+	response[directIndex] += 1.0;
+
+	// convolve, keeping the input's length
+	vector<double> echoed(count, 0.0);
+	double inputPeak = 0.0, echoedPeak = 0.0;
+	for (int n = 0; n < count; n++) {
+		double sample = (double)input[n];
+		if (fabs(sample) > inputPeak) inputPeak = fabs(sample);
+		if (sample == 0.0) continue;
+		int last = ((count - n) < tailLength) ? (count - n) : tailLength;
+		for (int k = 0; k < last; k++) {
+			echoed[n + k] += sample * response[k];
+		}
+	}
+	for (int n = 0; n < count; n++) {
+		if (fabs(echoed[n]) > echoedPeak) echoedPeak = fabs(echoed[n]);
+	}
+
+	// match the input's peak level
+	double gain = (echoedPeak > 0.0) ? (inputPeak / echoedPeak) : 0.0;
+	for (int n = 0; n < count; n++) {
+		output[n] = clampToInt16(echoed[n] * gain);
+	}
+
+	return 0;
 }

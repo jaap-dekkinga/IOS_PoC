@@ -52,6 +52,19 @@ Fingerprint *ExtractFingerprint(const int16_t *wave, int waveLength, int emitVer
 Fingerprint *ExtractFingerprintFromRawFile(const char *filePath, int emitVersion);
 void FingerprintFree(Fingerprint *fingerprint);
 
+// Audio helpers for the local trigger check (16-bit mono samples).
+// They do not change fingerprints sent to the server.
+
+// High-pass filter in place: 4th-order Butterworth (two biquads).
+// Used to remove music bass and room rumble below the trigger's tones.
+void FingerprintHighPass(int16_t *samples, int count, double sampleRate, double cutoffHz);
+
+// Write a copy of 'input' as heard in a room with the given echo time
+// (RT60, seconds): direct sound plus a decaying echo tail. 'seed' makes
+// the echo repeatable. The copy has the same length and peak level as
+// the input. Returns 0 on success, -1 on bad arguments.
+int FingerprintAddRoomEcho(const int16_t *input, int16_t *output, int count, double sampleRate, double rt60Seconds, uint32_t seed);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
