@@ -24,6 +24,14 @@ class AudioMatcher {
 	internal private(set) var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
 	/// Trigger length in samples at the fingerprint sample rate (for the sliding search).
 	internal private(set) var triggerSampleCount = 0
+	/// Microphone check references: high-passed trigger plus echoey copies
+	/// (see AudioUtility.makeTriggerReferences). Same length as the trigger.
+	internal private(set) var triggerReferences: [UnsafeMutablePointer<Fingerprint>] = []
+	internal private(set) var triggerReferenceLabels: [String] = []
+	/// Held while the trigger fingerprints are replaced or used. Trigger
+	/// checks run on a background queue, so this stops a new trigger from
+	/// freeing fingerprints that a running check is still comparing with.
+	private let triggerLock = NSLock()
 
 	// MARK: - Private props
 	private let audioBuffer: AudioBuffer
@@ -39,14 +47,26 @@ class AudioMatcher {
 	deinit {
 		FingerprintFree(triggerFingerprint)
 		triggerFingerprint = nil
+		freeTriggerReferences()
 	}
 
 	// MARK: - Public funcs
+	/// Runs `body` with the current trigger state, holding the trigger lock.
+	func withTrigger<T>(_ body: (_ fingerprint: UnsafeMutablePointer<Fingerprint>?, _ sampleCount: Int,
+	                             _ references: [UnsafeMutablePointer<Fingerprint>], _ labels: [String]) -> T) -> T {
+		triggerLock.lock()
+		defer { triggerLock.unlock() }
+		return body(triggerFingerprint, triggerSampleCount, triggerReferences, triggerReferenceLabels)
+	}
+
 	func privateSetTrigger(from triggerFileURL: URL) {
+		triggerLock.lock()
+		defer { triggerLock.unlock() }
 		NSLog("privateSetTrigger called with %@",triggerFileURL.absoluteString)
 	    FingerprintFree(triggerFingerprint)
 	    triggerFingerprint = nil
 	    triggerSampleCount = 0
+	    freeTriggerReferences()
 	    
 	    // create the fingerprint
 	    if let trigger = AudioUtility.generateTriggerFingerprint(for: triggerFileURL) {
@@ -68,6 +88,24 @@ class AudioMatcher {
 	    } else {
 	        NSLog("TuneURL: TRIGGER generateFingerprint returned nil")
 	    }
+
+	    // references for the microphone check
+	    if let samples = AudioUtility.loadTriggerSamples(for: triggerFileURL), samples.count == triggerSampleCount {
+	        let references = AudioUtility.makeTriggerReferences(from: samples)
+	        triggerReferences = references.map { $0.fingerprint }
+	        triggerReferenceLabels = references.map { $0.label }
+	    }
+	    Diagnostics.log(String(format: "TuneURL_DIAG: ota trigger loaded: %ld samples, %ld references (%@), high-pass %.0f Hz",
+	                           triggerSampleCount, triggerReferences.count,
+	                           triggerReferenceLabels.joined(separator: ", "), AudioUtility.triggerHighPassCutoff))
+	}
+
+	private func freeTriggerReferences() {
+	    for reference in triggerReferences {
+	        FingerprintFree(reference)
+	    }
+	    triggerReferences = []
+	    triggerReferenceLabels = []
 	}
 
 	func start(matchHandler: @escaping Listener.MatchHandler) {
@@ -125,12 +163,16 @@ class AudioMatcher {
 		var remainingTimeToRecord = (identifiableAudioDuration - recordedSampleDuration)
 		remainingTimeToRecord = max(remainingTimeToRecord, 0.0)
 
+		Diagnostics.log(String(format: "TuneURL_DIAG: ota trigger recognised (started %.2f s ago); sending 5 s of audio to the server in %.1f s",
+		                       timeRelativeToNow, remainingTimeToRecord))
+
 		DispatchQueue.main.asyncAfter(deadline: (.now() + remainingTimeToRecord)) {
 
 			// create the tuneurl fingerprint
 			guard let matchAudioBuffer = self.audioBuffer.copyBufferData(maxDuration: identifiableAudioDuration),
 			      let matchResampledBuffer = AudioUtility.changeSampleRate(sampleRate: FINGERPRINT_SAMPLE_RATE, buffer1: matchAudioBuffer),
 			      let matchFingerprint = ExtractFingerprint(matchResampledBuffer, Int32(matchResampledBuffer.count), Int32(FORMAT_VERSION_V2)) else {
+				Diagnostics.log("TuneURL_DIAG: ota server: not sent (could not prepare the audio)")
 				return
 			}
 
@@ -177,6 +219,7 @@ class AudioMatcher {
 				Int32(matchResampledBuffer.count),
 				Int32(FORMAT_VERSION_V1)
 			) else {
+				Diagnostics.log("TuneURL_DIAG: ota server: not sent (could not make the V1 fingerprint)")
 				return
 			}
 
@@ -188,6 +231,11 @@ class AudioMatcher {
 			FingerprintFree(v1Fingerprint)
 
 			Server.shared.matchFingerprint(for: v1Data, queue: nil) { (match: Match?) in
+				if let match = match {
+					Diagnostics.log("TuneURL_DIAG: ota server: match id=\(match.id) matchPercentage=\(match.matchPercentage)% (app threshold applies next)")
+				} else {
+					Diagnostics.log("TuneURL_DIAG: ota server: no match (or request failed)")
+				}
 				if let match = match, let handler = self.matchHandler {
 					match.fingerprintVersion = "V1"
 					handler(match)

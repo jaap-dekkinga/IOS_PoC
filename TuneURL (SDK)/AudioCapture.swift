@@ -31,8 +31,14 @@ class AudioCapture: NSObject {
 	// Trigger search: the trigger is slid across the window in steps of
 	// triggerSlideHop seconds (see AudioUtility.slideTrigger).
 	private let triggerSlideHop = 0.125
-	// Pass mark. Scores come in steps of 0.04, so "> 0.1" accepts 0.12 and up.
-	private let triggerThreshold: Float = 0.1
+	// Pass mark for the high-passed, multi-reference check that decides.
+	// Scores come in steps of 0.04, so "> 0.18" accepts 0.20 and up. In room
+	// simulations this kept music-only false passes at the old level (~5%)
+	// while catching ~96% of triggers instead of ~74%.
+	private let triggerThreshold: Float = 0.18
+	// Pass mark of the previous check, which is still scored and logged for
+	// comparison only.
+	private let previousTriggerThreshold: Float = 0.1
 	// With the sliding search one trigger is visible on 2-3 consecutive
 	// checks; ignore further hits for this long after a detection.
 	private let triggerCooldown: TimeInterval = 6.0
@@ -42,6 +48,10 @@ class AudioCapture: NSObject {
 	private let triggerReLookDelay: TimeInterval = 1.0
 	private var lastTriggerTime = Date.distantPast
 	private var isConfirmingTrigger = false
+	// Trigger checks run here, not on the main thread: each check now
+	// fingerprints ~21 slices and compares each with 3 references.
+	// lastTriggerTime and isConfirmingTrigger are only touched on this queue.
+	private let detectionQueue = DispatchQueue(label: "com.TuneURL.AudioCapture.detection", qos: .userInitiated)
 
 	// MARK: - Copmuted props
     var isRunning: Bool {
@@ -120,6 +130,7 @@ class AudioCapture: NSObject {
 	private struct TriggerLook {
 		let similarity: Float
 		let triggerStart: Date
+		let passed: Bool
 	}
 
 	private func checkForTriggerSound() {
@@ -130,7 +141,7 @@ class AudioCapture: NSObject {
 			return
 		}
 
-		guard let firstLook = searchForTrigger(label: ""), firstLook.similarity > triggerThreshold else {
+		guard let firstLook = searchForTrigger(label: ""), firstLook.passed else {
 			return
 		}
 
@@ -138,7 +149,7 @@ class AudioCapture: NSObject {
 		isConfirmingTrigger = true
 
 		// look once more when the trigger is fully in view, keep the better match
-		DispatchQueue.main.asyncAfter(deadline: .now() + triggerReLookDelay) {
+		detectionQueue.asyncAfter(deadline: .now() + triggerReLookDelay) {
 			self.isConfirmingTrigger = false
 			guard self.isRunning else { return }
 
@@ -153,17 +164,18 @@ class AudioCapture: NSObject {
 #endif // DEBUG
 
 			// match the tuneurl
-			AudioMatcher.shared.recognizedTrigger(timeRelativeToNow: secondsAgo)
+			DispatchQueue.main.async {
+				AudioMatcher.shared.recognizedTrigger(timeRelativeToNow: secondsAgo)
+			}
 		}
 	}
 
 	/// Slide the trigger across the most recent triggerWindowDuration of audio.
+	///
+	/// Decides with the high-passed window against the trigger references
+	/// (high-passed trigger plus echoey copies). Also scores the previous
+	/// check (unfiltered window, trigger only) and logs both side by side.
 	private func searchForTrigger(label: String) -> TriggerLook? {
-		guard let triggerFingerprint = AudioMatcher.shared.triggerFingerprint,
-		      AudioMatcher.shared.triggerSampleCount > 0 else {
-			return nil
-		}
-
 		// copy the sound data from the buffer
 		guard let bufferData = audioBuffer.copyBufferData(maxDuration: triggerWindowDuration) else {
 			return nil
@@ -175,22 +187,63 @@ class AudioCapture: NSObject {
 			return nil
 		}
 		let windowSeconds = Double(resampledData.count) / FINGERPRINT_SAMPLE_RATE
+		let filteredData = AudioUtility.highPassed(resampledData)
 
-		guard let match = AudioUtility.slideTrigger(
-			over: resampledData,
-			triggerFingerprint: triggerFingerprint,
-			triggerSampleCount: AudioMatcher.shared.triggerSampleCount,
-			hopSeconds: triggerSlideHop
-		) else {
-			return nil
+		return AudioMatcher.shared.withTrigger { triggerFingerprint, triggerSampleCount, references, labels -> TriggerLook? in
+			guard let triggerFingerprint = triggerFingerprint, triggerSampleCount > 0 else {
+				return nil
+			}
+
+			// previous check, for comparison only
+			let previous = AudioUtility.slideTrigger(
+				over: resampledData,
+				triggerFingerprint: triggerFingerprint,
+				triggerSampleCount: triggerSampleCount,
+				hopSeconds: triggerSlideHop
+			)
+
+			// new check: high-passed window against every reference
+			let current = AudioUtility.slideTrigger(
+				over: filteredData,
+				references: references,
+				triggerSampleCount: triggerSampleCount,
+				hopSeconds: triggerSlideHop
+			)
+
+			let previousScore: Float = previous?.similarity ?? 0
+			let newScore: Float = current?.match.similarity ?? 0
+			var referenceLabel = "none"
+			if let index = current?.referenceIndex, index < labels.count {
+				referenceLabel = labels[index]
+			}
+			let verdict = (newScore > triggerThreshold) ? "PASS" : "-"
+			let previousVerdict = (previousScore > previousTriggerThreshold) ? "pass" : "-"
+			let startTime: Float = current?.match.startTime ?? 0
+			let positions: Int = current?.match.positionsChecked ?? 0
+
+			// Diagnostic — visible in Release builds and in the app via Listener.diagnosticHandler
+			Diagnostics.log(String(format: "TuneURL_DIAG: ota local new=%.2f %@ (pass >%.2f, ref %@) old=%.2f %@ triggerStart=%.2fs window=%.2fs positions=%ld%@",
+			                       newScore, verdict, triggerThreshold, referenceLabel,
+			                       previousScore, previousVerdict,
+			                       startTime, windowSeconds, positions, label))
+
+			// the previous check decides only if the references could not be built
+			if references.isEmpty {
+				guard let previous = previous else {
+					return nil
+				}
+				let secondsAgo = windowSeconds - Double(previous.startTime)
+				return TriggerLook(similarity: previousScore, triggerStart: now.addingTimeInterval(-secondsAgo),
+				                   passed: previousScore > previousTriggerThreshold)
+			}
+
+			guard let match = current?.match else {
+				return nil
+			}
+			let secondsAgo = windowSeconds - Double(match.startTime)
+			return TriggerLook(similarity: match.similarity, triggerStart: now.addingTimeInterval(-secondsAgo),
+			                   passed: match.similarity > triggerThreshold)
 		}
-
-		// Diagnostic — visible in Release builds
-		NSLog("TuneURL_DIAG: ota local v2 similarity=%.4f triggerStart=%.2fs window=%.2fs positions=%ld%@",
-		      match.similarity, match.startTime, windowSeconds, match.positionsChecked, label)
-
-		let secondsAgo = windowSeconds - Double(match.startTime)
-		return TriggerLook(similarity: match.similarity, triggerStart: now.addingTimeInterval(-secondsAgo))
 	}
 
 	private func convertAudioBuffer(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer? {
@@ -281,7 +334,7 @@ class AudioCapture: NSObject {
 			    if (self.audioBuffer.untestedTime > 2.0) {
 			        // reset immediately to prevent next frame from trigger detection
 			        self.audioBuffer.resetUntestedSize()
-			        DispatchQueue.main.async {
+			        self.detectionQueue.async {
 			            // run detection
 			            self.checkForTriggerSound()
 			        }
@@ -299,10 +352,12 @@ class AudioCapture: NSObject {
 		do {
 			try audioEngine.start()
 		} catch {
-			NSLog("TuneURL: Error starting audio engine. (\(error.localizedDescription))")
+			Diagnostics.log("TuneURL_DIAG: ota microphone failed to start (\(error.localizedDescription))")
 			return false
 		}
 
+		Diagnostics.log(String(format: "TuneURL_DIAG: ota microphone started (input %.0f Hz, %ld channel(s), mode %@)",
+		                       inputFormat.sampleRate, Int(inputFormat.channelCount), audioSession.mode.rawValue))
 		return true
 	}
 

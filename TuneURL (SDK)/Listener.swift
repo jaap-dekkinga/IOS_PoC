@@ -31,6 +31,18 @@ public class Listener {
 		}
 	}
 
+	/// Receives the SDK's diagnostic lines: trigger scores from each check,
+	/// recognitions, and what the server answered. Called on the main thread.
+	/// Lines are also written with NSLog, as before. Set to nil to stop.
+	public static var diagnosticHandler: ((String) -> Void)? {
+		get {
+			return Diagnostics.handler
+		}
+		set {
+			Diagnostics.handler = newValue
+		}
+	}
+
 	// MARK: - Functions
     public static func setTrigger(_ audioFileURL: URL) {
         AudioMatcher.shared.privateSetTrigger(from: audioFileURL)
@@ -42,5 +54,37 @@ public class Listener {
 
 	public static func stopListening() {
 		AudioMatcher.shared.stop()
+	}
+}
+
+// MARK: - Diagnostics
+
+/// Writes a diagnostic line with NSLog (visible in Release builds) and
+/// passes it to `Listener.diagnosticHandler` on the main thread.
+enum Diagnostics {
+
+	private static let lock = NSLock()
+	private static var storedHandler: ((String) -> Void)?
+
+	static var handler: ((String) -> Void)? {
+		get {
+			lock.lock()
+			defer { lock.unlock() }
+			return storedHandler
+		}
+		set {
+			lock.lock()
+			storedHandler = newValue
+			lock.unlock()
+		}
+	}
+
+	static func log(_ message: String) {
+		NSLog("%@", message)
+		if let handler = handler {
+			DispatchQueue.main.async {
+				handler(message)
+			}
+		}
 	}
 }

@@ -348,6 +348,118 @@ class AudioUtility {
 		return SlidingMatch(similarity: best, startTime: bestStart, positionsChecked: positions)
 	}
 
+	// MARK: - Microphone (over-the-air) trigger check
+
+	/// High-pass cutoff for the microphone check. The trigger's chimes are
+	/// above ~1 kHz; below this the window holds mostly music bass and room
+	/// rumble, which otherwise take the fingerprint's points from the trigger.
+	static let triggerHighPassCutoff = 900.0
+
+	/// Rooms used to make echoey copies of the trigger (echo time RT60 in
+	/// seconds, and a fixed seed so every phone builds the same copies).
+	static let triggerEchoRooms: [(rt60: Double, seed: UInt32)] = [(0.4, 1), (0.8, 2)]
+
+	/// The trigger file as 16-bit samples at the fingerprint sample rate.
+	static func loadTriggerSamples(for fileURL: URL) -> [Int16]? {
+		guard let audioFileBuffer = AudioUtility.prepareAudioForProcessing(fileURL, asFloat: false),
+			let bufferData = audioFileBuffer.int16ChannelData?.pointee else {
+			NSLog("TuneURL: Error preparing trigger samples.")
+			return nil
+		}
+		return Array(UnsafeBufferPointer(start: bufferData, count: Int(audioFileBuffer.frameLength)))
+	}
+
+	/// A high-passed copy of `samples` (fingerprint sample rate).
+	static func highPassed(_ samples: [Int16], cutoffHz: Double = triggerHighPassCutoff) -> [Int16] {
+		var output = samples
+		output.withUnsafeMutableBufferPointer { buffer in
+			guard let base = buffer.baseAddress else { return }
+			FingerprintHighPass(base, Int32(buffer.count), FINGERPRINT_SAMPLE_RATE, cutoffHz)
+		}
+		return output
+	}
+
+	/// A copy of `samples` as heard in a room with echo time `rt60`.
+	static func withRoomEcho(_ samples: [Int16], rt60: Double, seed: UInt32) -> [Int16]? {
+		var output = [Int16](repeating: 0, count: samples.count)
+		let result: Int32 = samples.withUnsafeBufferPointer { input -> Int32 in
+			output.withUnsafeMutableBufferPointer { out -> Int32 in
+				guard let inBase = input.baseAddress, let outBase = out.baseAddress else { return -1 }
+				return FingerprintAddRoomEcho(inBase, outBase, Int32(input.count), FINGERPRINT_SAMPLE_RATE, rt60, seed)
+			}
+		}
+		return (result == 0) ? output : nil
+	}
+
+	/// Fingerprints the microphone check compares against: the high-passed
+	/// trigger, then high-passed echoey copies of it. Caller frees them.
+	static func makeTriggerReferences(from triggerSamples: [Int16]) -> [(fingerprint: UnsafeMutablePointer<Fingerprint>, label: String)] {
+		var sources: [(samples: [Int16], label: String)] = [(triggerSamples, "dry")]
+		for room in triggerEchoRooms {
+			if let echoed = withRoomEcho(triggerSamples, rt60: room.rt60, seed: room.seed) {
+				sources.append((echoed, String(format: "echo%.1f", room.rt60)))
+			}
+		}
+
+		var references = [(fingerprint: UnsafeMutablePointer<Fingerprint>, label: String)]()
+		for source in sources {
+			let filtered = highPassed(source.samples)
+			let fingerprint = filtered.withUnsafeBufferPointer { buffer -> UnsafeMutablePointer<Fingerprint>? in
+				guard let base = buffer.baseAddress else { return nil }
+				return ExtractFingerprint(base, Int32(buffer.count), Int32(FORMAT_VERSION_V2))
+			}
+			if let fingerprint = fingerprint {
+				references.append((fingerprint, source.label))
+			}
+		}
+		return references
+	}
+
+	/// Like `slideTrigger`, but compares each slice with several reference
+	/// fingerprints (all of trigger length) and keeps the best. Each slice is
+	/// fingerprinted once. Returns the match and the index of the best reference.
+	static func slideTrigger(
+		over window: [Int16],
+		references: [UnsafeMutablePointer<Fingerprint>],
+		triggerSampleCount: Int,
+		hopSeconds: Double
+	) -> (match: SlidingMatch, referenceIndex: Int)? {
+		guard !references.isEmpty, triggerSampleCount > 0, window.count >= triggerSampleCount else {
+			return nil
+		}
+
+		let hop = max(1, Int(hopSeconds * FINGERPRINT_SAMPLE_RATE))
+		let triggerSeconds = Float(Double(triggerSampleCount) / FINGERPRINT_SAMPLE_RATE)
+		var best: Float = 0
+		var bestStart: Float = 0
+		var bestReference = 0
+		var positions = 0
+
+		window.withUnsafeBufferPointer { samples in
+			guard let base = samples.baseAddress else { return }
+			var offset = 0
+			while offset + triggerSampleCount <= samples.count {
+				if let slice = ExtractFingerprint(base + offset, Int32(triggerSampleCount), Int32(FORMAT_VERSION_V2)) {
+					for (index, reference) in references.enumerated() {
+						let result = CompareFingerprints(slice, reference)
+						if result.similarity > best {
+							best = result.similarity
+							bestReference = index
+							// same plausibility check as slideTrigger
+							let inSlice = (abs(result.mostSimilarStartTime) <= triggerSeconds) ? result.mostSimilarStartTime : 0
+							bestStart = Float(Double(offset) / FINGERPRINT_SAMPLE_RATE) + inSlice
+						}
+					}
+					FingerprintFree(slice)
+				}
+				positions += 1
+				offset += hop
+			}
+		}
+
+		return (match: SlidingMatch(similarity: best, startTime: bestStart, positionsChecked: positions), referenceIndex: bestReference)
+	}
+
     // MARK: - Buffers
 	static func prepareAudioForProcessing(_ fileURL: URL, asFloat: Bool) -> AVAudioPCMBuffer? {
 		do {

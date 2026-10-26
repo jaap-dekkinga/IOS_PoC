@@ -172,9 +172,9 @@ public class StreamDetector {
             return nil
         }
 
-        // Diagnostic — visible in Release builds
-        NSLog("TuneURL_DIAG: local v2 similarity=%.4f triggerStart=%.2fs window=%.2fs positions=%ld%@",
-              match.similarity, match.startTime, windowSeconds, match.positionsChecked, label)
+        // Diagnostic — visible in Release builds and in the app via Listener.diagnosticHandler
+        Diagnostics.log(String(format: "TuneURL_DIAG: local v2 similarity=%.4f triggerStart=%.2fs window=%.2fs positions=%ld%@",
+                               match.similarity, match.startTime, windowSeconds, match.positionsChecked, label))
 
         let secondsAgo = windowSeconds - Double(match.startTime)
         return TriggerLook(similarity: match.similarity, triggerStart: now.addingTimeInterval(-secondsAgo))
