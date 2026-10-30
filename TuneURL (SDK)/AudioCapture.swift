@@ -107,6 +107,21 @@ class AudioCapture: NSObject {
             name: .AVAudioEngineConfigurationChange,
             object: audioEngine
         )
+		// A phone call, Siri, an alarm or another app can interrupt the
+		// session, and media services can be reset. Without these, the
+		// microphone stays off until listening is restarted by hand.
+		notificationCenter.addObserver(
+			self,
+			selector: #selector(audioSessionInterruption),
+			name: AVAudioSession.interruptionNotification,
+			object: audioSession
+		)
+		notificationCenter.addObserver(
+			self,
+			selector: #selector(mediaServicesWereReset),
+			name: AVAudioSession.mediaServicesWereResetNotification,
+			object: audioSession
+		)
 
 		return true
 	}
@@ -114,6 +129,8 @@ class AudioCapture: NSObject {
 	func stop() {
 		// stop notifications
 		NotificationCenter.default.removeObserver(self, name: nil, object: audioEngine)
+		NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: audioSession)
+		NotificationCenter.default.removeObserver(self, name: AVAudioSession.mediaServicesWereResetNotification, object: audioSession)
 
 		// stop the audio engine
 		stopAudioEngine()
@@ -286,9 +303,18 @@ class AudioCapture: NSObject {
 			    // .measurement turns off iOS input processing (automatic gain,
 			    // noise suppression) so the trigger reaches the fingerprinter unaltered
 			    mode: .measurement,
-			    options: [.mixWithOthers, .defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
+			    // No .allowBluetooth: it lets iOS record from a Bluetooth
+			    // headset or a car's hands-free microphone instead of the
+			    // phone. Those microphones are narrow-band and cancel the
+			    // car's own audio, so the radio's trigger never arrives.
+			    // (.allowBluetoothA2DP only affects playback.)
+			    options: [.mixWithOthers, .defaultToSpeaker, .allowBluetoothA2DP]
 			)
 			try audioSession.setActive(true)
+			// Always listen with the phone's own microphone, like Android.
+			if let builtInMic = audioSession.availableInputs?.first(where: { $0.portType == .builtInMic }) {
+				try audioSession.setPreferredInput(builtInMic)
+			}
 			try audioSession.setPreferredSampleRate(44100.0)
 			try audioSession.setPreferredInputNumberOfChannels(1)
 			if #available(iOS 13.0, *) {
@@ -377,15 +403,41 @@ class AudioCapture: NSObject {
 		print("TuneURL: audioEngineConfigurationChange")
 #endif // DEBUG
 
-		// make sure the audio engine is stopped
-		stopAudioEngine()
+		restartCapture(reason: "audio configuration changed")
+	}
 
-		// restart the audio engine
-		if (startAudioEngine() == false) {
-			NSLog("TuneURL: Error restarting the audio engine.")
+	@objc private func audioSessionInterruption(_ notification: Notification) {
+		guard let rawType = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+		      let type = AVAudioSession.InterruptionType(rawValue: rawType) else {
+			return
 		}
+		if type == .ended {
+			restartCapture(reason: "interruption ended")
+		}
+	}
 
-		// notify the delegate
-		delegate?.audioCaptureStatusChanged()
+	@objc private func mediaServicesWereReset(_ notification: Notification) {
+		restartCapture(reason: "media services reset")
+	}
+
+	/// Set the session up again (another part of the app may have changed
+	/// its category, for example to playback only) and restart the engine.
+	private func restartCapture(reason: String) {
+		DispatchQueue.main.async {
+			self.stopAudioEngine()
+			// Only touch the session when someone else changed it. Setting it
+			// unchanged could post another configuration change and loop.
+			if self.audioSession.category != .playAndRecord || self.audioSession.mode != .measurement
+				|| self.audioSession.currentRoute.inputs.first?.portType != .builtInMic {
+				self.setupAudioSession()
+			}
+			if self.startAudioEngine() {
+				Diagnostics.log("TuneURL_DIAG: ota microphone restarted (\(reason))")
+			} else {
+				Diagnostics.log("TuneURL_DIAG: ota microphone could not restart (\(reason))")
+			}
+			// notify the delegate
+			self.delegate?.audioCaptureStatusChanged()
+		}
 	}
 }
