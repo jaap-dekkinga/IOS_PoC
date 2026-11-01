@@ -297,31 +297,51 @@ class AudioCapture: NSObject {
 	}
 
 	private func setupAudioSession() {
+		// Each step runs on its own: one failing step must not skip the
+		// others (before, a failure anywhere left the session half set up
+		// and the microphone could not start).
+
+		// .measurement turns off iOS input processing (automatic gain,
+		// noise suppression) so the trigger reaches the fingerprinter unaltered.
+		// No .allowBluetooth: it lets iOS record from a Bluetooth headset or a
+		// car's hands-free microphone instead of the phone. Those microphones
+		// are narrow-band and cancel the car's own audio, so the radio's
+		// trigger never arrives. (.allowBluetoothA2DP only affects playback.)
 		do {
 			try audioSession.setCategory(
 			    .playAndRecord,
-			    // .measurement turns off iOS input processing (automatic gain,
-			    // noise suppression) so the trigger reaches the fingerprinter unaltered
 			    mode: .measurement,
-			    // No .allowBluetooth: it lets iOS record from a Bluetooth
-			    // headset or a car's hands-free microphone instead of the
-			    // phone. Those microphones are narrow-band and cancel the
-			    // car's own audio, so the radio's trigger never arrives.
-			    // (.allowBluetoothA2DP only affects playback.)
 			    options: [.mixWithOthers, .defaultToSpeaker, .allowBluetoothA2DP]
 			)
-			try audioSession.setActive(true)
-			// Always listen with the phone's own microphone, like Android.
-			if let builtInMic = audioSession.availableInputs?.first(where: { $0.portType == .builtInMic }) {
-				try audioSession.setPreferredInput(builtInMic)
-			}
-			try audioSession.setPreferredSampleRate(44100.0)
-			try audioSession.setPreferredInputNumberOfChannels(1)
-			if #available(iOS 13.0, *) {
-				try audioSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
-			}
 		} catch {
-			Diagnostics.log("TuneURL_DIAG: ota audio session setup failed (\(error.localizedDescription))")
+			Diagnostics.log("TuneURL_DIAG: ota measurement mode refused (\(error.localizedDescription)), using default mode")
+			do {
+				try audioSession.setCategory(.playAndRecord, mode: .default, options: [.mixWithOthers, .defaultToSpeaker])
+			} catch {
+				Diagnostics.log("TuneURL_DIAG: ota audio session category failed (\(error.localizedDescription))")
+			}
+		}
+
+		do {
+			try audioSession.setActive(true)
+		} catch {
+			Diagnostics.log("TuneURL_DIAG: ota audio session activation failed (\(error.localizedDescription))")
+		}
+
+		// Always listen with the phone's own microphone, like Android.
+		if let builtInMic = audioSession.availableInputs?.first(where: { $0.portType == .builtInMic }) {
+			do {
+				try audioSession.setPreferredInput(builtInMic)
+			} catch {
+				Diagnostics.log("TuneURL_DIAG: ota could not select the built-in microphone (\(error.localizedDescription))")
+			}
+		}
+
+		// preferences only: iOS may round them, and the engine adapts
+		try? audioSession.setPreferredSampleRate(44100.0)
+		try? audioSession.setPreferredInputNumberOfChannels(1)
+		if #available(iOS 13.0, *) {
+			try? audioSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
 		}
 	}
 
@@ -439,7 +459,8 @@ class AudioCapture: NSObject {
 			self.stopAudioEngine()
 			// Only touch the session when someone else changed it. Setting it
 			// unchanged could post another configuration change and loop.
-			if self.audioSession.category != .playAndRecord || self.audioSession.mode != .measurement
+			// (Mode is not checked: setup may have fallen back to the default mode.)
+			if self.audioSession.category != .playAndRecord
 				|| self.audioSession.currentRoute.inputs.first?.portType != .builtInMic {
 				self.setupAudioSession()
 			}
