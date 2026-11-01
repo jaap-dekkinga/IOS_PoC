@@ -275,6 +275,9 @@ class AudioMatcher {
 
 	// MARK: - Private funcs
 	private func startMatching() {
+		// set first: startCapture checks it, and this can be called from the
+		// permission callback on another thread
+		isRunning = true
 		DispatchQueue.main.async {
 			// start audio capture
 			if (self.audioCapture == nil) {
@@ -283,8 +286,6 @@ class AudioMatcher {
 				self.startCapture(attempt: 1)
 			}
 		}
-
-		isRunning = true
 	}
 
 	/// The microphone can be briefly unavailable right after the session
