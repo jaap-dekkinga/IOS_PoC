@@ -321,14 +321,22 @@ class AudioCapture: NSObject {
 				try audioSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
 			}
 		} catch {
-			NSLog("TuneURL: Error setting up audio session. (\(error.localizedDescription))")
+			Diagnostics.log("TuneURL_DIAG: ota audio session setup failed (\(error.localizedDescription))")
 		}
 	}
 
 	private func startAudioEngine() -> Bool {
 		// setup the input node
+		guard audioSession.isInputAvailable else {
+			Diagnostics.log("TuneURL_DIAG: ota microphone not available (session category \(audioSession.category.rawValue))")
+			return false
+		}
 		let inputNode = audioEngine.inputNode
 		let inputFormat = inputNode.inputFormat(forBus: 0)
+		guard inputFormat.sampleRate > 0, inputFormat.channelCount > 0 else {
+			Diagnostics.log("TuneURL_DIAG: ota microphone has no usable input format (\(inputFormat))")
+			return false
+		}
 
 		// check if we need the buffer conversion
 		useBufferConversion = (inputFormat.isEqual(bufferFormat) == false)
@@ -336,6 +344,7 @@ class AudioCapture: NSObject {
 		// setup audio conversion
 		if useBufferConversion {
 			guard let converter = AVAudioConverter(from: inputFormat, to: bufferFormat) else {
+				Diagnostics.log("TuneURL_DIAG: ota cannot convert microphone audio from \(inputFormat)")
 				return false
 			}
 			audioConverter = converter
@@ -379,6 +388,9 @@ class AudioCapture: NSObject {
 			try audioEngine.start()
 		} catch {
 			Diagnostics.log("TuneURL_DIAG: ota microphone failed to start (\(error.localizedDescription))")
+			// remove the tap, so a retry can install it again
+			inputNode.removeTap(onBus: 0)
+			audioConverter = nil
 			return false
 		}
 
