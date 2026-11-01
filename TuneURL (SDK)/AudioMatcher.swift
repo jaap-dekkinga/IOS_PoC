@@ -115,21 +115,50 @@ class AudioMatcher {
 		// save the match handler
 		self.matchHandler = matchHandler
 
-		let audioSession = AVAudioSession.sharedInstance()
-		if (audioSession.recordPermission == .granted) {
+		switch AudioMatcher.microphonePermission() {
+		case .granted:
 			// start matching immediately
 			startMatching()
-		} else {
-			// request microphone permission
-			audioSession.requestRecordPermission {
-				granted in
+		case .denied:
+			Diagnostics.log("TuneURL_DIAG: ota microphone permission DENIED. Turn it on in Settings > Privacy & Security > Microphone.")
+		case .undetermined:
+			Diagnostics.log("TuneURL_DIAG: ota asking for microphone permission")
+			AudioMatcher.requestMicrophonePermission { granted in
 				if granted {
-					// start matching
 					self.startMatching()
 				} else {
-					NSLog("TuneURL: Does not have recording permission.")
+					Diagnostics.log("TuneURL_DIAG: ota microphone permission DENIED by the user.")
 				}
 			}
+		}
+	}
+
+	private enum MicrophonePermission {
+		case granted, denied, undetermined
+	}
+
+	/// iOS 17 replaced AVAudioSession's permission API with AVAudioApplication.
+	private static func microphonePermission() -> MicrophonePermission {
+		if #available(iOS 17.0, *) {
+			switch AVAudioApplication.shared.recordPermission {
+			case .granted: return .granted
+			case .denied: return .denied
+			default: return .undetermined
+			}
+		} else {
+			switch AVAudioSession.sharedInstance().recordPermission {
+			case .granted: return .granted
+			case .denied: return .denied
+			default: return .undetermined
+			}
+		}
+	}
+
+	private static func requestMicrophonePermission(_ completion: @escaping (Bool) -> Void) {
+		if #available(iOS 17.0, *) {
+			AVAudioApplication.requestRecordPermission { granted in completion(granted) }
+		} else {
+			AVAudioSession.sharedInstance().requestRecordPermission { granted in completion(granted) }
 		}
 	}
 
@@ -251,10 +280,28 @@ class AudioMatcher {
 			if (self.audioCapture == nil) {
 				self.audioBuffer.reset()
 				self.audioCapture = AudioCapture(audioBuffer: self.audioBuffer, sampleRate: 44100.0, delegate: nil)
-				_ = self.audioCapture?.start()
+				self.startCapture(attempt: 1)
 			}
 		}
 
 		isRunning = true
+	}
+
+	/// The microphone can be briefly unavailable right after the session
+	/// changes (for example when playback just stopped). Try a few times
+	/// instead of giving up silently.
+	private func startCapture(attempt: Int) {
+		guard let capture = audioCapture, isRunning else { return }
+		if capture.start() {
+			return
+		}
+		guard attempt < 4 else {
+			Diagnostics.log("TuneURL_DIAG: ota microphone did not start after \(attempt) attempts")
+			return
+		}
+		Diagnostics.log("TuneURL_DIAG: ota microphone start attempt \(attempt) failed, retrying in 1 s")
+		DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+			self.startCapture(attempt: attempt + 1)
+		}
 	}
 }
