@@ -391,11 +391,15 @@ class AudioUtility {
 		return (result == 0) ? output : nil
 	}
 
-	/// Fingerprints the microphone check compares against: the high-passed
-	/// trigger, then high-passed echoey copies of it. Caller frees them.
-	static func makeTriggerReferences(from triggerSamples: [Int16]) -> [(fingerprint: UnsafeMutablePointer<Fingerprint>, label: String)] {
+	/// Fingerprints a filtered trigger check compares against: the high-passed
+	/// trigger, then high-passed echoey copies of it (one per entry in
+	/// `echoRooms`). The microphone check uses the default rooms; the stream
+	/// check passes `[]`, because a decoded stream has no room echo and the
+	/// copies only raise the false-alarm rate there. Caller frees them.
+	static func makeTriggerReferences(from triggerSamples: [Int16],
+	                                  echoRooms: [(rt60: Double, seed: UInt32)] = triggerEchoRooms) -> [(fingerprint: UnsafeMutablePointer<Fingerprint>, label: String)] {
 		var sources: [(samples: [Int16], label: String)] = [(triggerSamples, "dry")]
-		for room in triggerEchoRooms {
+		for room in echoRooms {
 			if let echoed = withRoomEcho(triggerSamples, rt60: room.rt60, seed: room.seed) {
 				sources.append((echoed, String(format: "echo%.1f", room.rt60)))
 			}

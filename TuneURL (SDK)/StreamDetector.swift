@@ -18,13 +18,22 @@ public class StreamDetector {
     private let dispatchQueue = DispatchQueue(label: "com.TuneURL.StreamDetector-\(UUID().uuidString)")
     private var triggerFingerprint: UnsafeMutablePointer<Fingerprint>?
     private var triggerSampleCount = 0
+    // High-passed trigger (see AudioUtility.makeTriggerReferences, no echo
+    // copies). The check decides with this; nil if it could not be built.
+    private var filteredTriggerFingerprint: UnsafeMutablePointer<Fingerprint>?
     private let triggerWindowDuration = 4.0
 
     // Trigger search: the trigger is slid across the window in steps of
     // triggerSlideHop seconds (see AudioUtility.slideTrigger).
     private let triggerSlideHop = 0.125
-    // Pass mark. Scores come in steps of 0.04, so "> 0.1" accepts 0.12 and up.
-    private let triggerThreshold: Float = 0.1
+    // Pass marks. Scores come in steps of 0.04.
+    // Filtered check (900 Hz high-pass on window and trigger): "> 0.18" accepts
+    // 0.20 and up, the same pass mark as the microphone check.
+    private let triggerThreshold: Float = 0.18
+    // Previous check (unfiltered): "> 0.1" accepts 0.12 and up. Still scored
+    // and logged for comparison; it decides only if the filtered trigger
+    // could not be built.
+    private let previousTriggerThreshold: Float = 0.1
     // One trigger is visible on 2-3 consecutive checks; ignore further hits
     // for this long after a detection.
     private let triggerCooldown: TimeInterval = 6.0
@@ -69,6 +78,8 @@ public class StreamDetector {
             audioBuffer.reset()
             FingerprintFree(triggerFingerprint)
             triggerFingerprint = nil
+            FingerprintFree(filteredTriggerFingerprint)
+            filteredTriggerFingerprint = nil
         }
     }
     
@@ -108,6 +119,7 @@ public class StreamDetector {
     private struct TriggerLook {
         let similarity: Float
         let triggerStart: Date
+        let passed: Bool
     }
 
     private func checkForTriggerSound() {
@@ -119,7 +131,7 @@ public class StreamDetector {
             return
         }
 
-        guard let firstLook = searchForTrigger(label: ""), firstLook.similarity > triggerThreshold else {
+        guard let firstLook = searchForTrigger(label: ""), firstLook.passed else {
             return
         }
 
@@ -146,6 +158,12 @@ public class StreamDetector {
     }
 
     /// Slide the trigger across the most recent triggerWindowDuration of audio.
+    ///
+    /// Decides with the high-passed window against the high-passed trigger.
+    /// Below 900 Hz the window holds mostly music bass, which otherwise takes
+    /// the fingerprint's points from the trigger when the song plays under it
+    /// (test of 2026-11-05: unfiltered 0.12 at best, filtered 1.00). Also
+    /// scores the previous check (unfiltered) and logs both side by side.
     private func searchForTrigger(label: String) -> TriggerLook? {
         guard let triggerFingerprint, triggerSampleCount > 0 else {
             return nil
@@ -163,21 +181,47 @@ public class StreamDetector {
         }
         let windowSeconds = Double(resampledData.count) / FINGERPRINT_SAMPLE_RATE
 
-        guard let match = AudioUtility.slideTrigger(
+        // previous check, for comparison (decides only without a filtered trigger)
+        let previous = AudioUtility.slideTrigger(
             over: resampledData,
             triggerFingerprint: triggerFingerprint,
             triggerSampleCount: triggerSampleCount,
             hopSeconds: triggerSlideHop
-        ) else {
-            return nil
+        )
+        let previousScore: Float = previous?.similarity ?? 0
+        let previousVerdict = (previousScore > previousTriggerThreshold) ? "pass" : "-"
+
+        // new check: high-passed window against the high-passed trigger
+        var current: AudioUtility.SlidingMatch?
+        if let filteredTriggerFingerprint {
+            current = AudioUtility.slideTrigger(
+                over: AudioUtility.highPassed(resampledData),
+                triggerFingerprint: filteredTriggerFingerprint,
+                triggerSampleCount: triggerSampleCount,
+                hopSeconds: triggerSlideHop
+            )
         }
+        let newScore: Float = current?.similarity ?? 0
+        let verdict = (newScore > triggerThreshold) ? "PASS" : "-"
+
+        let decider = (filteredTriggerFingerprint != nil) ? current : previous
+        let startTime: Float = decider?.startTime ?? 0
+        let positions: Int = decider?.positionsChecked ?? 0
 
         // Diagnostic — visible in Release builds and in the app via Listener.diagnosticHandler
-        Diagnostics.log(String(format: "TuneURL_DIAG: local v2 similarity=%.4f triggerStart=%.2fs window=%.2fs positions=%ld%@",
-                               match.similarity, match.startTime, windowSeconds, match.positionsChecked, label))
+        Diagnostics.log(String(format: "TuneURL_DIAG: stream local new=%.2f %@ (pass >%.2f) old=%.2f %@ triggerStart=%.2fs window=%.2fs positions=%ld%@",
+                               newScore, verdict, triggerThreshold,
+                               previousScore, previousVerdict,
+                               startTime, windowSeconds, positions, label))
 
+        guard let match = decider else {
+            return nil
+        }
+        let passed = (filteredTriggerFingerprint != nil)
+            ? match.similarity > triggerThreshold
+            : match.similarity > previousTriggerThreshold
         let secondsAgo = windowSeconds - Double(match.startTime)
-        return TriggerLook(similarity: match.similarity, triggerStart: now.addingTimeInterval(-secondsAgo))
+        return TriggerLook(similarity: match.similarity, triggerStart: now.addingTimeInterval(-secondsAgo), passed: passed)
     }
 
     func recognizedTrigger(timeRelativeToNow: Float) {
@@ -294,6 +338,8 @@ public class StreamDetector {
         NSLog("TuneURL: privateSetTrigger called with %@", audioFileURL.absoluteString)
         FingerprintFree(triggerFingerprint)
         triggerFingerprint = nil
+        FingerprintFree(filteredTriggerFingerprint)
+        filteredTriggerFingerprint = nil
         triggerSampleCount = 0
         
         // create the trigger fingerprint
@@ -315,6 +361,16 @@ public class StreamDetector {
             }
         } else {
             NSLog("TuneURL: TRIGGER generateFingerprint returned nil")
+        }
+
+        // high-passed trigger for the filtered check (no echo copies on the stream)
+        if triggerFingerprint != nil, let samples = AudioUtility.loadTriggerSamples(for: audioFileURL),
+           let filtered = AudioUtility.makeTriggerReferences(from: samples, echoRooms: []).first {
+            filteredTriggerFingerprint = filtered.fingerprint
+            Diagnostics.log(String(format: "TuneURL_DIAG: stream trigger loaded: %ld samples, high-pass %.0f Hz, pass >%.2f",
+                                   triggerSampleCount, AudioUtility.triggerHighPassCutoff, triggerThreshold))
+        } else {
+            Diagnostics.log("TuneURL_DIAG: stream filtered trigger could not be built, using the unfiltered check (pass >0.10)")
         }
     }
     
