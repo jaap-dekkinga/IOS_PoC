@@ -158,6 +158,14 @@ class AudioCapture: NSObject {
 			return
 		}
 
+		// skip the trigger search when the room is quiet: there a single
+		// clink can pass for the trigger, and skipping saves battery
+		if let bufferData = audioBuffer.copyBufferData(maxDuration: triggerWindowDuration),
+		   let gate = SoundGate.check(bufferData, sampleRate: sampleRate), !gate.passed {
+			Diagnostics.log("TuneURL_DIAG: ota quiet, trigger check skipped: " + SoundGate.describe(gate.presence))
+			return
+		}
+
 		guard let firstLook = searchForTrigger(label: ""), firstLook.passed else {
 			return
 		}

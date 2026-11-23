@@ -348,6 +348,54 @@ class AudioUtility {
 		return SlidingMatch(similarity: best, startTime: bestStart, positionsChecked: positions)
 	}
 
+	// MARK: - Sound presence (over-the-air sound gate)
+
+	/// How much steady sound a stretch of microphone audio holds.
+	struct SoundPresence {
+		/// Share of the slices at or above the minimum level (0.0 to 1.0).
+		let activeFraction: Float
+		/// Level of the middle slice when sorted by level, in dBFS.
+		let medianLevel: Float
+		/// Level of the loudest slice, in dBFS.
+		let loudestLevel: Float
+	}
+
+	/// Splits `samples` into slices of `sliceSeconds` and measures the RMS
+	/// level of each in dBFS. A clink lights up one or two slices; music or
+	/// speech lights up most of them.
+	static func soundPresence(of samples: [Int16], sampleRate: Double, minimumLevel: Float,
+	                          sliceSeconds: Double = 0.1) -> SoundPresence {
+		let sliceLength = max(Int(sampleRate * sliceSeconds), 1)
+		let silence: Float = -120.0
+		var levels = [Float]()
+		levels.reserveCapacity(samples.count / sliceLength + 1)
+
+		samples.withUnsafeBufferPointer { buffer in
+			var start = 0
+			// a trailing partial slice shorter than half a slice is ignored
+			while start + sliceLength / 2 <= buffer.count, start < buffer.count {
+				let end = min(start + sliceLength, buffer.count)
+				var sumOfSquares: Double = 0
+				for index in start ..< end {
+					let value = Double(buffer[index])
+					sumOfSquares += value * value
+				}
+				let rms = (sumOfSquares / Double(end - start)).squareRoot() / 32768.0
+				levels.append(rms > 0 ? max(Float(20.0 * log10(rms)), silence) : silence)
+				start = end
+			}
+		}
+
+		guard !levels.isEmpty else {
+			return SoundPresence(activeFraction: 0, medianLevel: silence, loudestLevel: silence)
+		}
+		let activeCount = levels.filter { $0 >= minimumLevel }.count
+		let sorted = levels.sorted()
+		return SoundPresence(activeFraction: Float(activeCount) / Float(levels.count),
+		                     medianLevel: sorted[sorted.count / 2],
+		                     loudestLevel: sorted[sorted.count - 1])
+	}
+
 	// MARK: - Microphone (over-the-air) trigger check
 
 	/// High-pass cutoff for the microphone check. The trigger's chimes are
