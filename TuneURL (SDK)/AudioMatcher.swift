@@ -197,9 +197,24 @@ class AudioMatcher {
 
 		DispatchQueue.main.asyncAfter(deadline: (.now() + remainingTimeToRecord)) {
 
+			guard let matchAudioBuffer = self.audioBuffer.copyBufferData(maxDuration: identifiableAudioDuration) else {
+				Diagnostics.log("TuneURL_DIAG: ota server: not sent (could not prepare the audio)")
+				return
+			}
+
+			// a trigger on the radio is followed by its message; quiet audio
+			// here means the trigger check reacted to a stray sound
+			if let gate = SoundGate.check(matchAudioBuffer, sampleRate: 44100.0) {
+				let description = SoundGate.describe(gate.presence)
+				guard gate.passed else {
+					Diagnostics.log("TuneURL_DIAG: ota server: not sent (quiet after trigger) " + description)
+					return
+				}
+				Diagnostics.log("TuneURL_DIAG: ota audio after trigger " + description)
+			}
+
 			// create the tuneurl fingerprint
-			guard let matchAudioBuffer = self.audioBuffer.copyBufferData(maxDuration: identifiableAudioDuration),
-			      let matchResampledBuffer = AudioUtility.changeSampleRate(sampleRate: FINGERPRINT_SAMPLE_RATE, buffer1: matchAudioBuffer),
+			guard let matchResampledBuffer = AudioUtility.changeSampleRate(sampleRate: FINGERPRINT_SAMPLE_RATE, buffer1: matchAudioBuffer),
 			      let matchFingerprint = ExtractFingerprint(matchResampledBuffer, Int32(matchResampledBuffer.count), Int32(FORMAT_VERSION_V2)) else {
 				Diagnostics.log("TuneURL_DIAG: ota server: not sent (could not prepare the audio)")
 				return
